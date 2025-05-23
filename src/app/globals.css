@@ -1,3 +1,46 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@tailwind utilities;
+
+@theme {
+  /* Custom Colors */
+  --color-primary: #D1E50C;
+  --color-primary-200: #9DAC09;
+  --color-primary-300: #F3F9C2;
+  --color-primary-400: #DDEC49;
+
+  --color-background: #131313;
+  --color-background-100: #201F20;
+  --color-background-500: #141B34;
+  --color-background-600: #19191F;
+
+  --color-main: #FFFFFF;
+  --color-main-300: #FDFEF3;
+  --color-main-400: #F2F4F3;
+  --color-main-500: #F5F5F7;
+  --color-main-600: #F4F4F6;
+  --color-main-700: #FDFEF3;
+
+  --color-secondary: #B6B6C0;
+  --color-secondary-400: #E9E9EA;
+  --color-secondary-500: #D9D9D9;
+  --color-secondary-600: #6C6D80;
+  --color-secondary-800: #959595;
+
+  --color-error: #FF4051;
+
+  --color-badge-red: #BC2200;
+
+  --color-card-primary: #C2D671;
+  --color-card-primary-50: #DBF08400;
+  
+  --color-card-blue: #71D6C4;
+  --color-card-blue-50: #84DDF000;
+  
+  --color-card-purple: #8571D6;
+  --color-card-purple-50: #F084EC00;
+
+  /* Font Families */
+  --font-syne: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-chivo: "Chivo", ui-sans-serif, system-ui, sans-serif;
+}
