@@ -1,3 +1,6 @@
+import CustomButton from '@/components/atoms/CustomButton';
+import IconButton from '@/components/atoms/IconButton';
+import { LocateFixed } from 'lucide-react';
 import React from 'react';
 
 export default function StylePreview() {
@@ -12,14 +15,6 @@ export default function StylePreview() {
           <p className="font-inter text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
             Showcasing custom fonts, colors, and components built with Tailwind CSS
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-background text-primary hover:bg-main-600 px-8 py-4 rounded-lg font-chivo font-semibold text-lg transition-all duration-200 transform hover:scale-105">
-              Primary Action
-            </button>
-            <button className="border-2 border-background text-background hover:bg-background hover:text-primary px-8 py-4 rounded-lg font-chivo font-semibold text-lg transition-all duration-200">
-              Secondary Action
-            </button>
-          </div>
         </div>
       </section>
 
@@ -157,7 +152,6 @@ export default function StylePreview() {
               </div>
             </div>
           </div>
-         
           {/* Secondary Colors */}
           <div className="mb-12">
             <h3 className="font-chivo text-secondary text-xl font-bold mb-6 uppercase tracking-wider">
@@ -283,22 +277,145 @@ export default function StylePreview() {
             Button Components
           </h2>
           
-          <div className="space-y-8">
-            {/* Primary Buttons */}
+          <div className="space-y-12">
+            {/* Main Buttons */}
+            <div>
+              <h3 className="font-chivo text-background text-lg font-bold mb-6 uppercase tracking-wider">
+                Main Buttons
+              </h3>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h4 className="text-background/80 text-sm font-medium">Active States</h4>
+                  <CustomButton size='lg' showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton size='sm' showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton variant="outline" size='lg' showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton variant="outline" showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton variant="outline" size='sm' showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                </div>
+                <div className="space-y-4">
+                  <h4 className="text-background/80 text-sm font-medium">Inactive States</h4>
+                  <CustomButton state="disabled" size='lg' showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton state="disabled" showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton state="disabled" size='sm' showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton variant="outline" state="disabled" size='lg' showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton variant="outline" state="disabled" showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                  <CustomButton variant="outline" state="disabled" size='sm' showLeftArrow showRightArrow>
+                    Continue
+                  </CustomButton>
+                </div>
+              </div>
+            </div>
+
+            {/* Icon Buttons */}
+            <div className='bg-background px-4 py-6 rounded-lg shadow-lg'>
+              <h3 className="font-chivo text-main text-lg font-bold mb-6 uppercase tracking-wider">
+                Icon Buttons
+              </h3>
+              <div className="flex gap-4">
+                <IconButton 
+                  size="lg"
+                  icon={<LocateFixed />}
+                />
+                <IconButton 
+                  size="md"
+                  icon={<LocateFixed />}
+                />
+                <IconButton 
+                  size="sm"
+                  icon={<LocateFixed />}
+                />
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div>
+              <h3 className="font-chivo text-background text-lg font-bold mb-6 uppercase tracking-wider">
+                Action Buttons
+              </h3>
+              <div className="flex gap-4">
+                <CustomButton variant="outline-main" className='bg-background'>
+                  Cancel
+                </CustomButton>
+                <CustomButton>
+                  Continue
+                </CustomButton>
+              </div>
+            </div>
+
+            {/* Social Media Buttons */}
+            <div>
+              <h3 className="font-chivo text-background text-lg font-bold mb-6 uppercase tracking-wider">
+                Social Media Buttons
+              </h3>
+              <div className="flex gap-4">
+                <IconButton
+                  variant="outline"
+                  icon={
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M14.4227 7.86847C14.0241 7.86847 13.6495 7.93037 13.299 8.05416C12.9485 8.17107 12.6323 8.29142 12.3505 8.41522C12.0687 8.53901 11.8213 8.6009 11.6082 8.6009C11.3883 8.6009 11.1409 8.54245 10.866 8.42553C10.5979 8.30862 10.3093 8.19514 10 8.08511C9.69072 7.96819 9.36082 7.90974 9.01031 7.90974C8.35052 7.90974 7.71134 8.09198 7.09278 8.45648C6.4811 8.8141 5.97938 9.34709 5.58763 10.0554C5.19588 10.7569 5 11.6269 5 12.6654C5 13.6351 5.16151 14.5979 5.48454 15.5538C5.81443 16.5029 6.20962 17.3075 6.6701 17.9678C7.06873 18.5248 7.45704 19.0028 7.83505 19.4017C8.21306 19.8006 8.65292 20 9.15464 20C9.48454 20 9.76976 19.945 10.0103 19.8349C10.2577 19.7249 10.5155 19.6149 10.7835 19.5048C11.0584 19.3948 11.3986 19.3398 11.8041 19.3398C12.2234 19.3398 12.5567 19.3948 12.8041 19.5048C13.0515 19.608 13.2921 19.7146 13.5258 19.8246C13.7594 19.9278 14.0584 19.9794 14.4227 19.9794C14.9656 19.9794 15.4296 19.773 15.8144 19.3604C16.2062 18.9478 16.5704 18.4973 16.9072 18.009C17.2921 17.4451 17.567 16.9327 17.732 16.472C17.9038 16.0112 17.9931 15.767 18 15.7395C17.9863 15.7326 17.8694 15.6707 17.6495 15.5538C17.4364 15.4369 17.189 15.2547 16.9072 15.0071C16.6323 14.7526 16.3883 14.4191 16.1753 14.0064C15.9691 13.5938 15.866 13.0918 15.866 12.5003C15.866 11.9845 15.9485 11.5409 16.1134 11.1696C16.2783 10.7913 16.4708 10.4818 16.6907 10.2411C16.9107 9.99355 17.11 9.80787 17.2887 9.68407C17.4674 9.55341 17.567 9.47776 17.5876 9.45712C17.2302 8.94133 16.8316 8.57339 16.3918 8.35332C15.9588 8.12637 15.5601 7.98882 15.1959 7.94068C14.8316 7.89254 14.5739 7.86847 14.4227 7.86847ZM13.8557 6.55835C14.1031 6.25575 14.3058 5.91188 14.4639 5.52676C14.622 5.13475 14.701 4.73243 14.701 4.31979C14.701 4.196 14.6907 4.0894 14.6701 4C14.2715 4.01375 13.8522 4.13411 13.4124 4.36106C12.9725 4.58801 12.6082 4.87341 12.3196 5.21728C12.0928 5.47174 11.89 5.79497 11.7113 6.18698C11.5326 6.5721 11.4433 6.97099 11.4433 7.38362C11.4433 7.44552 11.4467 7.50398 11.4536 7.55899C11.4605 7.61401 11.4674 7.65184 11.4742 7.67247C11.543 7.68622 11.6151 7.6931 11.6907 7.6931C12.055 7.6931 12.4399 7.5865 12.8454 7.37331C13.2509 7.15323 13.5876 6.88158 13.8557 6.55835Z" fill="currentColor"/>
+                    </svg>
+                  }
+                />
+                <IconButton 
+                  variant="outline"
+                  icon={
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                  }
+                />
+                <IconButton 
+                  variant="outline"
+                  icon={
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Original Button Variants */}
             <div>
               <h3 className="font-chivo text-background text-lg font-bold mb-6 uppercase tracking-wider">
                 Primary Buttons
               </h3>
               <div className="flex flex-wrap gap-4">
-                <button className="bg-primary hover:bg-primary-200 text-background px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <CustomButton>
                   Primary Button
-                </button>
-                <button className="bg-primary-400 hover:bg-primary text-background px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                </CustomButton>
+                <CustomButton state="active">
                   Primary Variant
-                </button>
-                <button className="border-2 border-primary text-primary hover:bg-primary hover:text-background px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200">
+                </CustomButton>
+                <CustomButton variant="outline">
                   Primary Outline
-                </button>
+                </CustomButton>
               </div>
             </div>
 
@@ -308,30 +425,30 @@ export default function StylePreview() {
                 Secondary Buttons
               </h3>
               <div className="flex flex-wrap gap-4">
-                <button className="bg-secondary hover:bg-secondary-600 text-background px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200 shadow-lg hover:shadow-xl">
+                <CustomButton variant="secondary">
                   Secondary Button
-                </button>
-                <button className="bg-secondary-400 hover:bg-secondary text-background px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200 shadow-lg hover:shadow-xl">
+                </CustomButton>
+                <CustomButton variant="secondary" state="active">
                   Secondary Variant
-                </button>
-                <button className="border-2 border-secondary text-secondary hover:bg-secondary hover:text-background px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200">
+                </CustomButton>
+                <CustomButton variant="outline" className="border-secondary text-secondary hover:bg-secondary">
                   Secondary Outline
-                </button>
+                </CustomButton>
               </div>
             </div>
 
-            {/* Error Button */}
+            {/* Status Buttons */}
             <div>
               <h3 className="font-chivo text-background text-lg font-bold mb-6 uppercase tracking-wider">
                 Status Buttons
               </h3>
               <div className="flex flex-wrap gap-4">
-                <button className="bg-error hover:opacity-90 text-main px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200 shadow-lg hover:shadow-xl">
+                <CustomButton variant="error">
                   Error Button
-                </button>
-                <button className="bg-badge-red hover:opacity-90 text-main px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200 shadow-lg hover:shadow-xl">
+                </CustomButton>
+                <CustomButton variant="badge">
                   Badge Button
-                </button>
+                </CustomButton>
               </div>
             </div>
           </div>
@@ -348,23 +465,23 @@ export default function StylePreview() {
             This section demonstrates the use of brand background colors with proper contrast and typography hierarchy.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-background p-8 rounded-2xl shadow-xl">
+            <div className="bg-background p-8 rounded-2xl shadow-xl flex flex-col items-center">
               <h3 className="font-syne text-2xl font-bold text-primary mb-4">Dark Theme</h3>
               <p className="font-inter text-main-400 mb-6">
                 Using the default background color with proper text contrast.
               </p>
-              <button className="bg-primary hover:bg-primary-400 text-background px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200">
+              <CustomButton>
                 Call to Action
-              </button>
+              </CustomButton>
             </div>
-            <div className="bg-background-600 p-8 rounded-2xl shadow-xl">
+            <div className="bg-background-600 p-8 rounded-2xl shadow-xl flex flex-col items-center">
               <h3 className="font-syne text-2xl font-bold text-primary mb-4">Variant Background</h3>
               <p className="font-inter text-main-500 mb-6">
                 Using background-600 for subtle variations in dark sections.
               </p>
-              <button className="border-2 border-primary text-primary hover:bg-primary hover:text-background px-6 py-3 rounded-lg font-chivo font-semibold transition-all duration-200">
+              <CustomButton variant='outline-primary'>
                 Learn More
-              </button>
+              </CustomButton>
             </div>
           </div>
         </div>
@@ -412,9 +529,9 @@ export default function StylePreview() {
                 ></textarea>
               </div>
               
-              <button className="w-full bg-primary hover:bg-primary-400 text-background px-6 py-4 rounded-lg font-chivo font-bold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+              <CustomButton className='w-full' textClassName='font-extrabold'>
                 Send Message
-              </button>
+              </CustomButton>
             </form>
           </div>
         </div>
