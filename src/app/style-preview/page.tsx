@@ -1,9 +1,16 @@
+'use client'
 import CustomButton from '@/components/atoms/CustomButton';
 import IconButton from '@/components/atoms/IconButton';
-import { LocateFixed } from 'lucide-react';
-import React from 'react';
+import InputSpinner from '@/components/molecules/InputSpinner';
+import PINInput from '@/components/atoms/PinInput';
+import TextField from '@/components/molecules/TextField';
+import { ChevronUp, LocateFixed, Mail, MapPin, Search, X } from 'lucide-react';
+import React, { useState } from 'react';
 
 export default function StylePreview() {
+  const [spinnerValue, setSpinnerValue] = useState(1);
+  const [, setPinValue] = useState('');
+
   return (
     <div className="min-h-screen bg-background text-main">
       {/* Hero Section with Primary Brand Color Background */}
@@ -337,15 +344,15 @@ export default function StylePreview() {
               <div className="flex gap-4">
                 <IconButton 
                   size="lg"
-                  icon={<LocateFixed />}
+                  icon={<LocateFixed className='!w-6 !h-6'/>}
                 />
                 <IconButton 
                   size="md"
-                  icon={<LocateFixed />}
+                  icon={<LocateFixed className='!w-6 !h-6'/>}
                 />
                 <IconButton 
                   size="sm"
-                  icon={<LocateFixed />}
+                  icon={<LocateFixed className='!w-6 !h-6'/>}
                 />
               </div>
             </div>
@@ -374,7 +381,7 @@ export default function StylePreview() {
                 <IconButton
                   variant="outline"
                   icon={
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className='!w-6 !h-6'>
                       <path d="M14.4227 7.86847C14.0241 7.86847 13.6495 7.93037 13.299 8.05416C12.9485 8.17107 12.6323 8.29142 12.3505 8.41522C12.0687 8.53901 11.8213 8.6009 11.6082 8.6009C11.3883 8.6009 11.1409 8.54245 10.866 8.42553C10.5979 8.30862 10.3093 8.19514 10 8.08511C9.69072 7.96819 9.36082 7.90974 9.01031 7.90974C8.35052 7.90974 7.71134 8.09198 7.09278 8.45648C6.4811 8.8141 5.97938 9.34709 5.58763 10.0554C5.19588 10.7569 5 11.6269 5 12.6654C5 13.6351 5.16151 14.5979 5.48454 15.5538C5.81443 16.5029 6.20962 17.3075 6.6701 17.9678C7.06873 18.5248 7.45704 19.0028 7.83505 19.4017C8.21306 19.8006 8.65292 20 9.15464 20C9.48454 20 9.76976 19.945 10.0103 19.8349C10.2577 19.7249 10.5155 19.6149 10.7835 19.5048C11.0584 19.3948 11.3986 19.3398 11.8041 19.3398C12.2234 19.3398 12.5567 19.3948 12.8041 19.5048C13.0515 19.608 13.2921 19.7146 13.5258 19.8246C13.7594 19.9278 14.0584 19.9794 14.4227 19.9794C14.9656 19.9794 15.4296 19.773 15.8144 19.3604C16.2062 18.9478 16.5704 18.4973 16.9072 18.009C17.2921 17.4451 17.567 16.9327 17.732 16.472C17.9038 16.0112 17.9931 15.767 18 15.7395C17.9863 15.7326 17.8694 15.6707 17.6495 15.5538C17.4364 15.4369 17.189 15.2547 16.9072 15.0071C16.6323 14.7526 16.3883 14.4191 16.1753 14.0064C15.9691 13.5938 15.866 13.0918 15.866 12.5003C15.866 11.9845 15.9485 11.5409 16.1134 11.1696C16.2783 10.7913 16.4708 10.4818 16.6907 10.2411C16.9107 9.99355 17.11 9.80787 17.2887 9.68407C17.4674 9.55341 17.567 9.47776 17.5876 9.45712C17.2302 8.94133 16.8316 8.57339 16.3918 8.35332C15.9588 8.12637 15.5601 7.98882 15.1959 7.94068C14.8316 7.89254 14.5739 7.86847 14.4227 7.86847ZM13.8557 6.55835C14.1031 6.25575 14.3058 5.91188 14.4639 5.52676C14.622 5.13475 14.701 4.73243 14.701 4.31979C14.701 4.196 14.6907 4.0894 14.6701 4C14.2715 4.01375 13.8522 4.13411 13.4124 4.36106C12.9725 4.58801 12.6082 4.87341 12.3196 5.21728C12.0928 5.47174 11.89 5.79497 11.7113 6.18698C11.5326 6.5721 11.4433 6.97099 11.4433 7.38362C11.4433 7.44552 11.4467 7.50398 11.4536 7.55899C11.4605 7.61401 11.4674 7.65184 11.4742 7.67247C11.543 7.68622 11.6151 7.6931 11.6907 7.6931C12.055 7.6931 12.4399 7.5865 12.8454 7.37331C13.2509 7.15323 13.5876 6.88158 13.8557 6.55835Z" fill="currentColor"/>
                     </svg>
                   }
@@ -382,7 +389,7 @@ export default function StylePreview() {
                 <IconButton 
                   variant="outline"
                   icon={
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className='!w-6 !h-6'>
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                     </svg>
                   }
@@ -390,7 +397,7 @@ export default function StylePreview() {
                 <IconButton 
                   variant="outline"
                   icon={
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className='!w-6 !h-6'>
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                       <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -494,40 +501,44 @@ export default function StylePreview() {
             Form Elements
           </h2>
           
-          <div className="bg-main p-8 rounded-2xl shadow-xl">
+          <div className="bg-background p-8 rounded-2xl shadow-xl">
             <form className="space-y-6">
-              <div>
-                <label className="block font-chivo text-sm font-bold text-background mb-2 uppercase tracking-wider">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 border-2 border-secondary-400 rounded-lg font-inter focus:border-primary focus:outline-none transition-colors bg-main-500 text-background"
-                  placeholder="Enter your full name"
-                />
-              </div>
-              
-              <div>
-                <label className="block font-chivo text-sm font-bold text-background mb-2 uppercase tracking-wider">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  className="w-full px-4 py-3 border-2 border-secondary-400 rounded-lg font-inter focus:border-primary focus:outline-none transition-colors bg-main-500 text-background"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-              
-              <div>
-                <label className="block font-chivo text-sm font-bold text-background mb-2 uppercase tracking-wider">
-                  Message
-                </label>
-                <textarea
-                  rows={4}
-                  className="w-full px-4 py-3 border-2 border-secondary-400 rounded-lg font-inter focus:border-primary focus:outline-none transition-colors resize-none bg-main-500 text-background"
-                  placeholder="Your message here..."
-                ></textarea>
-              </div>
+              <InputSpinner 
+                value={spinnerValue}
+                onChange={setSpinnerValue}
+                min={0}
+                max={10}
+              />
+              <PINInput 
+                length={6}
+                onChange={setPinValue}
+              />
+              <TextField 
+                type="tel"
+                prefix="(+250)"
+                icon={<ChevronUp className='!w-2.5 !h-2.5' />}
+                suffix={<X className='!w-6 !h-6' />}
+              />
+              <TextField 
+                type="email"
+                error="Enter a valid email address"
+                icon={<Mail />}
+                suffix={<X className='!w-6 !h-6' />}
+              />
+              <TextField 
+                type="search"
+                placeholder="Search"
+                icon={<Search />}
+              />
+              <TextField 
+                value="New York City"
+                icon={<MapPin />}
+                suffix={<X className='!w-6 !h-6' />}
+              />
+              <TextField 
+                placeholder="Full Name"
+                suffix={<X className='!w-6 !h-6' />}
+              />
               
               <CustomButton className='w-full' textClassName='font-extrabold'>
                 Send Message

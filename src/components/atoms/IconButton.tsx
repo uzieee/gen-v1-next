@@ -8,6 +8,8 @@ interface IconButtonProps {
   onClick?: () => void;
   className?: string;
   size?: ButtonSize;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const IconButton: React.FC<IconButtonProps> = ({
@@ -15,7 +17,10 @@ const IconButton: React.FC<IconButtonProps> = ({
   onClick,
   className,
   variant = 'fill',
-  size = 'md'
+  size = 'md',
+  disabled = false,
+  type = 'button',
+  ...props
 }) => {
   const getSizeClasses = () => {
     switch (size) {
@@ -42,6 +47,11 @@ const IconButton: React.FC<IconButtonProps> = ({
           baseClasses,
           'border-2 border-background bg-transparent text-background hover:bg-main',
         )
+      case 'ghost':
+        return cn(
+          baseClasses,
+          'bg-transparent text-main-600 hover:bg-transparent shadow-none',
+        )
       default:
         return baseClasses;
     }
@@ -49,6 +59,7 @@ const IconButton: React.FC<IconButtonProps> = ({
 
   return (
     <Button
+      type={type}
       onClick={onClick}
       className={cn(
         getSizeClasses(),
@@ -56,6 +67,8 @@ const IconButton: React.FC<IconButtonProps> = ({
         'cursor-pointer focus:outline-none',
         className
       )}
+      disabled={disabled}
+      {...props}
     >
       {icon}
     </Button>

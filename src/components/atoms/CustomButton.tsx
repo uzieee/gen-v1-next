@@ -112,9 +112,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       disabled={state === 'disabled'}
       {...props}
     >
-      {showLeftArrow && <ArrowLeft />}
+      {showLeftArrow && <ArrowLeft className="!w-6 !h-6" />}
       <div className={`${cn(getSizeClasses(), textClassName)} font-syne font-bold`}>{children}</div>
-      {showRightArrow && <ArrowRight />}
+      {showRightArrow && <ArrowRight className="!w-6 !h-6" />}
     </Button>
   );
 };
