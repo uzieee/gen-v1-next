@@ -22,7 +22,7 @@ export default function Verify() {
   })
 
   const onBack = () => {
-    router.push('/onboarding/splash');
+    router.push('/onboarding/signin');
   };
 
   const onSubmit: SubmitHandler<IVerifyDetails> = (data) => {
