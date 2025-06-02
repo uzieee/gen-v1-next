@@ -532,6 +532,7 @@ export default function StylePreview() {
               />
               <TextField 
                 value="New York City"
+                onChange={(e) => console.log(e.target.value)}
                 icon={<MapPin />}
                 suffix={<X className='!w-6 !h-6' />}
               />
