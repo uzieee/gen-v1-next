@@ -1,10 +1,9 @@
 'use client';
 import CustomButton from '@/components/atoms/CustomButton';
-import IconButton from '@/components/atoms/IconButton';
+import Header from '@/components/molecules/Header';
 import PhoneTextField from '@/components/organisms/PhoneTextField';
 import { ISignInDetails, signInSchema } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -33,13 +32,7 @@ export default function Signin() {
 
   return (
     <>
-      {/* Header */}
-      <div className="flex items-center p-3 justify-between">
-        <IconButton icon={<ArrowLeft className='!w-6 !h-6'/>} onClick={onBack} variant='ghost' />
-        <div className="text-xl font-bold font-syne text-main">Sign In</div>
-        <IconButton icon={<ArrowLeft />} className='invisible'/>
-      </div>
-
+      <Header onBack={onBack} title={'Sign In'} />
       {/* Content */}
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-14 p-6">
         <div className='flex flex-col gap-5'>
