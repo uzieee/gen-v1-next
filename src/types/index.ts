@@ -16,3 +16,15 @@ export const signInSchema = z.object({
 });
 
 export type ISignInDetails = z.infer<typeof signInSchema>;
+
+export const verifySchema = z.object({
+    verificationCode: z.string({
+        required_error: 'Verification code is required',
+    }).length(6, {
+        message: 'Verification code must be 6 digits long',
+    }).regex(/^\d+$/, {
+        message: 'Verification code must contain only digits',
+    })
+});
+
+export type IVerifyDetails = z.infer<typeof verifySchema>;

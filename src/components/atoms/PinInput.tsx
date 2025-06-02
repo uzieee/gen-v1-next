@@ -4,13 +4,15 @@ import { Input } from "../ui/input";
 
 interface PINInputProps {
   length?: number;
+  error?: string;
   onChange?: (value: string) => void;
   className?: string;
 }
 
 const PINInput: React.FC<PINInputProps> = ({
-  length = 5,
+  length = 6,
   onChange,
+  error,
   className
 }) => {
   const [values, setValues] = useState<string[]>(new Array(length).fill(''));
@@ -37,23 +39,30 @@ const PINInput: React.FC<PINInputProps> = ({
   };
 
   return (
-    <div className={cn("flex gap-2", className)}>
-      {Array.from({ length }, (_, index) => (
-        <Input
-          key={index}
-          ref={(el) => { inputRefs.current[index] = el; }}
-          type="password"
-          value={values[index]}
-          onChange={(e) => handleChange(index, e.target.value)}
-          onKeyDown={(e) => handleKeyDown(index, e)}
-          className={cn(
-          "w-12 h-12 text-center text-main-600 font-bold !text-4xl rounded-none",
-          `border-x-0 border-t-0 outline-none border-b-2 ${values[index] == '' ? 'border-main-600' : 'border-primary'}`, 
-          "focus:border-primary focus:outline-none focus-visible:ring-0 focus-visible:border-b-2"
-        )}
-          maxLength={1}
-        />
-      ))}
+    <div>
+      <div className={cn("flex gap-2", className)}>
+        {Array.from({ length }, (_, index) => (
+          <Input
+            key={index}
+            ref={(el) => { inputRefs.current[index] = el; }}
+            type="password"
+            value={values[index]}
+            onChange={(e) => handleChange(index, e.target.value)}
+            onKeyDown={(e) => handleKeyDown(index, e)}
+            className={cn(
+            "w-12 h-12 text-center text-main-600 font-bold !text-4xl rounded-none",
+            `border-x-0 border-t-0 outline-none border-b-2 ${values[index] == '' ? 'border-main-600' : 'border-primary'}`, 
+            "focus:border-primary focus:outline-none focus-visible:ring-0 focus-visible:border-b-2"
+          )}
+            maxLength={1}
+          />
+        ))}
+      </div>
+      {error && (
+        <div className="text-sm mt-1 transition-colors text-error">
+        {error}
+        </div>
+      )}
     </div>
   );
 };

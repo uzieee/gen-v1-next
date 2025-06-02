@@ -33,7 +33,6 @@ export default function Signin() {
   return (
     <>
       <Header onBack={onBack} title={'Sign In'} />
-      {/* Content */}
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-14 p-6">
         <div className='flex flex-col gap-5'>
           <div className='flex flex-col gap-1'>
