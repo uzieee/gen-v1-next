@@ -40,7 +40,7 @@ const PINInput: React.FC<PINInputProps> = ({
 
   return (
     <div>
-      <div className={cn("flex gap-2", className)}>
+      <div className={cn("flex gap-2 font-ariom", className)}>
         {Array.from({ length }, (_, index) => (
           <Input
             key={index}
@@ -60,7 +60,7 @@ const PINInput: React.FC<PINInputProps> = ({
         ))}
       </div>
       {error && (
-        <div className="text-sm mt-1 transition-colors text-error">
+        <div className="text-sm mt-1 transition-colors text-error font-ariom">
         {error}
         </div>
       )}

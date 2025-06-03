@@ -153,7 +153,9 @@ const SplashContent: React.FC = () => {
           <CustomButton 
             variant="primary" 
             onClick={onGetStarted} 
-            className="rounded-full px-8 hover:scale-105 transition-transform duration-200"
+            className="rounded-full hover:scale-105 transition-transform duration-200"
+            textClassName='font-syne'
+            size='lg'
           >
             Get Started
           </CustomButton>

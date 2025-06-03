@@ -6,7 +6,7 @@ export default function Header({ onBack, title }: { onBack: () => void, title?: 
   return (
     <div className="flex items-center p-3 justify-between">
         <IconButton icon={<ArrowLeft className='!w-6 !h-6'/>} onClick={onBack} variant='ghost' />
-        <div className="text-xl font-bold font-syne text-main">{title}</div>
+        <div className="text-xl font-bold font-ariom text-main">{title}</div>
         <IconButton icon={<ArrowLeft />} className='invisible'/>
     </div>
   )

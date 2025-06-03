@@ -20,7 +20,7 @@ interface CustomButtonProps {
 const CustomButton: React.FC<CustomButtonProps> = ({
   children,
   variant = 'primary',
-  size = 'md',
+  size = 'xl',
   state = 'default',
   showLeftArrow = false,
   showRightArrow = false,
@@ -103,6 +103,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         return 'px-4 py-2 text-sm';
       case 'lg':
         return 'px-8 py-4 text-lg';
+      case 'xl':
+        return 'px-6 py-3 text-xl';
       default:
         return 'px-6 py-3 text-base';
     }
@@ -124,7 +126,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         <div className="w-4 h-4 bg-transparent rounded-full border-2 animate-spin border-current border-t-transparent" />
       )}
       {showLeftArrow && <ArrowLeft className="!w-6 !h-6" />}
-      <div className={`${cn(getSizeClasses(), textClassName)} font-syne font-bold`}>{children}</div>
+      <div className={`${cn(getSizeClasses(), textClassName)} font-ariom font-bold`}>{children}</div>
       {showRightArrow && <ArrowRight className="!w-6 !h-6" />}
     </Button>
   );

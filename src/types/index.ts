@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Button variant type
 export type ButtonVariant = 'primary' | 'main' | 'secondary' | 'error' | 'badge' | 'outline' | 'outline-main' | 'outline-primary' | 'ghost';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 export type ButtonState = 'default' | 'disabled' | 'active';
 
 export const signInSchema = z.object({

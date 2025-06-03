@@ -64,7 +64,7 @@ const PhoneTextField = forwardRef<HTMLInputElement, PhoneTextFieldProps>(functio
     return (
         <div>
             <div className={cn(
-            "flex items-center border-b-2 pb-2 transition-colors font-syne",
+            "flex items-center border-b-2 pb-2 transition-colors",
             error ? "border-error" : "border-main-600 focus-within:border-primary",
             disabled && "opacity-50 cursor-not-allowed",
             className
@@ -78,7 +78,7 @@ const PhoneTextField = forwardRef<HTMLInputElement, PhoneTextFieldProps>(functio
                 className="justify-between w-20 !p-0"
                 icon={
                 <>
-                    <span className="font-syne font-bold text-base">(+{selectedCountry.code})</span>
+                    <span className="font-ariom font-bold text-base">(+{selectedCountry.code})</span>
                     {isDropdownOpen ? (
                         <ChevronDown className="!w-2.5 !h-2.5" />
                     ) : (
@@ -132,7 +132,7 @@ const PhoneTextField = forwardRef<HTMLInputElement, PhoneTextFieldProps>(functio
             />
             </div>
             {error && (
-                <div className="text-sm mt-1 transition-colors text-error">
+                <div className="text-sm mt-1 transition-colors text-error font-ariom">
                 {error}
                 </div>
             )}

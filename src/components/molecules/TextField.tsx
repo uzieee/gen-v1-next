@@ -28,7 +28,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextFiel
   return (
     <>
       <div className={cn(
-        "flex items-center border-b-2 pb-2 transition-colors font-syne",
+        "flex items-center border-b-2 pb-2 transition-colors font-ariom",
         error ? "border-error" : "border-main-600 focus-within:border-primary",
         disabled && "opacity-50 cursor-not-allowed",
         className

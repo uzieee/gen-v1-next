@@ -35,8 +35,8 @@ export default function Verify() {
       <Header onBack={onBack} title={''} />
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-14 p-6">
         <div className='flex flex-col gap-1'>
-            <div className="text-xl font-syne font-bold text-main-600">Enter your Verification</div>
-            <div className="text-sm font-syne font-bold text-secondary">Enter your password and explore Cabo</div>
+            <div className="text-xl font-ariom font-bold text-main-600">Enter your Verification</div>
+            <div className="text-sm font-ariom font-bold text-secondary">Enter your password and explore Cabo</div>
         </div>
         <div className='flex flex-col gap-6'>
           <PINInput

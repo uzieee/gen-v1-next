@@ -36,8 +36,8 @@ export default function Signin() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-14 p-6">
         <div className='flex flex-col gap-5'>
           <div className='flex flex-col gap-1'>
-              <div className="text-xl font-syne font-bold text-main-600">Enter your phone number</div>
-              <div className="text-sm font-syne font-bold text-secondary">Enter your phone number to login an account</div>
+              <div className="text-xl font-ariom font-bold text-main-600">Enter your phone number</div>
+              <div className="text-sm font-ariom font-bold text-secondary">Enter your phone number to login an account</div>
           </div>
           <PhoneTextField
               {...register("phoneNumber")}
