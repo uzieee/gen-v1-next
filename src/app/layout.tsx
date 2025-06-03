@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${syne.variable} ${inter.variable} ${chivo.variable}`}>
-      <body className='antialiased'>
+      <body className='antialiased max-w-md mx-auto'>
         {children}
       </body>
     </html>
