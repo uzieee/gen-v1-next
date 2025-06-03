@@ -81,6 +81,42 @@ export default function StylePreview() {
                 </p>
               </div>
             </div>
+
+            {/* Ariom Font Display */}
+            <div className="space-y-6">
+              <h3 className="font-ariom text-primary text-lg font-bold uppercase tracking-wider">
+                Ariom - UI Font
+              </h3>
+              <div className="space-y-4">
+                <p className="font-ariom text-lg font-bold">
+                  Unique headings and titles
+                </p>
+                <p className="font-ariom text-base font-medium">
+                  Special emphasis text
+                </p>
+                <p className="font-ariom text-sm font-semibold">
+                  Callouts and highlights
+                </p>
+              </div>
+            </div>
+
+            {/* Hellix Font Display */}
+            <div className="space-y-6">
+              <h3 className="font-hellix text-primary text-lg font-bold uppercase tracking-wider">
+                Hellix - UI Font
+              </h3>
+              <div className="space-y-4">
+                <p className="font-hellix text-lg font-semibold">
+                  Clean and modern UI elements
+                </p>
+                <p className="font-hellix text-base font-medium">
+                  Form inputs and buttons
+                </p>
+                <p className="font-hellix text-sm font-bold uppercase tracking-wide">
+                  Labels and tooltips
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -290,7 +326,7 @@ export default function StylePreview() {
               <h3 className="font-chivo text-background text-lg font-bold mb-6 uppercase tracking-wider">
                 Main Buttons
               </h3>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 <div className="space-y-4">
                   <h4 className="text-background/80 text-sm font-medium">Active States</h4>
                   <CustomButton size='lg' showLeftArrow showRightArrow>
@@ -532,6 +568,7 @@ export default function StylePreview() {
               />
               <TextField 
                 value="New York City"
+                onChange={(e) => console.log(e.target.value)}
                 icon={<MapPin />}
                 suffix={<X className='!w-6 !h-6' />}
               />

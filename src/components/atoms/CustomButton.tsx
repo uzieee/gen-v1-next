@@ -14,12 +14,13 @@ interface CustomButtonProps {
   className?: string;
   textClassName?: string;
   type?: 'button' | 'submit' | 'reset';
+  isLoading?: boolean;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   children,
   variant = 'primary',
-  size = 'md',
+  size = 'xl',
   state = 'default',
   showLeftArrow = false,
   showRightArrow = false,
@@ -27,6 +28,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   className,
   textClassName,
   type = 'button',
+  isLoading = false,
   ...props
 }) => {
   const getVariantClasses = () => {
@@ -38,7 +40,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
           baseClasses,
           'bg-primary hover:bg-primary/90 text-background',
           state === 'active' && 'bg-primary-200',
-          state === 'disabled' && 'bg-primary/50 hover:bg-primary/50 hover:scale-100 opacity-60'
+          state === 'disabled' && 'bg-primary disabled:opacity-30 text-main-600'
         );
       case 'main':
         return cn(
@@ -84,6 +86,12 @@ const CustomButton: React.FC<CustomButtonProps> = ({
           'border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-background',
           state === 'disabled' && 'border-background/50 text-background/50'
         );
+      case 'ghost':
+        return cn(
+          baseClasses,
+          'bg-transparent text-background hover:bg-transparent hover:text-background',
+          state === 'disabled' && 'opacity-50 hover:scale-100'
+        );
       default:
         return baseClasses;
     }
@@ -95,6 +103,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         return 'px-4 py-2 text-sm';
       case 'lg':
         return 'px-8 py-4 text-lg';
+      case 'xl':
+        return 'px-6 py-3 text-xl';
       default:
         return 'px-6 py-3 text-base';
     }
@@ -109,11 +119,14 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         'flex items-center gap-2 p-6 cursor-pointer focus:outline-none',
         className
       )}
-      disabled={state === 'disabled'}
+      disabled={isLoading || state === 'disabled'}
       {...props}
     >
+      {isLoading && (
+        <div className="w-4 h-4 bg-transparent rounded-full border-2 animate-spin border-current border-t-transparent" />
+      )}
       {showLeftArrow && <ArrowLeft className="!w-6 !h-6" />}
-      <div className={`${cn(getSizeClasses(), textClassName)} font-syne font-bold`}>{children}</div>
+      <div className={`${cn(getSizeClasses(), textClassName)} font-ariom font-bold`}>{children}</div>
       {showRightArrow && <ArrowRight className="!w-6 !h-6" />}
     </Button>
   );
