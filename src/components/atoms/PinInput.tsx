@@ -55,6 +55,7 @@ const PINInput: React.FC<PINInputProps> = ({
             "focus:border-primary focus:outline-none focus-visible:ring-0 focus-visible:border-b-2"
           )}
             maxLength={1}
+            autoFocus={index === 0}
           />
         ))}
       </div>
