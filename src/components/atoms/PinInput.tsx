@@ -13,18 +13,18 @@ const PINInput: React.FC<PINInputProps> = ({
   length = 6,
   onChange,
   error,
-  className
+  className,
 }) => {
-  const [values, setValues] = useState<string[]>(new Array(length).fill(''));
+  const [values, setValues] = useState<string[]>(new Array(length).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (index: number, value: string) => {
     if (value.length > 1) return;
-    
+
     const newValues = [...values];
     newValues[index] = value;
     setValues(newValues);
-    onChange?.(newValues.join(''));
+    onChange?.(newValues.join(""));
 
     // Auto-focus next input
     if (value && index < length - 1) {
@@ -33,27 +33,36 @@ const PINInput: React.FC<PINInputProps> = ({
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === 'Backspace' && !values[index] && index > 0) {
+    if (e.key === "Backspace" && !values[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
   return (
     <div>
-      <div className={cn("flex gap-2 font-ariom", className)}>
+      <div className={cn(`grid grid-cols-6 gap-2 font-ariom`, className)}>
         {Array.from({ length }, (_, index) => (
           <Input
             key={index}
-            ref={(el) => { inputRefs.current[index] = el; }}
+            ref={(el) => {
+              inputRefs.current[index] = el;
+            }}
             type="password"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={values[index]}
-            onChange={(e) => handleChange(index, e.target.value)}
+            onChange={(e) => {
+              // Only allow numeric inputs
+              if (/^\d*$/.test(e.target.value)) {
+                handleChange(index, e.target.value);
+              }
+            }}
             onKeyDown={(e) => handleKeyDown(index, e)}
             className={cn(
-            "w-12 h-12 text-center text-main-600 font-bold !text-4xl rounded-none",
-            `border-x-0 border-t-0 outline-none border-b-2 ${values[index] == '' ? 'border-main-600' : 'border-primary'}`, 
-            "focus:border-primary focus:outline-none focus-visible:ring-0 focus-visible:border-b-2"
-          )}
+              "w-12 pb-4 h-12 text-center text-main-600 font-bold !text-4xl rounded-none",
+              `border-x-0 border-t-0 outline-none border-b-2 ${values[index] == "" ? "border-main-600" : "border-primary"}`,
+              "focus:border-primary focus:outline-none focus-visible:ring-0 focus-visible:border-b-2"
+            )}
             maxLength={1}
             autoFocus={index === 0}
           />
@@ -61,7 +70,7 @@ const PINInput: React.FC<PINInputProps> = ({
       </div>
       {error && (
         <div className="text-sm mt-1 transition-colors text-error font-ariom">
-        {error}
+          {error}
         </div>
       )}
     </div>
