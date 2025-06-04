@@ -9,19 +9,25 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
     "@payloadcms/db-mongodb": "^3.38.0",
     "@payloadcms/next": "^3.38.0",
     "@payloadcms/payload-cloud": "^3.38.0",
     "@payloadcms/richtext-lexical": "^3.38.0",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@types/jsonwebtoken": "^9.0.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "graphql": "^16.11.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.511.0",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.56.4",
     "tailwind-merge": "^3.3.0",
-    "twilio": "^5.6.1"
+    "twilio": "^5.6.1",
+    "zod": "^3.25.46"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -6,9 +6,9 @@ export async function sendOTPAction(formData: FormData) {
   const phoneNumber = formData.get("phoneNumber")?.toString();
   if (!phoneNumber) throw new Error("Phone number required");
 
-  const success = await sendOTP(phoneNumber);
-  if (!success) throw new Error("Failed to send OTP");
-  return { success: true };
+  // Commented until Twilio is fixed
+  // const success = await sendOTP(phoneNumber);
+  // if (!success) throw new Error("Failed to send OTP");
 }
 
 export async function verifyOTPAction(formData: FormData) {
