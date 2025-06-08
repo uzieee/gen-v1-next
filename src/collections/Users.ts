@@ -7,7 +7,7 @@ export const Users: CollectionConfig = {
     useAsTitle: "email",
   },
   auth: {
-    disableLocalStrategy: true,
+    // disableLocalStrategy: true,
     strategies: [
       {
         name: "otp-phone",
@@ -58,7 +58,6 @@ export const Users: CollectionConfig = {
     {
       name: "fullName",
       type: "text",
-      required: true,
     },
     {
       name: "gender",
@@ -73,6 +72,23 @@ export const Users: CollectionConfig = {
       name: "phoneNumber",
       type: "text",
       required: true,
+      unique: true,
+    },
+    {
+      name: "role",
+      type: "select",
+      options: [
+        { label: "Admin", value: "admin" },
+        { label: "Member", value: "member" },
+      ],
+      defaultValue: "member",
+      required: true,
+      index: true,
+    },
+    {
+      name: "email",
+      type: "email",
+      // required: true,
       unique: true,
     },
     {

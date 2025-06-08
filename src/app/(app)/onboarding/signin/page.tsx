@@ -2,13 +2,13 @@
 import CustomButton from "@/components/atoms/CustomButton";
 import Header from "@/components/molecules/Header";
 import PhoneTextField from "@/components/organisms/PhoneTextField";
-import { ISignInDetails, signInSchema } from "@/types";
+import { ButtonState, ISignInDetails, signInSchema } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useFormStatus } from "react-dom";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { sendOTPAction } from "@/app/actions/otp";
-// import { getCountryCodes } from "@/lib/utils";
 
 export default function Signin() {
   const router = useRouter();
@@ -37,16 +37,14 @@ export default function Signin() {
       <form
         action={async () => {
           try {
-            // Get the current values from the form
             const phoneNumber = watch("phoneNumber");
             const countryCode = watch("countryCode");
 
-            // Create a new FormData instance with both values
             const data = new FormData();
             data.append("phoneNumber", `${countryCode}${phoneNumber}`);
 
             await sendOTPAction(data);
-            router.push("/onboarding/verify");
+            router.push(`/onboarding/verify/${countryCode}${phoneNumber}`);
           } catch (error) {
             console.log(error);
             return;
@@ -72,7 +70,6 @@ export default function Signin() {
                 error={errors.phoneNumber?.message}
                 autoFocus
                 onKeyDown={(e) => {
-                  // Allow only numeric input and delete/backspace keys
                   if (
                     !/[0-9]/.test(e.key) &&
                     e.key !== "Backspace" &&
@@ -82,7 +79,6 @@ export default function Signin() {
                   }
                 }}
                 onChange={(e) => {
-                  // Remove any non-numeric characters
                   const numericValue = e.target.value.replace(/[^0-9]/g, "");
                   field.onChange(numericValue);
                 }}
@@ -94,14 +90,22 @@ export default function Signin() {
             )}
           />
         </div>
-        <CustomButton
-          type="submit"
-          className="w-full rounded-2xl"
-          state={isValid ? "default" : "disabled"}
-        >
-          Continue
-        </CustomButton>
+        <SubmitButton state={isValid ? "default" : "disabled"} />
       </form>
     </>
+  );
+}
+
+function SubmitButton({ state }: { state: ButtonState }) {
+  const { pending } = useFormStatus();
+  return (
+    <CustomButton
+      type="submit"
+      state={state}
+      isLoading={pending}
+      className="w-full rounded-2xl"
+    >
+      {pending ? "Sending..." : "Continue"}
+    </CustomButton>
   );
 }
