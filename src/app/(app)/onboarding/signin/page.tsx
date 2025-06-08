@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { sendOTPAction } from "@/app/actions/otp";
-// import { getCountryCodes } from "@/lib/utils";
 
 export default function Signin() {
   const router = useRouter();
