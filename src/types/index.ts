@@ -29,7 +29,7 @@ export const signInSchema = z.object({
     .regex(/^\d+$/, {
       message: "Phone number must contain only digits",
     })
-    .length(9, {
+    .min(9, {
       message: "Phone number must be 9 digits long",
     }),
 });

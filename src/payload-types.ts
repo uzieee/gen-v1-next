@@ -123,10 +123,11 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
-  fullName: string;
+  fullName?: string | null;
   gender?: string | null;
   dateOfBirth?: string | null;
   phoneNumber: string;
+  role: 'admin' | 'member';
   isPhoneNumberVerified?: boolean | null;
   isEmailVerified?: boolean | null;
   updatedAt: string;
@@ -257,6 +258,7 @@ export interface UsersSelect<T extends boolean = true> {
   gender?: T;
   dateOfBirth?: T;
   phoneNumber?: T;
+  role?: T;
   isPhoneNumberVerified?: T;
   isEmailVerified?: T;
   updatedAt?: T;
