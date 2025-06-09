@@ -27,7 +27,7 @@ export default function Verify() {
 
   const onSubmit: SubmitHandler<IVerifyDetails> = (data) => {
     console.log("Form submitted:", data);
-    router.push("/onboarding/signup");
+    router.push("/onboarding/account-setup");
   };
 
   return (

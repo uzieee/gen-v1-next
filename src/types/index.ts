@@ -50,3 +50,21 @@ export const verifySchema = z.object({
 });
 
 export type IVerifyDetails = z.infer<typeof verifySchema>;
+
+export const accountSetupSchema = z.object({
+  fullNames: z
+    .string({
+      required_error: "Full names are required",
+    }),
+  gender: z
+    .string({
+      required_error: "Gender is required",
+    }),
+  age: z
+    .string({
+      required_error: "Age is required",
+    })
+});
+
+export type IAccountSetupDetails = z.infer<typeof accountSetupSchema>;
+
