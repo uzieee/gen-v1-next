@@ -29,7 +29,7 @@ export default function TagGroup({ title, tags, selectedTags, onTagToggle, defau
         {!showAll && tags.length > 8 && (
         <div 
             onClick={onShowAll}
-            className="text-main-700 underline text-xs hover:text-secondary-400 cursor-pointer"
+            className="w-fit text-main-700 underline text-xs hover:text-secondary-400 cursor-pointer"
         >
             Show all
         </div>

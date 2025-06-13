@@ -15,9 +15,9 @@ export default function Tag({ icon, label, selected, onClick, className }: TagPr
   return (
     <Badge className={
         cn(
-            'font-inter font-normal text-sm rounded-full py-2 px-3 cursor-pointer',
-            selected ? 'bg-primary-200 text-main font-bold' : 
-            'border-2 border-primary text-main-700',
+            'font-inter font-normal text-sm rounded-full py-2 px-3 cursor-pointer transition-all duration-200 border border-primary text-main-700',
+            selected ? 'bg-primary-200/75' : 
+            'bg-transparent hover:bg-primary-200/5',
             className
         )
     } onClick={onClick} variant={selected ? 'default' : 'outline'}>
