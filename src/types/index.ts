@@ -68,3 +68,10 @@ export const accountSetupSchema = z.object({
 
 export type IAccountSetupDetails = z.infer<typeof accountSetupSchema>;
 
+export const interestsHobbiesSchema = z.object({
+  interests: z.array(z.string()).optional(),
+  sports: z.array(z.string()).optional()
+});
+
+export type IInterestsHobbiesDetails = z.infer<typeof interestsHobbiesSchema>;
+
