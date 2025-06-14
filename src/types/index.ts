@@ -52,34 +52,30 @@ export const verifySchema = z.object({
 export type IVerifyDetails = z.infer<typeof verifySchema>;
 
 export const accountSetupSchema = z.object({
-  fullNames: z
-    .string({
-      required_error: "Full names are required",
-    }),
-  gender: z
-    .string({
-      required_error: "Gender is required",
-    }),
-  age: z
-    .string({
-      required_error: "Age is required",
-    })
+  fullNames: z.string({
+    required_error: "Full names are required",
+  }),
+  gender: z.string({
+    required_error: "Gender is required",
+  }),
+  age: z.date({
+    required_error: "Age is required",
+  }),
 });
 
 export type IAccountSetupDetails = z.infer<typeof accountSetupSchema>;
 
 export const interestsHobbiesSchema = z.object({
   interests: z.array(z.string()).optional(),
-  sports: z.array(z.string()).optional()
+  sports: z.array(z.string()).optional(),
 });
 
 export type IInterestsHobbiesDetails = z.infer<typeof interestsHobbiesSchema>;
 
 export const vibeSchema = z.object({
   vibe: z.string({
-    required_error: "Vibe is required"
-  })
+    required_error: "Vibe is required",
+  }),
 });
 
 export type IVibeDetails = z.infer<typeof vibeSchema>;
-

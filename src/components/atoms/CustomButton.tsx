@@ -10,7 +10,7 @@ interface CustomButtonProps {
   state?: ButtonState;
   showLeftArrow?: boolean;
   showRightArrow?: boolean;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
   textClassName?: string;
   type?: "button" | "submit" | "reset";
