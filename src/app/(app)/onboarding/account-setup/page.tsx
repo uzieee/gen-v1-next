@@ -34,7 +34,7 @@ export default function AccountSetup() {
 
   const onSubmit: SubmitHandler<IAccountSetupDetails> = (data) => {
     console.log("Form submitted:", data);
-    router.push("/onboarding/account-setup");
+    router.push("/onboarding/interests-hobbies");
   }
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function AccountSetup() {
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <div className="text-xl font-ariom font-bold text-main-600">
-              Lets get to know you
+              Let&apos;s get to know you
             </div>
             <div className="text-sm font-ariom font-bold text-secondary">
               Enter your phone number to login an account
