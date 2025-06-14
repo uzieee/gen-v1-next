@@ -75,3 +75,11 @@ export const interestsHobbiesSchema = z.object({
 
 export type IInterestsHobbiesDetails = z.infer<typeof interestsHobbiesSchema>;
 
+export const vibeSchema = z.object({
+  vibe: z.string({
+    required_error: "Vibe is required"
+  })
+});
+
+export type IVibeDetails = z.infer<typeof vibeSchema>;
+
