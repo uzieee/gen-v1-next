@@ -22,7 +22,7 @@ export default function Language() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('language');
     const {
-        formState: { isValid },
+        formState: { isValid, errors},
         setValue,
         handleSubmit,
     } = useForm<ILanguageCountryDetails>({
@@ -284,7 +284,7 @@ export default function Language() {
             setValue('countries', selectedCountries, { shouldValidate: true });
         }
     }, [selectedCountries]);
-
+console.log(errors)
 
     return (
     <>
@@ -356,8 +356,18 @@ export default function Language() {
                             items={filteredCountries}
                             selectedItems={selectedCountries}
                             handleToggle={handleToggle}
-                        />
+                            />
                     </TabsContent>
+                    {errors.languages && (
+                        <div className="text-red-500 text-sm mt-2">
+                            {errors.languages.message}
+                        </div>
+                    )}
+                    {errors.countries && (
+                        <div className="text-red-500 text-sm mt-2">
+                            {errors.countries.message}
+                        </div>
+                    )}
                 </Tabs>
             </div>
             <CustomButton
