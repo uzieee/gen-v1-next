@@ -1,14 +1,14 @@
 "use client";
-import CustomButton from "@/components/atoms/CustomButton";
+
 import Header from "@/components/molecules/Header";
 import PhoneTextField from "@/components/organisms/PhoneTextField";
-import { ButtonState, ISignInDetails, signInSchema } from "@/types";
+import { ISignInDetails, signInSchema } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useFormStatus } from "react-dom";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { sendOTPAction } from "@/app/actions/otp";
+import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
 
 export default function Signin() {
   const router = useRouter();
@@ -90,22 +90,11 @@ export default function Signin() {
             )}
           />
         </div>
-        <SubmitButton state={isValid ? "default" : "disabled"} />
+        <FormSubmitButton
+          loadingText="Sending..."
+          state={isValid ? "default" : "disabled"}
+        />
       </form>
     </>
-  );
-}
-
-function SubmitButton({ state }: { state: ButtonState }) {
-  const { pending } = useFormStatus();
-  return (
-    <CustomButton
-      type="submit"
-      state={state}
-      isLoading={pending}
-      className="w-full rounded-2xl"
-    >
-      {pending ? "Sending..." : "Continue"}
-    </CustomButton>
   );
 }

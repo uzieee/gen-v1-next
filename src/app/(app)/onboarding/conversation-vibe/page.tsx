@@ -38,11 +38,11 @@ export default function ConversationVibe() {
 
     const onSubmit: SubmitHandler<IVibeDetails> = (data) => {
         console.log('Selected vibe:', data);
-        router.push("/onboarding/language");
+        router.push("/onboarding/language-country");
     };
 
     const onSkip = () => {
-        router.push("/onboarding/language");
+        router.push("/onboarding/language-country");
     };
 
     useEffect(() => {

@@ -2,64 +2,96 @@
 
 import { checkOTP } from "@/lib/otp";
 import jwt from "jsonwebtoken";
-// import crypto from "crypto";
+import crypto from "crypto";
 import { cookies } from "next/headers";
 import { getPayload } from "payload";
 import config from "@payload-config";
 
-export async function phoneAuthAction(_: unknown, formData: FormData) {
-  const phone = formData.get("phoneNumber")?.toString();
-  const code = formData.get("otp")?.toString();
-  if (!phone || !code) return { error: "Missing inputs" };
+const JWT_SECRET = (process.env.PAYLOAD_SECRET || "").trim();
 
-  /* 1 — Verify OTP with Twilio */
-  const ok = await checkOTP(phone, code);
-  if (!ok) return { error: "Invalid code" };
+if (!JWT_SECRET) {
+  throw new Error("PAYLOAD_SECRET missing in env");
+}
 
-  /* 2 — Upsert user in Payload */
-  const payload = await getPayload({ config });
-  const { docs } = await payload.find({
-    collection: "users",
-    where: { phoneNumber: { equals: phone } },
-    limit: 1,
-  });
+export async function phoneAuthAction(formData: FormData) {
+  try {
+    console.log(
+      "sign secret",
+      JWT_SECRET.length,
+      Buffer.from(JWT_SECRET).toString("hex")
+    );
+    const phone = formData.get("phoneNumber")?.toString();
+    const code = formData.get("otp")?.toString();
+    if (!phone || !code) {
+      throw new Error("Missing inputs");
+    }
 
-  const user = docs[0];
-  // if (!user) {
-  //   user = await payload.create({
-  //     collection: "users",
-  //     data: {
-  //       phoneNumber: phone,
-  //       isPhoneNumberVerified: true,
-  //       email: `${phone}@gen.fake`,
-  //       password: crypto.randomBytes(12).toString("base64url"), // satifies schema
-  //     },
-  //   });
-  // } else
+    /* 1 Verify OTP with Twilio */
+    const ok =
+      process.env.NODE_ENV === "production"
+        ? await checkOTP(phone, code)
+        : true;
+    if (!ok) {
+      throw new Error("Invalid code");
+    }
 
-  if (user && !user.isPhoneNumberVerified) {
-    await payload.update({
+    /* 2 Upsert user in Payload */
+    const payload = await getPayload({ config });
+    const { docs } = await payload.find({
       collection: "users",
-      id: user.id,
-      data: { isPhoneNumberVerified: true },
+      where: { phoneNumber: { equals: phone } },
+      limit: 1,
     });
+
+    let user = docs[0];
+    if (!user) {
+      try {
+        user = await payload.create({
+          collection: "users",
+          data: {
+            phoneNumber: phone,
+            isPhoneNumberVerified: true,
+            email: `${phone}@gen.fake`,
+            role: "member",
+            password: crypto.randomBytes(12).toString("base64url"), // satisfies schema
+          },
+        });
+      } catch (createError) {
+        if (
+          createError instanceof Error &&
+          createError.message.includes("duplicate key error")
+        ) {
+          throw new Error("Phone number or email already in use");
+        }
+        throw createError;
+      }
+    } else if (user && !user.isPhoneNumberVerified) {
+      await payload.update({
+        collection: "users",
+        id: user.id,
+        data: { isPhoneNumberVerified: true },
+      });
+    }
+
+    const token = jwt.sign({ id: user.id, collection: "users" }, JWT_SECRET, {
+      expiresIn: "30d",
+    });
+
+    /* 4  Set HttpOnly cookie */
+    (await cookies()).set("payload-token", encodeURIComponent(token), {
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+
+    /* 5  Return concise result */
+    return { authenticated: true };
+  } catch (error) {
+    console.error("Authentication error:", error);
+    return {
+      error:
+        error instanceof Error ? error.message : "An unknown error occurred",
+    };
   }
-
-  /* 3 — Sign JWT manually (same payload Payload would use) */
-  const token = jwt.sign(
-    { id: user.id, collection: "users" },
-    process.env.PAYLOAD_SECRET!,
-    { expiresIn: "30d" }
-  );
-
-  /* 4 — Set HttpOnly cookie */
-  (await cookies()).set("payload-token", token, {
-    httpOnly: true,
-    path: "/",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 30,
-  });
-
-  /* 5 — Return concise result */
-  return { authenticated: true };
 }

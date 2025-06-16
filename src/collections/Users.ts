@@ -88,7 +88,7 @@ export const Users: CollectionConfig = {
     {
       name: "email",
       type: "email",
-      // required: true,
+      required: true,
       unique: true,
     },
     {
