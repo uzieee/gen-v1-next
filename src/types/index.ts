@@ -80,6 +80,11 @@ export const vibeSchema = z.object({
 
 export type IVibeDetails = z.infer<typeof vibeSchema>;
 
+export const photosSchema = z.object({
+  photos: z.array(z.string()).optional(),
+});
+export type IPhotosDetails = z.infer<typeof photosSchema>;
+
 export const languageCountrySchema = z.object({
   languages: z.array(z.string()).optional(),
   countries: z.array(z.string()).optional()
