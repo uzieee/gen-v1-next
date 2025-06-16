@@ -7,7 +7,7 @@ interface HeaderWithStepsProps {
     action: string;
 }
 
-export default function HeaderWithSteps({ totalSteps = 6, activeIndicator, action, onSkip }: HeaderWithStepsProps) {
+export default function HeaderWithSteps({ totalSteps = 4, activeIndicator, action, onSkip }: HeaderWithStepsProps) {
   const totalStepsArray = Array.from({ length: totalSteps }, (_, i) => i + 1);
 
   return (

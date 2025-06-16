@@ -4,7 +4,7 @@ import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 
 interface TagProps {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   label: string;
   selected?: boolean;
   onClick?: () => void;
