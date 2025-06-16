@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, Inter, Chivo } from "next/font/google";
 import localFont from "next/font/local";
+import QueryClientProvider from "@/components/QueryClientProvider";
 import "./globals.css";
 
 const syne = Syne({
@@ -85,7 +86,7 @@ export default function RootLayout({
       className={`bg-black/90 ${ariom.variable} ${hellix.variable} ${syne.variable} ${inter.variable} ${chivo.variable}`}
     >
       <body className="antialiased h-screen sm:flex sm:items-center sm:max-w-md mx-auto">
-        {children}
+        <QueryClientProvider>{children}</QueryClientProvider>
       </body>
     </html>
   );

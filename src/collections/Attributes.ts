@@ -12,5 +12,13 @@ export const Attributes: CollectionConfig = {
       required: true,
     },
     { name: "description", type: "textarea" },
+    { name: "image", type: "text", required: false },
+    {
+      name: "users",
+      type: "relationship",
+      relationTo: "users",
+      hasMany: true,
+      admin: { position: "sidebar" },
+    },
   ],
 };

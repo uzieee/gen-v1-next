@@ -79,3 +79,14 @@ export const vibeSchema = z.object({
 });
 
 export type IVibeDetails = z.infer<typeof vibeSchema>;
+
+export type ErrorResponse = {
+  code: string;
+  is400?: boolean;
+  is401?: boolean;
+  is403?: boolean;
+  is404?: boolean;
+  is500?: boolean;
+  message?: string;
+  statusCode: number;
+};

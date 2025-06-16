@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     attributes: Attribute;
     'attribute-categories': AttributeCategory;
+    'user-attributes': UserAttribute;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +82,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     attributes: AttributesSelect<false> | AttributesSelect<true>;
     'attribute-categories': AttributeCategoriesSelect<false> | AttributeCategoriesSelect<true>;
+    'user-attributes': UserAttributesSelect<false> | UserAttributesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -130,6 +132,7 @@ export interface User {
   role: 'admin' | 'member';
   isPhoneNumberVerified?: boolean | null;
   isEmailVerified?: boolean | null;
+  attributes?: (string | Attribute)[] | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -140,6 +143,32 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "attributes".
+ */
+export interface Attribute {
+  id: string;
+  label: string;
+  category: string | AttributeCategory;
+  description?: string | null;
+  image?: string | null;
+  users?: (string | User)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "attribute-categories".
+ */
+export interface AttributeCategory {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -162,25 +191,12 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "attributes".
+ * via the `definition` "user-attributes".
  */
-export interface Attribute {
+export interface UserAttribute {
   id: string;
-  label: string;
-  category: string | AttributeCategory;
-  description?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "attribute-categories".
- */
-export interface AttributeCategory {
-  id: string;
-  title: string;
-  slug: string;
-  description?: string | null;
+  user: string | User;
+  attribute: string | Attribute;
   updatedAt: string;
   createdAt: string;
 }
@@ -206,6 +222,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'attribute-categories';
         value: string | AttributeCategory;
+      } | null)
+    | ({
+        relationTo: 'user-attributes';
+        value: string | UserAttribute;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -261,6 +281,7 @@ export interface UsersSelect<T extends boolean = true> {
   role?: T;
   isPhoneNumberVerified?: T;
   isEmailVerified?: T;
+  attributes?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -297,6 +318,8 @@ export interface AttributesSelect<T extends boolean = true> {
   label?: T;
   category?: T;
   description?: T;
+  image?: T;
+  users?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -308,6 +331,16 @@ export interface AttributeCategoriesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-attributes_select".
+ */
+export interface UserAttributesSelect<T extends boolean = true> {
+  user?: T;
+  attribute?: T;
   updatedAt?: T;
   createdAt?: T;
 }

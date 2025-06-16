@@ -1,11 +1,15 @@
 "use server";
 
-import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import "dotenv/config";
+import { JWT_SECRET } from "@/lib/jwt-secret";
+import { readAuthToken } from "@/lib/read-auth-token";
+import { setAuthCookie } from "@/lib/set-auth-cookie";
+import { addAttributesToUser } from "@/lib/add-attributes-to-user";
+import { Attribute, AttributeCategory } from "@/payload-types";
 
 /* ---------- 1. fields the form is allowed to edit ---------- */
 const profileSchema = z.object({
@@ -20,35 +24,21 @@ const profileSchema = z.object({
   isEmailVerified: z.coerce.boolean().optional(),
 });
 
-const JWT_SECRET = (process.env.PAYLOAD_SECRET || "").trim();
-
-if (!JWT_SECRET) {
-  throw new Error("PAYLOAD_SECRET missing in env");
-}
-
 export async function updateUserProfile(formData: FormData) {
-  console.log(
-    "verify secret",
-    JWT_SECRET.length,
-    Buffer.from(JWT_SECRET).toString("hex")
-  );
   try {
     const payload = await getPayload({
       config,
     });
 
-    let token = (await cookies()).get("payload-token")?.value;
+    const token = await readAuthToken();
 
     if (!token) throw new Error("Unauthenticated");
-
-    token = decodeURIComponent(token);
 
     let userId: string;
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as {
         id: string;
       };
-      console.log({ decoded });
       userId = decoded.id;
     } catch (error) {
       console.log({ error });
@@ -64,13 +54,13 @@ export async function updateUserProfile(formData: FormData) {
       throw new Error(`Validation failed: ${JSON.stringify(err)}`);
     }
 
-    console.log({ data });
-
     const updated = await payload.update({
       collection: "users",
       id: userId,
       data,
     });
+
+    await setAuthCookie(updated.id);
 
     return { success: true, user: updated };
   } catch (error) {
@@ -79,4 +69,76 @@ export async function updateUserProfile(formData: FormData) {
     }
     return { error: "An unexpected error occurred" };
   }
+}
+
+const saveSchema = z.object({
+  attributeIds: z.array(z.string().min(3)).min(1, "Must pass at least one ID"),
+  mode: z.enum(["append", "replace"]).optional(),
+});
+
+export async function saveUserAttributesAction(formData: FormData) {
+  /* 1. auth cookie → user id */
+  const rawToken = await readAuthToken();
+  if (!rawToken) return { error: "unauthenticated" };
+
+  let userId: string;
+  try {
+    userId = (
+      jwt.verify(rawToken, JWT_SECRET) as {
+        id: string;
+      }
+    ).id;
+  } catch {
+    return { error: "invalid token" };
+  }
+
+  /* 2. validate incoming IDs */
+  const data = saveSchema.safeParse({
+    attributeIds: formData.getAll("attributeIds").map(String),
+  });
+
+  if (!data.success) return { error: data.error.flatten() };
+
+  /* 3. update */
+  await addAttributesToUser(
+    userId,
+    data.data.attributeIds,
+    formData.get("mode")?.toString() === "append" ? "append" : "replace"
+  );
+
+  return { success: true };
+}
+
+export async function listUserAttributesAction(categorySlug?: string) {
+  const rawToken = await readAuthToken();
+  if (!rawToken) return { error: "unauthenticated" };
+
+  let userId: string;
+  try {
+    userId = (jwt.verify(rawToken, JWT_SECRET) as { id: string }).id;
+  } catch {
+    return { error: "invalid token" };
+  }
+
+  /* payload depth 2 = resolve relationship → category object */
+  const payload = await getPayload({
+    config,
+  });
+
+  const user = await payload.findByID({
+    collection: "users",
+    id: userId,
+    depth: 2, // attributes + their category
+  });
+
+  let attrs = (user.attributes as Attribute[]) ?? [];
+
+  /* 4 ─ apply category filter if provided */
+  if (categorySlug) {
+    attrs = attrs.filter(
+      (a) => (a?.category as AttributeCategory)?.slug === categorySlug
+    );
+  }
+
+  return { attributes: attrs }; // array of full objects
 }
