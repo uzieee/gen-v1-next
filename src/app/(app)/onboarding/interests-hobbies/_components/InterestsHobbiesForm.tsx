@@ -128,7 +128,10 @@ export default function InterestsHobbies({ attributes }: Props) {
             />
           </div>
         </div>
-        <FormSubmitButton state={"default"} />
+        <FormSubmitButton
+          className="absolute left-0 right-0 bottom-0 rounded-bl-[0px] rounded-br-[0px] rounded-t-[1rem] h-[4rem]"
+          state={"default"}
+        />
       </form>
     </>
   );

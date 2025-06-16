@@ -109,7 +109,11 @@ export default function ConversationVibeForm({ attributes }: Props) {
             ))}
           </div>
         </div>
-        <FormSubmitButton loadingText="Saving..." state={"default"} />
+        <FormSubmitButton
+          className="absolute left-0 right-0 bottom-0 rounded-bl-[0px] rounded-br-[0px] rounded-t-[1rem] h-[4rem]"
+          loadingText="Saving..."
+          state={"default"}
+        />
       </form>
     </>
   );
