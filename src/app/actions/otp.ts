@@ -18,8 +18,6 @@ export async function verifyOTPAction(formData: FormData) {
   const otp = formData.get("otp")?.toString();
   if (!phoneNumber || !otp) throw new Error("Missing inputs");
 
-  console.log({ phoneNumber, otp });
-
   // only run this in production
   if (process.env.NODE_ENV === "production") {
     const verified = await checkOTP(phoneNumber, otp);

@@ -1,14 +1,15 @@
 "use client";
-import CustomButton from "@/components/atoms/CustomButton";
+
 import PINInput from "@/components/atoms/PinInput";
 import Header from "@/components/molecules/Header";
-import { ButtonState, IVerifyDetails, verifySchema } from "@/types";
+import { IVerifyDetails, verifySchema } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { verifyOTPAction } from "@/app/actions/otp";
-import { useFormStatus } from "react-dom";
+import { phoneAuthAction } from "@/app/actions/auth";
+import { ResendCodeButton } from "./_components/ResendCodeButton";
+import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
 
 export default function Verify() {
   const { push } = useRouter();
@@ -32,7 +33,7 @@ export default function Verify() {
     <>
       <Header onBack={onBack} title={"Sign In"} />
       <form
-        onSubmit={async () => {
+        action={async () => {
           try {
             const verificationCode = watch("verificationCode");
 
@@ -40,10 +41,9 @@ export default function Verify() {
             data.append("otp", verificationCode);
             data.append("phoneNumber", phoneNumber as string);
 
-            console.log({ data });
-
-            await verifyOTPAction(data);
-            // push(`/onboarding/profile`);
+            const results = await phoneAuthAction(data);
+            console.log({ results });
+            push(`/onboarding/account-setup`);
           } catch (error) {
             console.log(error);
             return;
@@ -70,31 +70,14 @@ export default function Verify() {
               />
             )}
           />
-          <CustomButton
-            variant="ghost"
-            className="p-0 text-white"
-            textClassName="p-0 text-sm"
-            onClick={() => console.log("Resend code clicked")}
-          >
-            Didn{`'`}t receive code? Send again
-          </CustomButton>
-          <SubmitButton state={isValid ? "default" : "disabled"} />
+          <ResendCodeButton phoneNumber={phoneNumber as string} />
+          <FormSubmitButton
+            loadingText="Verifying..."
+            defaultText="Confirm"
+            state={isValid ? "default" : "disabled"}
+          />
         </div>
       </form>
     </>
-  );
-}
-
-function SubmitButton({ state }: { state: ButtonState }) {
-  const { pending } = useFormStatus();
-  return (
-    <CustomButton
-      type="submit"
-      state={state}
-      isLoading={pending}
-      className="w-full rounded-2xl"
-    >
-      {pending ? "Verifying..." : "Confirm"}
-    </CustomButton>
   );
 }
