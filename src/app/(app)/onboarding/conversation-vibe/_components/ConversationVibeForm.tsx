@@ -74,7 +74,7 @@ export default function ConversationVibeForm({ attributes }: Props) {
 
   async function onSubmit() {
     if (!selectedVibe) {
-      router.push("/onboarding/language");
+      router.push("/onboarding/language-country");
       return;
     }
     const fd = new FormData();
@@ -82,11 +82,11 @@ export default function ConversationVibeForm({ attributes }: Props) {
     fd.append("mode", "append");
     const res = await saveUserAttributesAction(fd);
     if (res?.error) alert(JSON.stringify(res.error));
-    router.push("/onboarding/language");
+    router.push("/onboarding/language-country");
   }
 
   const onSkip = () => {
-    router.push("/onboarding/language");
+    router.push("/onboarding/language-country");
   };
 
   return (
