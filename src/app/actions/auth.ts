@@ -1,25 +1,13 @@
 "use server";
 
 import { checkOTP } from "@/lib/otp";
-import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { cookies } from "next/headers";
 import { getPayload } from "payload";
 import config from "@payload-config";
-
-const JWT_SECRET = (process.env.PAYLOAD_SECRET || "").trim();
-
-if (!JWT_SECRET) {
-  throw new Error("PAYLOAD_SECRET missing in env");
-}
+import { setAuthCookie } from "@/lib/set-auth-cookie";
 
 export async function phoneAuthAction(formData: FormData) {
   try {
-    console.log(
-      "sign secret",
-      JWT_SECRET.length,
-      Buffer.from(JWT_SECRET).toString("hex")
-    );
     const phone = formData.get("phoneNumber")?.toString();
     const code = formData.get("otp")?.toString();
     if (!phone || !code) {
@@ -73,17 +61,7 @@ export async function phoneAuthAction(formData: FormData) {
       });
     }
 
-    const token = jwt.sign({ id: user.id, collection: "users" }, JWT_SECRET, {
-      expiresIn: "30d",
-    });
-
-    /* 4  Set HttpOnly cookie */
-    (await cookies()).set("payload-token", encodeURIComponent(token), {
-      httpOnly: true,
-      path: "/",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+    await setAuthCookie(user.id);
 
     /* 5  Return concise result */
     return { authenticated: true };

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { updateUserProfile } from "@/app/actions/users";
@@ -31,8 +30,6 @@ export default function AccountSetup() {
     router.replace("/onboarding/signin");
   };
 
-  console.log({ errors });
-
   return (
     <>
       <Header onBack={onBack} title={"Setup Account"} />
@@ -52,7 +49,7 @@ export default function AccountSetup() {
 
             console.log({ results });
 
-            // router.push(`/onboarding/interests-hobbies`);
+            router.push(`/onboarding/interests-hobbies`);
           } catch (error) {
             console.log(error);
             return;

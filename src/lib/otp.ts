@@ -16,7 +16,7 @@ export const sendOTP = async (phoneNumber: string) => {
       channel: "sms",
     });
 
-  return result.status === "pending"; // usually 'pending' means it was sent
+  return result.status === "pending";
 };
 
 // ✅ Verify OTP entered by user

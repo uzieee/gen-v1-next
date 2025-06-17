@@ -33,11 +33,9 @@ export const Users: CollectionConfig = {
           const user = result.docs[0];
 
           if (!user) {
-            // optionally: auto-create user here, or return null to force onboarding
             return { user: null };
           }
 
-          // Mark phone number as verified (optional)
           await payload.update({
             collection: "users",
             id: user.id,
@@ -100,6 +98,13 @@ export const Users: CollectionConfig = {
       name: "isEmailVerified",
       type: "checkbox",
       defaultValue: false,
+    },
+    {
+      name: "attributes",
+      type: "relationship",
+      relationTo: "attributes",
+      hasMany: true,
+      admin: { position: "sidebar" },
     },
   ],
 };
