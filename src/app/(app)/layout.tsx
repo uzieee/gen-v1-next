@@ -3,6 +3,7 @@ import { Syne, Inter, Chivo } from "next/font/google";
 import localFont from "next/font/local";
 import QueryClientProvider from "@/components/QueryClientProvider";
 import "./globals.css";
+import PageTransition from "@/components/motion/PageTransition";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -86,7 +87,7 @@ export default function RootLayout({
       className={`bg-black/90 ${ariom.variable} ${hellix.variable} ${syne.variable} ${inter.variable} ${chivo.variable}`}
     >
       <body className="antialiased h-screen sm:flex sm:items-center sm:max-w-md mx-auto">
-        <QueryClientProvider>{children}</QueryClientProvider>
+        <QueryClientProvider><PageTransition>{children}</PageTransition></QueryClientProvider>
       </body>
     </html>
   );
