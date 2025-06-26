@@ -8,6 +8,7 @@ import Header from '@/components/molecules/Header';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
+import { useSwipeable } from 'react-swipeable';
 
 export default function Profile() {
     const router = useRouter();
@@ -50,30 +51,22 @@ export default function Profile() {
         }
     };
 
-    const handleImageClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const imageWidth = rect.width;
-        
-        // If clicked on left third, go to previous image
-        if (clickX < imageWidth / 3) {
-        goToPreviousProfile();
-        }
-        // If clicked on right third, go to next image
-        else if (clickX > (imageWidth * 2) / 3) {
-        goToNextProfile();
-        }
-    };
+    const handlers = useSwipeable({
+        onSwipedLeft: goToNextProfile,
+        onSwipedRight: goToPreviousProfile,
+        trackMouse: true
+    });
+
 
     return (
         <>
             <div className='overflow-auto h-[90%]'>
                 <div 
-                    className='relative cursor-pointer inset-0 bg-cover bg-top overflow-hidden transition-all duration-300 rounded-b-4xl h-[50vh] min-h-[50vh] max-h-[50vh]'
+                    className='relative inset-0 bg-cover bg-top overflow-hidden transition-all duration-300 rounded-b-4xl h-[50vh] min-h-[50vh] max-h-[50vh]'
                     style={{
                         backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%), url(${userProfile.images[currentProfileIndex]})`
                     }}
-                    onClick={handleImageClick}
+                    {...handlers}
                 >
                     <ProgressIndicator currentIndex={currentProfileIndex} total={userProfile.images.length} />
                     <Header onBack={handleBack} rightIcon={
