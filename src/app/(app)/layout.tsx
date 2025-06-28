@@ -87,7 +87,9 @@ export default function RootLayout({
       className={`bg-black/90 ${ariom.variable} ${hellix.variable} ${syne.variable} ${inter.variable} ${chivo.variable}`}
     >
       <body className="antialiased h-screen sm:flex sm:items-center sm:max-w-md mx-auto">
-        <QueryClientProvider><PageTransition>{children}</PageTransition></QueryClientProvider>
+        <QueryClientProvider>
+          <PageTransition>{children}</PageTransition>
+        </QueryClientProvider>
       </body>
     </html>
   );
