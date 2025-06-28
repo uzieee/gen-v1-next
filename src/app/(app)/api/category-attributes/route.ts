@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
     where: { category: { in: catIds } },
     depth: 0,
     limit: 1000,
+    sort: "label", // Sort alphabetically by label field
   });
 
   /* 5 · group attributes by category id */
