@@ -1,13 +1,7 @@
 import { checkOTP } from "@/lib/otp";
-import type {
-  CollectionConfig,
-  PayloadComponent,
-  RowLabelComponent,
-} from "payload";
+import type { CollectionConfig } from "payload";
 
 /* simple label component */
-const GalleryRowLabel: RowLabelComponent = ({ ...props }) => "<>hi</>";
-
 export const Users: CollectionConfig = {
   slug: "users",
   admin: {
@@ -119,16 +113,17 @@ export const Users: CollectionConfig = {
       type: "text",
     },
 
-    /* ─ Gallery (array of URLs) ─ */
+    /* Gallery (array of URLs) */
     {
       name: "galleryImages",
       label: "Gallery",
       type: "array",
-      admin: {
-        components: {
-          RowLabel: ({ data }: PayloadComponent) => data?.url ?? "image",
-        },
-      },
+      // admin: {
+      //   components: {
+      //     RowLabel:
+      //       "../components/organisms/GalleryRowLabel.tsx#GalleryRowLabel",
+      //   },
+      // },
       fields: [{ name: "url", type: "text", required: true }],
     },
   ],
