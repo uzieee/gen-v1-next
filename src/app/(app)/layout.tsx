@@ -88,9 +88,7 @@ export default function RootLayout({
     >
       <body className="antialiased h-screen sm:flex sm:items-center sm:max-w-md mx-auto">
         <QueryClientProvider>
-          <PageTransition>
-            {children}
-          </PageTransition>
+          <PageTransition>{children}</PageTransition>
         </QueryClientProvider>
       </body>
     </html>
