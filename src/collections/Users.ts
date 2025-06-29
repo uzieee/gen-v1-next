@@ -111,7 +111,7 @@ export const Users: CollectionConfig = {
       name: "profileImage",
       label: "Profile image URL",
       type: "text",
-     admin: {
+      admin: {
         components: {
           Field: "./components/payload-admin/ProfileImageField.tsx#ProfileImageField",
           Cell : "./components/payload-admin/ProfileImageCell.tsx#ProfileImageCell",

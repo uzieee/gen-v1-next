@@ -2,7 +2,7 @@
 "use client";
 
 import { saveUserAttributesAction } from "@/app/actions/users";
-import useApiQuery from "@/app/hooks/useApiQuery";
+import useApiQuery from "@/app/hooks/use-api-query";
 import { fetchAttributes } from "@/app/services/http/attributes";
 import VibeCard from "@/components/atoms/VibeCard";
 import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";

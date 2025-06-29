@@ -1,7 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
+
 import { updateUserImagesAction } from '@/app/actions/user-images';
-// import CustomButton from '@/components/atoms/CustomButton';
+import { useCurrentUser } from '@/app/hooks/use-current-user';
 import PhotoSlot from '@/components/atoms/PhotoSlot';
 import { FormSubmitButton } from '@/components/molecules/FormSubmitButton';
 import HeaderWithSteps from '@/components/molecules/HeaderWithSteps'
@@ -10,6 +10,10 @@ import React, { useState } from 'react'
 
 export default function TakeAPhoto() {
     const router = useRouter();
+
+    const { data: user, isLoading } = useCurrentUser()
+
+    console.log({ user })
 
     const [photos, setPhotos] = useState<{
         main: File | null;
@@ -172,13 +176,6 @@ export default function TakeAPhoto() {
                         </div>
                     </div>
                 </div>
-                {/* <CustomButton
-                type="submit"
-                className="w-full rounded-2xl"
-                state={isValid ? "default" : "disabled"}
-                >
-                Continue
-                </CustomButton> */}
                  <FormSubmitButton
                     className="absolute left-0 right-0 bottom-0 rounded-bl-[0px] rounded-br-[0px] rounded-t-[1rem] h-[4rem]"
                     loadingText="Saving..."
