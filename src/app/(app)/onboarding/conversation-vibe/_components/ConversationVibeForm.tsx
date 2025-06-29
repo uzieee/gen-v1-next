@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+
 import { saveUserAttributesAction } from "@/app/actions/users";
 import useApiQuery from "@/app/hooks/useApiQuery";
 import { fetchAttributes } from "@/app/services/http/attributes";

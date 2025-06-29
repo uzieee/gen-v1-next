@@ -1,6 +1,7 @@
+'use client'
+
 import type { PayloadClientReactComponent, RowLabelComponent } from "payload";
 import { CldImage } from "next-cloudinary";
-
 import { useRowLabel } from "@payloadcms/ui";
 import React from "react";
 
@@ -14,13 +15,15 @@ export const GalleryRowLabel: PayloadClientReactComponent<
       style={{ color: "coral", textTransform: "uppercase" }}
     >
       <CldImage
-        width="20"
-        height="20"
+        width="110"
+        height="110"
         src={data.url}
         sizes="100vw"
         alt={"gallery image"}
       />
-      {data.url || "Untitled"}
+      {/* {data.url || "Untitled"} */}
     </div>
   );
 };
+
+export default GalleryRowLabel;

@@ -16,7 +16,7 @@ const schema = z.object({
   galleryMode: z.enum(["append", "replace"]).default("append"),
 });
 
-export async function updateUserImagesAction(_: unknown, formData: FormData) {
+export async function updateUserImagesAction(formData: FormData) {
   /* ── auth ─────────────────────────────────────────────── */
   const token = await readAuthToken();
 

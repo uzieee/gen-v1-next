@@ -111,6 +111,12 @@ export const Users: CollectionConfig = {
       name: "profileImage",
       label: "Profile image URL",
       type: "text",
+     admin: {
+        components: {
+          Field: "./components/payload-admin/ProfileImageField.tsx#ProfileImageField",
+          Cell : "./components/payload-admin/ProfileImageCell.tsx#ProfileImageCell",
+        },
+      },
     },
 
     /* Gallery (array of URLs) */
@@ -118,12 +124,12 @@ export const Users: CollectionConfig = {
       name: "galleryImages",
       label: "Gallery",
       type: "array",
-      // admin: {
-      //   components: {
-      //     RowLabel:
-      //       "../components/organisms/GalleryRowLabel.tsx#GalleryRowLabel",
-      //   },
-      // },
+      admin: {
+        components: {
+          RowLabel:
+            "./components/payload-admin/GalleryRowLabel.tsx#GalleryRowLabel",
+        },
+      },
       fields: [{ name: "url", type: "text", required: true }],
     },
   ],
