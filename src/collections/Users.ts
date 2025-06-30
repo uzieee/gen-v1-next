@@ -1,6 +1,7 @@
 import { checkOTP } from "@/lib/otp";
 import type { CollectionConfig } from "payload";
 
+/* simple label component */
 export const Users: CollectionConfig = {
   slug: "users",
   admin: {
@@ -105,6 +106,32 @@ export const Users: CollectionConfig = {
       relationTo: "attributes",
       hasMany: true,
       admin: { position: "sidebar" },
+    },
+    {
+      name: "profileImage",
+      label: "Profile image URL",
+      type: "text",
+      admin: {
+        components: {
+          Field:
+            "./components/payload-admin/ProfileImageField.tsx#ProfileImageField",
+          Cell: "./components/payload-admin/ProfileImageCell.tsx#ProfileImageCell",
+        },
+      },
+    },
+
+    /* Gallery (array of URLs) */
+    {
+      name: "galleryImages",
+      label: "Gallery",
+      type: "array",
+      admin: {
+        components: {
+          RowLabel:
+            "./components/payload-admin/GalleryRowLabel.tsx#GalleryRowLabel",
+        },
+      },
+      fields: [{ name: "url", type: "text", required: true }],
     },
   ],
 };

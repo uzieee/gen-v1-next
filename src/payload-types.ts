@@ -133,6 +133,13 @@ export interface User {
   isPhoneNumberVerified?: boolean | null;
   isEmailVerified?: boolean | null;
   attributes?: (string | Attribute)[] | null;
+  profileImage?: string | null;
+  galleryImages?:
+    | {
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -282,6 +289,13 @@ export interface UsersSelect<T extends boolean = true> {
   isPhoneNumberVerified?: T;
   isEmailVerified?: T;
   attributes?: T;
+  profileImage?: T;
+  galleryImages?:
+    | T
+    | {
+        url?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;

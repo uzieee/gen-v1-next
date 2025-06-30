@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import useApiQuery from "@/app/hooks/useApiQuery";
+import useApiQuery from "@/app/hooks/use-api-query";
 import { fetchAttributes } from "@/app/services/http/attributes";
 import HeaderWithSteps from "@/components/molecules/HeaderWithSteps";
 import TagGroup from "@/components/molecules/TagGroup";
@@ -10,6 +10,7 @@ import { CldImage } from "next-cloudinary";
 import { saveUserAttributesAction } from "@/app/actions/users";
 import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
 import { Attribute } from "@/payload-types";
+import InterestsSkeleton from "@/components/skeletons/InterestsSkeleton";
 
 interface Props {
   attributes: Attribute[];
@@ -93,6 +94,8 @@ export default function InterestsHobbies({ attributes }: Props) {
     if (res?.error) alert(JSON.stringify(res.error));
     router.push("/onboarding/conversation-vibe");
   }
+
+  if (!attributesByCategory) return <InterestsSkeleton/>
 
   return (
     <>

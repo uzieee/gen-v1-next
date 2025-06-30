@@ -45,9 +45,7 @@ export default function AccountSetup() {
             data.append("gender", gender);
             data.append("dateOfBirth", dateOfBirth.toISOString().slice(0, 10));
 
-            const results = await updateUserProfile(data);
-
-            console.log({ results });
+            await updateUserProfile(data);
 
             router.push(`/onboarding/interests-hobbies`);
           } catch (error) {
