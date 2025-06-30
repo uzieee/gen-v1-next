@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '4mb',
     },
   },
+  images: {
+    domains: [
+      "localhost",
+      "res.cloudinary.com",
+    ],
+  },
 };
 
 export default withPayload(nextConfig);

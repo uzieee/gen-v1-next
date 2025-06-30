@@ -7,6 +7,7 @@ import { fetchAttributes } from "@/app/services/http/attributes";
 import VibeCard from "@/components/atoms/VibeCard";
 import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
 import HeaderWithSteps from "@/components/molecules/HeaderWithSteps";
+import ConversationVibeSkeleton from "@/components/skeletons/ConversationVibeSkeleton";
 import { Attribute, AttributeCategory } from "@/payload-types";
 import { CldImage } from "next-cloudinary";
 import { useRouter } from "next/navigation";
@@ -20,7 +21,7 @@ export default function ConversationVibeForm({ attributes }: Props) {
   const router = useRouter();
   const [selectedVibe, setSelectedVibe] = useState<string>();
 
-  const { data: attributesByCategory } = useApiQuery({
+  const { data: attributesByCategory, isSuccess } = useApiQuery({
     payload: { categories: ["conversation-vibe"] },
     apiHandler: fetchAttributes,
     queryKey: ["attributes", "conversation-vibe"],
@@ -89,6 +90,8 @@ export default function ConversationVibeForm({ attributes }: Props) {
   const onSkip = () => {
     router.push("/onboarding/language-country");
   };
+
+  if (!isSuccess) return <ConversationVibeSkeleton />;
 
   return (
     <>

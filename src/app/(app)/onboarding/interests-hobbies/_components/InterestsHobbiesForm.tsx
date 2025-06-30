@@ -10,6 +10,7 @@ import { CldImage } from "next-cloudinary";
 import { saveUserAttributesAction } from "@/app/actions/users";
 import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
 import { Attribute } from "@/payload-types";
+import InterestsSkeleton from "@/components/skeletons/InterestsSkeleton";
 
 interface Props {
   attributes: Attribute[];
@@ -93,6 +94,8 @@ export default function InterestsHobbies({ attributes }: Props) {
     if (res?.error) alert(JSON.stringify(res.error));
     router.push("/onboarding/conversation-vibe");
   }
+
+  if (!attributesByCategory) return <InterestsSkeleton/>
 
   return (
     <>

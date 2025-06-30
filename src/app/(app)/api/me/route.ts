@@ -24,8 +24,6 @@ export async function GET(req: NextRequest) {
   if (auth.startsWith('JWT ') && maybeToken) token = maybeToken
   if (!token) token = req.cookies.get('payload-token')?.value
 
-  console.log({token})
-
   if (!token) {
     return NextResponse.json({ error: 'unauthenticated' }, { status: 401 })
   }
