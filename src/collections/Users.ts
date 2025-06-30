@@ -113,8 +113,9 @@ export const Users: CollectionConfig = {
       type: "text",
       admin: {
         components: {
-          Field: "./components/payload-admin/ProfileImageField.tsx#ProfileImageField",
-          Cell : "./components/payload-admin/ProfileImageCell.tsx#ProfileImageCell",
+          Field:
+            "./components/payload-admin/ProfileImageField.tsx#ProfileImageField",
+          Cell: "./components/payload-admin/ProfileImageCell.tsx#ProfileImageCell",
         },
       },
     },
