@@ -102,3 +102,10 @@ export const languageCountrySchema = z.object({
   countries: z.array(z.string()).optional(),
 });
 export type ILanguageCountryDetails = z.infer<typeof languageCountrySchema>;
+
+export const profileSchema = z.object({
+  profilePicture: z.string().optional(),
+  phoneNumber: z.string().optional(),
+  name: z.string().optional(),
+})
+export type IProfileDetails = z.infer<typeof profileSchema>;
