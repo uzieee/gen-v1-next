@@ -99,8 +99,9 @@ export default function ConversationVibeForm({ attributes }: Props) {
       <form action={onSubmit} className="flex flex-col gap-14 p-8">
         <div className="flex flex-col gap-7">
           <div className="text-2xl font-bold text-main-600 font-ariom">
-            Conversation Vibe
+            What kind of energy do you usually bring to new spaces?
           </div>
+          <div className="text-secondary-800 font-ariom">Choose the vibe that best reflects how you typically show up.</div>
           <div className="grid grid-cols-2 gap-4">
             {conversationTags.map((vibe) => (
               <VibeCard
