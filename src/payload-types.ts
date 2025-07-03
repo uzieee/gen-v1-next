@@ -72,6 +72,9 @@ export interface Config {
     attributes: Attribute;
     'attribute-categories': AttributeCategory;
     'user-attributes': UserAttribute;
+    organizers: Organizer;
+    events: Event;
+    tickets: Ticket;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -83,6 +86,9 @@ export interface Config {
     attributes: AttributesSelect<false> | AttributesSelect<true>;
     'attribute-categories': AttributeCategoriesSelect<false> | AttributeCategoriesSelect<true>;
     'user-attributes': UserAttributesSelect<false> | UserAttributesSelect<true>;
+    organizers: OrganizersSelect<false> | OrganizersSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    tickets: TicketsSelect<false> | TicketsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -213,6 +219,57 @@ export interface UserAttribute {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizers".
+ */
+export interface Organizer {
+  id: string;
+  name: string;
+  slug?: string | null;
+  about?: string | null;
+  events?: (string | Event)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  name: string;
+  slug?: string | null;
+  date: string;
+  streetAddress: string;
+  /**
+   * lat / lng for map display
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  location: [number, number];
+  about?: string | null;
+  organizer: string | Organizer;
+  capacity: number;
+  ticketsSold?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tickets".
+ */
+export interface Ticket {
+  id: string;
+  event: string | Event;
+  user: string | User;
+  seatNumber?: string | null;
+  tableNumber?: string | null;
+  code?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -237,6 +294,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'user-attributes';
         value: string | UserAttribute;
+      } | null)
+    | ({
+        relationTo: 'organizers';
+        value: string | Organizer;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: string | Event;
+      } | null)
+    | ({
+        relationTo: 'tickets';
+        value: string | Ticket;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -360,6 +429,48 @@ export interface AttributeCategoriesSelect<T extends boolean = true> {
 export interface UserAttributesSelect<T extends boolean = true> {
   user?: T;
   attribute?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizers_select".
+ */
+export interface OrganizersSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  about?: T;
+  events?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  date?: T;
+  streetAddress?: T;
+  location?: T;
+  about?: T;
+  organizer?: T;
+  capacity?: T;
+  ticketsSold?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tickets_select".
+ */
+export interface TicketsSelect<T extends boolean = true> {
+  event?: T;
+  user?: T;
+  seatNumber?: T;
+  tableNumber?: T;
+  code?: T;
   updatedAt?: T;
   createdAt?: T;
 }
