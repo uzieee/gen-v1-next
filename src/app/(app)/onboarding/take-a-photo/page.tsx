@@ -116,7 +116,11 @@ export default function TakeAPhoto() {
     if (photos.photo3) fd.append("galleryImages", photos.photo3);
     fd.append("galleryMode", "replace");
     const res = await updateUserImagesAction(fd);
-    // if (res?.error) alert(JSON.stringify(res.error));
+    if (res?.error) {
+      alert(JSON.stringify(res.error));
+    } else {
+      router.push("/profile");
+    }
     console.log({ error: res?.error });
   }
 

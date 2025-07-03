@@ -140,6 +140,10 @@ export interface User {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Generated from profile details; editable by admins if needed.
+   */
+  bio?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -296,6 +300,7 @@ export interface UsersSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  bio?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

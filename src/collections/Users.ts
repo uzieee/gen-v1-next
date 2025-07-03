@@ -1,4 +1,5 @@
 import { checkOTP } from "@/lib/otp";
+import { generateUserBio } from "@/payload-hooks/generate-user-bio";
 import type { CollectionConfig } from "payload";
 
 /* simple label component */
@@ -133,5 +134,18 @@ export const Users: CollectionConfig = {
       },
       fields: [{ name: "url", type: "text", required: true }],
     },
+    {
+      name: "bio",
+      label: "Auto bio",
+      type: "textarea",
+      admin: {
+        description:
+          "Generated from profile details; editable by admins if needed.",
+        rows: 3,
+      },
+    },
   ],
+  hooks: {
+    afterChange: [generateUserBio],
+  },
 };
