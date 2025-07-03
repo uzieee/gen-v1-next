@@ -107,7 +107,10 @@ export default function InterestsHobbies({ attributes }: Props) {
       <form action={onSubmit} className="flex flex-col gap-14 p-8">
         <div className="flex flex-col gap-7">
           <div className="text-2xl font-bold text-main-600 font-ariom">
-            Interests & Hobbies
+            What lights you up outside of work?
+          </div>
+          <div className="text-secondary-800 font-ariom">
+            Pick your favorite ways to spend time or spark conversation — feel free to get niche. Select “Other” to add your own or elaborate on selection(s).
           </div>
           <div className="flex flex-col gap-5">
             {/* Interests Section */}

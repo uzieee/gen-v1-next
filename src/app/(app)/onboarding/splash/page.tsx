@@ -346,8 +346,7 @@ const SplashContent: React.FC = () => {
             A new space for global minds
           </div>
           <div className="pb-6 leading-relaxed font-normal text-sm text-main/80">
-            Lorem Ipsum has been the industry&apos;s standard dummy text ever
-            since the 1500s
+            Connect, discover, and tap into a global community — in person and across borders
           </div>
           <CustomButton
             variant="primary"
@@ -356,7 +355,7 @@ const SplashContent: React.FC = () => {
             textClassName="font-syne"
             size="lg"
           >
-            Get Started
+            Unlock & Elevate
           </CustomButton>
         </div>
       </div>

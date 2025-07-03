@@ -113,8 +113,15 @@ export default function LanguageCountries({ attributes = [] }: Props) {
       <HeaderWithSteps onSkip={onSkip} action="Skip" activeIndicator={3} />
       <form action={onSubmit} className="flex flex-col gap-14 p-8">
         <div className="flex flex-col gap-7">
-          <div className="text-2xl font-bold text-main-600 font-ariom">
-            {activeTab == "language" ? "Language" : "Cultural Ties"}
+          <div className="flex flex-col gap-3">
+            <div className="text-2xl font-bold text-main-600 font-ariom">
+              {activeTab == "language" ? "What languages do you speak or understand?" : "Where in the world do you feel connected?"}
+            </div>
+            <div className="text-sm text-secondary-800 font-ariom">
+              {activeTab == "language"
+                ? "Select all that apply — every language is part of your story."
+                : "Select the places that have shaped your story — through heritage, lived experience, or meaningful travel (select all that apply)."}
+            </div>
           </div>
           {/* Search Bar */}
           <TextField

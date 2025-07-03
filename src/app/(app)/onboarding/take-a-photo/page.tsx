@@ -130,8 +130,16 @@ export default function TakeAPhoto() {
         className="flex flex-col gap-14 p-8"
       >
         <div className="flex flex-col gap-7">
-          <div className="text-2xl font-bold text-main-600 font-ariom">
-            We will take care
+          <div className="flex flex-col gap-3">
+            <div className="text-2xl font-bold text-main-600 font-ariom">
+              Add a face to the name
+            </div>
+            <div className="text-sm text-secondary-800 font-ariom">
+              This helps others recognize you at GEN experiences
+            </div>
+          </div>
+          <div className="text-lg text-main-500 font-ariom">
+            Upload a headshot or selfie
           </div>
           <div className="flex flex-col gap-10 items-center my-14">
             {/* Main Photo */}

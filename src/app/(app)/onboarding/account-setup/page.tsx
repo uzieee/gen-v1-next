@@ -65,7 +65,10 @@ export default function AccountSetup() {
             </div>
           </div>
           <div className="flex flex-col gap-6">
-            <div className="text-lg font-medium text-main-300">Full Names</div>
+            <div className="flex flex-col gap-1">
+              <div className="text-lg font-medium text-main-300">Full Names</div>
+              <div className="text-xs font-ariom text-secondary-800">Spelled exactly as you want it to appear</div>
+            </div>
             <TextField
               {...register("fullNames")}
               placeholder="Your name here"
@@ -105,7 +108,10 @@ export default function AccountSetup() {
                   options={[
                     { value: "female", label: "Female", id: "female" },
                     { value: "male", label: "Male", id: "male" },
-                    { value: "other", label: "Other", id: "other" },
+                    { value: "non-binary", label: "Non-binary", id: "non-binary" },
+                    { value: 'two-spirit', label: 'Two-Spirit', id: 'two-spirit' },
+                    { value: 'prefer-to-self-describe', label: 'Prefer to self-describe', id: 'prefer-to-self-describe' },
+                    { value: 'prefer-not-to-say', label: 'Prefer not to say', id: 'prefer-not-to-say' },
                   ]}
                   error={errors.gender?.message}
                   {...field}
@@ -117,17 +123,20 @@ export default function AccountSetup() {
           </div>
           <div className="flex flex-col gap-7">
             <div className="text-lg font-medium text-main-300">Age</div>
-            <Controller
-              name="age"
-              control={control}
-              render={({ field }) => (
-                <DatePicker
-                  error={errors.age?.message}
-                  date={field.value}
-                  setDate={(date) => field.onChange(date)}
-                />
-              )}
-            />
+            <div className="flex flex-col gap-3">
+              <Controller
+                name="age"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker
+                    error={errors.age?.message}
+                    date={field.value}
+                    setDate={(date) => field.onChange(date)}
+                  />
+                )}
+              />
+              <div className="text-xs font-ariom text-secondary-800">Date of birth — for onboarding only. Not shown on your profile.</div>
+            </div>
           </div>
         </div>
         <FormSubmitButton state={isValid ? "default" : "disabled"} />
