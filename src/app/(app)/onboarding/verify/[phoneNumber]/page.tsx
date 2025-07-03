@@ -53,10 +53,10 @@ export default function Verify() {
       >
         <div className="flex flex-col gap-1">
           <div className="text-xl font-ariom font-bold text-main-600">
-            Enter your Verification
+            Let&apos;s verify it&apos;s you
           </div>
           <div className="text-sm font-ariom font-bold text-secondary">
-            Enter your password and explore Cabo
+            We&apos;ve sent you a code — enter it below to continue.
           </div>
         </div>
         <div className="flex flex-col gap-6">
@@ -73,7 +73,7 @@ export default function Verify() {
           <ResendCodeButton phoneNumber={phoneNumber as string} />
           <FormSubmitButton
             loadingText="Verifying..."
-            defaultText="Confirm"
+            defaultText="Verify"
             state={isValid ? "default" : "disabled"}
           />
         </div>
