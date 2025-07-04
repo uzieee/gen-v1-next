@@ -10,79 +10,90 @@ interface CustomButtonProps {
   state?: ButtonState;
   showLeftArrow?: boolean;
   showRightArrow?: boolean;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
   textClassName?: string;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
+  isLoading?: boolean;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   children,
-  variant = 'primary',
-  size = 'md',
-  state = 'default',
+  variant = "primary",
+  size = "xl",
+  state = "default",
   showLeftArrow = false,
   showRightArrow = false,
   onClick,
   className,
   textClassName,
-  type = 'button',
+  type = "button",
+  isLoading = false,
   ...props
 }) => {
   const getVariantClasses = () => {
-    const baseClasses = 'transition-all duration-200 rounded-lg transform hover:scale-105';
-    
+    const baseClasses =
+      "transition-all duration-200 rounded-lg transform hover:scale-105";
+
     switch (variant) {
-      case 'primary':
+      case "primary":
         return cn(
           baseClasses,
-          'bg-primary hover:bg-primary/90 text-background',
-          state === 'active' && 'bg-primary-200',
-          state === 'disabled' && 'bg-primary/50 hover:bg-primary/50 hover:scale-100 opacity-60'
+          "bg-primary hover:bg-primary/90 text-background",
+          state === "active" && "bg-primary-200",
+          state === "disabled" && "bg-primary disabled:opacity-30 text-main-600"
         );
-      case 'main':
+      case "main":
         return cn(
           baseClasses,
-          'bg-main hover:bg-main/90 text-background',
-          state === 'active' && 'bg-main-300',
-          state === 'disabled' && 'bg-main/50 hover:bg-main/50 hover:scale-100 opacity-60'
+          "bg-main hover:bg-main/90 text-background",
+          state === "active" && "bg-main-300",
+          state === "disabled" &&
+            "bg-main/50 hover:bg-main/50 hover:scale-100 opacity-60"
         );
-      case 'secondary':
+      case "secondary":
         return cn(
           baseClasses,
-          'bg-secondary hover:bg-secondary-600 text-background',
-          state === 'active' && 'bg-secondary-400',
-          state === 'disabled' && 'bg-secondary/50 hover:bg-secondary/50 hover:scale-100 opacity-60'
+          "bg-secondary hover:bg-secondary-600 text-background",
+          state === "active" && "bg-secondary-400",
+          state === "disabled" &&
+            "bg-secondary/50 hover:bg-secondary/50 hover:scale-100 opacity-60"
         );
-      case 'error':
+      case "error":
         return cn(
           baseClasses,
-          'bg-error hover:opacity-90 text-main',
-          state === 'disabled' && 'opacity-50 hover:scale-100'
+          "bg-error hover:opacity-90 text-main",
+          state === "disabled" && "opacity-50 hover:scale-100"
         );
-      case 'badge':
+      case "badge":
         return cn(
           baseClasses,
-          'bg-badge-red hover:opacity-90 text-main',
-          state === 'disabled' && 'opacity-50 hover:scale-100'
+          "bg-badge-red hover:opacity-90 text-main",
+          state === "disabled" && "opacity-50 hover:scale-100"
         );
-      case 'outline':
+      case "outline":
         return cn(
           baseClasses,
-          'border-2 border-background text-background bg-transparent hover:bg-background hover:text-main',
-          state === 'disabled' && 'border-background/50 text-background/50'
+          "border-2 border-background text-background bg-transparent hover:bg-background hover:text-main",
+          state === "disabled" && "border-background/50 text-background/50"
         );
-      case 'outline-main':
+      case "outline-main":
         return cn(
           baseClasses,
-          'border-2 border-main text-main bg-transparent hover:border-background hover:bg-main hover:text-background',
-          state === 'disabled' && 'border-background/50 text-background/50'
+          "border-2 border-main text-main bg-transparent hover:border-background hover:bg-main hover:text-background",
+          state === "disabled" && "border-background/50 text-background/50"
         );
-      case 'outline-primary':
+      case "outline-primary":
         return cn(
           baseClasses,
-          'border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-background',
-          state === 'disabled' && 'border-background/50 text-background/50'
+          "border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-background",
+          state === "disabled" && "border-background/50 text-background/50"
+        );
+      case "ghost":
+        return cn(
+          baseClasses,
+          "bg-transparent text-background hover:bg-transparent hover:text-white",
+          state === "disabled" && "opacity-50 hover:scale-100"
         );
       default:
         return baseClasses;
@@ -91,29 +102,38 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 
   const getSizeClasses = () => {
     switch (size) {
-      case 'sm':
-        return 'px-4 py-2 text-sm';
-      case 'lg':
-        return 'px-8 py-4 text-lg';
+      case "sm":
+        return "px-4 py-2 text-sm";
+      case "lg":
+        return "px-8 py-4 text-lg";
+      case "xl":
+        return "px-6 py-3 text-xl";
       default:
-        return 'px-6 py-3 text-base';
+        return "px-6 py-3 text-base";
     }
   };
 
   return (
     <Button
       type={type}
-      onClick={state !== 'disabled' ? onClick : undefined}
+      onClick={state !== "disabled" ? onClick : undefined}
       className={cn(
         getVariantClasses(),
-        'flex items-center gap-2 p-6 cursor-pointer focus:outline-none',
+        "flex items-center gap-2 h-[3.5rem] cursor-pointer focus:outline-none",
         className
       )}
-      disabled={state === 'disabled'}
+      disabled={isLoading || state === "disabled"}
       {...props}
     >
+      {isLoading && (
+        <div className="w-4 h-4 bg-transparent rounded-full border-2 animate-spin border-current border-t-transparent" />
+      )}
       {showLeftArrow && <ArrowLeft className="!w-6 !h-6" />}
-      <div className={`${cn(getSizeClasses(), textClassName)} font-syne font-bold`}>{children}</div>
+      <div
+        className={`${cn(getSizeClasses(), textClassName)} font-ariom font-bold`}
+      >
+        {children}
+      </div>
       {showRightArrow && <ArrowRight className="!w-6 !h-6" />}
     </Button>
   );

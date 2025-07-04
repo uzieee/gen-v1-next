@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  /* Custom Colors */
+  --color-primary: #D1E50C;
+  --color-primary-200: #9DAC09;
+  --color-primary-300: #F3F9C2;
+  --color-primary-350: #FAFFE4;
+  --color-primary-400: #DDEC49;
+
+  --color-background: #131313;
+  --color-background-100: #201F20;
+  --color-background-500: #141B34;
+  --color-background-600: #19191F;
+
+  --color-main: #FFFFFF;
+  --color-main-300: #FDFEF3;
+  --color-main-400: #F2F4F3;
+  --color-main-500: #F5F5F7;
+  --color-main-600: #F4F4F6;
+  --color-main-700: #FDFEF3;
+
+  --color-secondary: #B6B6C0;
+  --color-secondary-400: #E9E9EA;
+  --color-secondary-500: #D9D9D9;
+  --color-secondary-600: #6C6D80;
+  --color-secondary-800: #959595;
+  --color-secondary-900: #726B7B;
+
+  --color-error: #FF4051;
+
+  --color-badge-red: #BC2200;
+
+  --color-card-primary: #C2D671;
+  --color-card-primary-50: #DBF08400;
+  
+  --color-card-blue: #71D6C4;
+  --color-card-blue-50: #84DDF000;
+  
+  --color-card-purple: #8571D6;
+  --color-card-purple-50: #F084EC00;
+
+  /* Font Families */
+  --font-syne: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-chivo: "Chivo", ui-sans-serif, system-ui, sans-serif;
+  --font-ariom: "Ariom", ui-sans-serif, system-ui, sans-serif;
+  --font-hellix: "Hellix", ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-fade-in {
+  opacity: 0;
+  animation: fade-in 0.8s ease-out forwards;
+  animation-fill-mode: forwards;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+.animate-shimmer { animation: shimmer 1.2s infinite linear; }
