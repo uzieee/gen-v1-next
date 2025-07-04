@@ -11,6 +11,19 @@ export const Organizers: CollectionConfig = {
     { name: "name", type: "text", required: true },
     { name: "slug", type: "text", unique: true, index: true },
     { name: "about", type: "textarea" },
+    {
+      name: "headerImage",
+      type: "text",
+      admin: {
+        components: {
+          Label: "./components/payload-admin/CloudinaryCell.tsx#CloudinaryCell",
+          Field:
+            "./components/payload-admin/CloudinaryField.tsx#CloudinaryField",
+          // Cell : ({ data }) =>
+          //   data ? <img src={data} style={{ width: 40 }} /> : null,
+        },
+      },
+    },
 
     {
       name: "events",

@@ -226,6 +226,7 @@ export interface Organizer {
   name: string;
   slug?: string | null;
   about?: string | null;
+  headerImage?: string | null;
   events?: (string | Event)[] | null;
   updatedAt: string;
   createdAt: string;
@@ -247,6 +248,7 @@ export interface Event {
    * @maxItems 2
    */
   location: [number, number];
+  headerImage?: string | null;
   about?: string | null;
   organizer: string | Organizer;
   capacity: number;
@@ -440,6 +442,7 @@ export interface OrganizersSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   about?: T;
+  headerImage?: T;
   events?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -454,6 +457,7 @@ export interface EventsSelect<T extends boolean = true> {
   date?: T;
   streetAddress?: T;
   location?: T;
+  headerImage?: T;
   about?: T;
   organizer?: T;
   capacity?: T;

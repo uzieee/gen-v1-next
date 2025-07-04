@@ -13,10 +13,10 @@ export const Tickets: CollectionConfig = {
     afterChange: [incrementTicketCounter],
   },
 
-  indexes: [
-    /* one ticket per user per event */
-    { fields: ["event", "user"], unique: true },
-  ],
+  //   indexes: [
+  //     /* one ticket per user per event */
+  //     { fields: ["event", "user"], unique: true },
+  //   ],
 
   fields: [
     {

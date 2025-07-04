@@ -25,6 +25,18 @@ export const Events: CollectionConfig = {
       required: true,
       admin: { description: "lat / lng for map display" },
     },
+    {
+      name: "headerImage",
+      type: "text",
+      admin: {
+        components: {
+          Field:
+            "./components/payload-admin/CloudinaryField.tsx#CloudinaryField",
+          // Cell : ({ data }) =>
+          //   data ? <img src={data} style={{ width: 40 }} /> : null,
+        },
+      },
+    },
 
     /* meta */
     { name: "about", type: "textarea" },
