@@ -1,6 +1,6 @@
 import { addTicketCode } from "@/payload-hooks/add-ticket-code";
 import { capacityGuard } from "@/payload-hooks/capacity-guard";
-import { incrementTicketCounter } from "@/payload-hooks/increment-ticket-counter";
+// import { incrementTicketCounter } from "@/payload-hooks/increment-ticket-counter";
 import { CollectionConfig } from "payload";
 
 export const Tickets: CollectionConfig = {
@@ -10,7 +10,7 @@ export const Tickets: CollectionConfig = {
   hooks: {
     beforeValidate: [addTicketCode],
     beforeChange: [capacityGuard],
-    afterChange: [incrementTicketCounter],
+    // afterChange: [incrementTicketCounter],
   },
 
   //   indexes: [
