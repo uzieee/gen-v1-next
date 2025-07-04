@@ -119,7 +119,7 @@ export default function TakeAPhoto() {
     if (res?.error) {
       alert(JSON.stringify(res.error));
     } else {
-      router.push("/profile");
+      router.push("/home");
     }
     console.log({ error: res?.error });
   }
