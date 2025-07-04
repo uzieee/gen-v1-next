@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import { customAlphabet } from "nanoid";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -64,3 +66,8 @@ export function getCountryCodes() {
     { code: "961", country: "Lebanon", flag: "🇱🇧" },
   ];
 }
+
+/** Example: GEN-8RX7A2JQ (no 0,O,1,l) */
+const nano = customAlphabet("346789ABCDEFGHJKMNPQRTUVWXY", 8);
+
+export const generateTicketCode = () => `GEN-${nano()}`;
