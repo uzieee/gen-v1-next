@@ -95,7 +95,7 @@ export default function InterestsHobbies({ attributes }: Props) {
     router.push("/onboarding/conversation-vibe");
   }
 
-  if (!attributesByCategory) return <InterestsSkeleton/>
+  if (!attributesByCategory) return <InterestsSkeleton />;
 
   return (
     <>
@@ -105,12 +105,14 @@ export default function InterestsHobbies({ attributes }: Props) {
         activeIndicator={1}
       />
       <form action={onSubmit} className="flex flex-col gap-14 p-8">
-        <div className="flex flex-col gap-7">
+        <div className="flex flex-col gap-7 mb-22">
           <div className="text-2xl font-bold text-main-600 font-ariom">
             What lights you up outside of work?
           </div>
           <div className="text-secondary-800 font-ariom">
-            Pick your favorite ways to spend time or spark conversation — feel free to get niche. Select “Other” to add your own or elaborate on selection(s).
+            Pick your favorite ways to spend time or spark conversation — feel
+            free to get niche. Select “Other” to add your own or elaborate on
+            selection(s).
           </div>
           <div className="flex flex-col gap-5">
             {/* Interests Section */}
@@ -135,7 +137,7 @@ export default function InterestsHobbies({ attributes }: Props) {
           </div>
         </div>
         <FormSubmitButton
-          className="absolute left-0 right-0 bottom-0 rounded-bl-[0px] rounded-br-[0px] rounded-t-[1rem] h-[4rem]"
+          className="fixed left-0 right-0 bottom-0 rounded-bl-[0px] rounded-br-[0px] rounded-t-[1rem] h-[4rem]"
           state={"default"}
         />
       </form>

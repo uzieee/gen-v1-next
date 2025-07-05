@@ -26,7 +26,7 @@ export default function PageTransition({
   // + "?" + searchParams.toString();
 
   return (
-    <div className="bg-background w-full min-h-screen sm:max-h-[940px] sm:min-h-[calc(100vh-100px)] relative overflow-hidden">
+    <div className="bg-[#171717] w-full overflow-x-hidden overflow-y-auto relative">
       <motion.div
         key={fullKey}
         variants={variants}
@@ -35,8 +35,7 @@ export default function PageTransition({
         animate="animate"
         exit="exit"
         transition={{ type: "tween", ease: "easeInOut", duration: 0.35 }}
-        /* absolute stacking prevents the quick flash */
-        className="absolute inset-0 will-change-transform flex flex-col"
+        className="bg-background min-h-screen sm:max-h-[940px] sm:min-h-[calc(100vh-100px)] inset-0 will-change-transform flex flex-col shadow-2xl"
       >
         {children}
       </motion.div>
