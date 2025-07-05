@@ -100,8 +100,6 @@ export default function LanguageCountries({ attributes = [] }: Props) {
     return { selectedLanguages, selectedCountries };
   }, [selectedAttributes, allLanguages, allCountries]);
 
-  console.log({ selectedLanguages, selectedCountries, selectedAttributes });
-
   const isValid = useMemo(() => {
     return activeTab == "language"
       ? selectedLanguages.length > 0
@@ -112,10 +110,12 @@ export default function LanguageCountries({ attributes = [] }: Props) {
     <>
       <HeaderWithSteps onSkip={onSkip} action="Skip" activeIndicator={3} />
       <form action={onSubmit} className="flex flex-col gap-14 p-8">
-        <div className="flex flex-col gap-7">
+        <div className="flex flex-col mb-22 gap-7">
           <div className="flex flex-col gap-3">
             <div className="text-2xl font-bold text-main-600 font-ariom">
-              {activeTab == "language" ? "What languages do you speak or understand?" : "Where in the world do you feel connected?"}
+              {activeTab == "language"
+                ? "What languages do you speak or understand?"
+                : "Where in the world do you feel connected?"}
             </div>
             <div className="text-sm text-secondary-800 font-ariom">
               {activeTab == "language"

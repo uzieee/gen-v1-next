@@ -133,7 +133,7 @@ export default function TakeAPhoto() {
         // onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-14 p-8"
       >
-        <div className="flex flex-col gap-7">
+        <div className="flex flex-col mb-22 gap-7">
           <div className="flex flex-col gap-3">
             <div className="text-2xl font-bold text-main-600 font-ariom">
               Add a face to the name

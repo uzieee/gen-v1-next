@@ -211,9 +211,9 @@ export default function HomeDashboard() {
 
   return (
     <>
-      <div className="pl-6 pt-7 overflow-y-auto">
+      <div className="pt-7 overflow-y-auto">
         {/* Header */}
-        <div className="pr-3.5 mb-12">
+        <div className="mb-12 px-6">
           <div className="flex items-center justify-between">
             <div className="text-main font-syne font-semibold">
               <p className="text-lg">Morning&nbsp;{user?.name}</p>
@@ -247,24 +247,27 @@ export default function HomeDashboard() {
 
         {/* Upcoming Events Section */}
         <div className="flex flex-col gap-6 mb-7">
-          <SectionHeader
-            title="Upcoming Events"
-            emoji="🔥"
-            onSeeAll={() => {}}
-          />
-          <div className="flex items-center overflow-x-auto">
-            {upcomingEvents.map((event) => (
+          <div className="w-full px-6">
+            <SectionHeader
+              title="Upcoming Events"
+              emoji="🔥"
+              onSeeAll={() => {}}
+            />
+          </div>
+          <div className="flex items-center overflow-x-scroll space-x-6 px-6 scroll-snap-bouncy scrollbar-hide">
+            {upcomingEvents.map((event, key) => (
               <EventCard
-                key={event.id}
+                key={key}
                 event={event}
                 isLoading={eventsLoading}
+                className={key == 0 ? "pl-6" : ""}
               />
             ))}
           </div>
         </div>
 
         {/* Community Section */}
-        <div className="flex flex-col gap-16 mb-24">
+        <div className="flex flex-col gap-16 mb-24 px-6">
           <SectionHeader title="Community" emoji="😊" onSeeAll={() => {}} />
           <ProfileCardStack profiles={communityProfiles} />
         </div>
