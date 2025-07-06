@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { getPayload } from "payload";
-import payloadConfig from "../src/payload.config"; // adjust path as needed
+import payloadConfig from "../src/payload.config";
 
 /* ------------------------------------------------------------------ */
 /* 1. the language list                                               */
