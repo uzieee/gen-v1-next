@@ -10,15 +10,28 @@ import CustomButton from '@/components/atoms/CustomButton';
 export default function EventDetailsPage() {
     const router = useRouter();
     const [isExpanded, setIsExpanded] = React.useState(false);
-    
-    const fullText = "This exciting and inspiring event is organized to create a space for founders, researchers, and creative enthusiasts to meet, exchange and find new ideas. we are looking for cooperation opportunities.";
-    
+
+    const [event,] = React.useState({
+        id: '1',
+        title: 'Glowing Art Performance',
+        location: '110 Queen St',
+        direction: 'West',
+        date: '23 Jun',
+        time: '22:00 PM',
+        image: '/images/event.jpg',
+        description: 'This exciting and inspiring event is organized to create a space for founders, researchers, and creative enthusiasts to meet, exchange and find new ideas. we are looking for cooperation opportunities.',
+        detailedLocation: {
+            name: 'My Dinh Stadium',
+            city: 'Ho Noi City'
+        }
+    });
+
     const truncateText = (text: string, maxLength: number) => {
         if (text.length <= maxLength) return text;
         return text.substring(0, maxLength).trim();
     };
-    const truncatedText = truncateText(fullText, 135);
-    const shouldShowMore = fullText.length > 135;
+    const truncatedText = truncateText(event.description, 135);
+    const shouldShowMore = event.description.length > 135;
 
     const onBack = () => {
         router.back();
@@ -44,18 +57,18 @@ export default function EventDetailsPage() {
                 <div>
                     <div className="relative h-80 rounded-4xl overflow-hidden">
                         <Image 
-                            src="/images/event.jpg"
-                            alt="Event crowd"
+                            src={event.image}
+                            alt={event.title}
                             className="w-full h-full object-cover object-center opacity-80"
                             width={320}
                             height={320}
                         />
                         <div className="absolute top-6 right-6 bg-main/20 border border-background backdrop-blur-sm rounded-3xl px-4 py-2 text-main-600 font-ariom font-bold">
-                            <span className="text-sm font-bold">23</span>
-                            <span className="text-xs ml-1">Jun</span>
+                            <span className="text-sm font-bold">{event.date.split(" ")[0]}</span>
+                            <span className="text-xs ml-1">{event.date.split(" ")[1]}</span>
                         </div>
                         <div className="absolute bottom-8 left-6 right-6 text-main-600 text-2xl font-medium font-ariom w-44">
-                            Glowing Art Performance
+                            {event.title}
                         </div>
                     </div>
                     <div className="flex relative w-14 justify-center items-center mt-2 mx-auto">
@@ -67,11 +80,11 @@ export default function EventDetailsPage() {
                     <div className='flex flex-col gap-2'>
                         <div className="flex items-center gap-2">
                             <Clock className="w-3 h-3 text-main-700" />
-                            <span className="text-main-600 font-medium text-sm font-ariom">22:00 PM</span>
+                            <span className="text-main-600 font-medium text-sm font-ariom">{event.time}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <MapPin className="w-3 h-3 text-main-700" />
-                            <span className="text-main-600 font-medium text-sm font-ariom">110 Queen St West</span>
+                            <span className="text-main-600 font-medium text-sm font-ariom">{event.location} {event.direction}</span>
                         </div>
                     </div>
                     <IconButton
@@ -87,7 +100,7 @@ export default function EventDetailsPage() {
                     <div className="text-main-600 text-3xl font-medium font-ariom">About</div>
                     <div className="text-secondary text-sm font-normal font-hellix">
                     <p>
-                        {isExpanded ? fullText : truncatedText}
+                        {isExpanded ? event.description : truncatedText}
                         {!isExpanded && shouldShowMore && "..."}
                         {shouldShowMore && (
                             <span 
@@ -106,8 +119,8 @@ export default function EventDetailsPage() {
                     <div className='bg-secondary flex items-center gap-3 py-1.5 px-2 rounded-lg'>
                         <div className="w-7 h-7 bg-secondary-800 rounded-full"></div>
                         <div className='text-background font-ariom font-medium'>
-                            <h4 className="text-sm">My Dinh Stadium</h4>
-                            <p className="text-[10px]">Ha Noi City</p>
+                            <h4 className="text-sm">{event.detailedLocation.name}</h4>
+                            <p className="text-[10px]">{event.detailedLocation.city}</p>
                         </div>
                     </div>
                 <div>
