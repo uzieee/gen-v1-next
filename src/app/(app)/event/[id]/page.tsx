@@ -6,10 +6,12 @@ import Image from 'next/image';
 import { Clock, MapPin } from 'lucide-react';
 import IconButton from '@/components/atoms/IconButton';
 import CustomButton from '@/components/atoms/CustomButton';
+import Modal from '@/components/atoms/Modal';
 
 export default function EventDetailsPage() {
     const router = useRouter();
     const [isExpanded, setIsExpanded] = React.useState(false);
+    const [showModal, setShowModal] = React.useState(false);
 
     const [event,] = React.useState({
         id: '1',
@@ -39,6 +41,12 @@ export default function EventDetailsPage() {
     const onAddUser = () => {
         // Logic to add a user or navigate to user addition page
         console.log("Add User Clicked");
+    };
+
+    const handleContinue = () => {
+        setShowModal(false);
+        // Logic to handle the continue action
+        console.log("Continue clicked");
     };
 
     return (
@@ -128,9 +136,19 @@ export default function EventDetailsPage() {
             </div>
                 </div>
             </div>
-            <CustomButton className='rounded-b-none rounded-t-2xl'>
+            <CustomButton className='rounded-b-none rounded-t-2xl' onClick={() => setShowModal(true)}>
                 <div className='font-medium'>RSVP</div>
             </CustomButton>
+            <Modal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                title="Post Event Follow Up"
+                message="This allows apps and websites to share information about you."
+                onCancel={() => setShowModal(false)}
+                onAction={handleContinue}
+                cancel="Cancel"
+                action="Continue"
+            />
         </>
     );
 }
