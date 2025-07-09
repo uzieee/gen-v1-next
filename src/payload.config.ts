@@ -16,6 +16,8 @@ import { UserAttributes } from "./collections/UserAttributes";
 import { Organizers } from "./collections/Organizers";
 import { Events } from "./collections/Events";
 import { Tickets } from "./collections/Tickets";
+import { Professions } from "./collections/Professions";
+import { Startups } from "./collections/Startups";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -36,6 +38,8 @@ export default buildConfig({
     Organizers,
     Events,
     Tickets,
+    Professions,
+    Startups,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

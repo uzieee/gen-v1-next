@@ -79,7 +79,7 @@ export default function LanguageCountries({ attributes = [] }: Props) {
   };
 
   const onSkip = () => {
-    router.push("/onboarding/take-a-photo");
+    router.push("/onboarding/work-profession");
   };
 
   async function onSubmit() {
@@ -87,7 +87,7 @@ export default function LanguageCountries({ attributes = [] }: Props) {
     selectedAttributes.forEach((id) => fd.append("attributeIds", id));
     const res = await saveUserAttributesAction(fd);
     if (res?.error) alert(JSON.stringify(res.error));
-    router.push("/onboarding/take-a-photo");
+    router.push("/onboarding/onboarding/work-profession");
   }
 
   const { selectedLanguages, selectedCountries } = useMemo(() => {

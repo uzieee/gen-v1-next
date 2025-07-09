@@ -75,6 +75,8 @@ export interface Config {
     organizers: Organizer;
     events: Event;
     tickets: Ticket;
+    professions: Profession;
+    startups: Startup;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -89,6 +91,8 @@ export interface Config {
     organizers: OrganizersSelect<false> | OrganizersSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     tickets: TicketsSelect<false> | TicketsSelect<true>;
+    professions: ProfessionsSelect<false> | ProfessionsSelect<true>;
+    startups: StartupsSelect<false> | StartupsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -150,6 +154,8 @@ export interface User {
    * Generated from profile details; editable by admins if needed.
    */
   bio?: string | null;
+  profession?: (string | null) | Profession;
+  startups?: (string | Startup)[] | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -184,6 +190,42 @@ export interface AttributeCategory {
   title: string;
   slug: string;
   description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "professions".
+ */
+export interface Profession {
+  id: string;
+  user: string | User;
+  /**
+   * Attribute from "professional-fields" category
+   */
+  professionalField: string | Attribute;
+  jobTitle: string;
+  jobDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "startups".
+ */
+export interface Startup {
+  id: string;
+  user: string | User;
+  title?: string | null;
+  stage: 'established' | 'building' | 'scaling' | 'idea';
+  description?: string | null;
+  /**
+   * Attribute(s) from "professional-fields"
+   */
+  industries: (string | Attribute)[];
+  supportNeeded?:
+    | ('funding' | 'mentorship' | 'collaborators' | 'tools' | 'early-users' | 'encouragement' | 'other')[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -308,6 +350,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tickets';
         value: string | Ticket;
+      } | null)
+    | ({
+        relationTo: 'professions';
+        value: string | Profession;
+      } | null)
+    | ({
+        relationTo: 'startups';
+        value: string | Startup;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -372,6 +422,8 @@ export interface UsersSelect<T extends boolean = true> {
         id?: T;
       };
   bio?: T;
+  profession?: T;
+  startups?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -475,6 +527,32 @@ export interface TicketsSelect<T extends boolean = true> {
   seatNumber?: T;
   tableNumber?: T;
   code?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "professions_select".
+ */
+export interface ProfessionsSelect<T extends boolean = true> {
+  user?: T;
+  professionalField?: T;
+  jobTitle?: T;
+  jobDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "startups_select".
+ */
+export interface StartupsSelect<T extends boolean = true> {
+  user?: T;
+  title?: T;
+  stage?: T;
+  description?: T;
+  industries?: T;
+  supportNeeded?: T;
   updatedAt?: T;
   createdAt?: T;
 }
