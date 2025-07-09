@@ -104,7 +104,7 @@ export default function InterestsHobbies({ attributes }: Props) {
         action="Save & Skip"
         activeIndicator={1}
       />
-      <form action={onSubmit} className="flex flex-col gap-14 p-8">
+      <form action={onSubmit} className="flex flex-col gap-14 p-6">
         <div className="flex flex-col gap-7 mb-22">
           <div className="text-2xl font-bold text-main-600 font-ariom">
             What lights you up outside of work?

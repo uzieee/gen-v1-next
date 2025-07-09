@@ -44,7 +44,7 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(
     ref
   ) {
     return (
-      <>
+      <div className="w-full relative">
         <Select value={value} onValueChange={onChange} disabled={disabled}>
           <SelectTrigger
             ref={ref}
@@ -78,7 +78,12 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(
             )}
           </SelectTrigger>
 
-          <SelectContent className="bg-[#131313] text-main-600 font-ariom">
+          <SelectContent
+            position="popper" // keeps it next to the trigger even inside flex
+            sideOffset={4}
+            align="start"
+            className="bg-[#131313] text-main-600 font-ariom"
+          >
             {options.map((opt) => (
               <SelectItem
                 key={opt.value}
@@ -100,7 +105,7 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(
         {error && (
           <p className="mt-1 text-sm text-error transition-colors">{error}</p>
         )}
-      </>
+      </div>
     );
   }
 );

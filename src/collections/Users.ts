@@ -144,6 +144,20 @@ export const Users: CollectionConfig = {
         rows: 3,
       },
     },
+    {
+      name: "profession",
+      type: "relationship",
+      relationTo: "professions",
+      hasMany: false, // single current profession
+      admin: { position: "sidebar" },
+    },
+    {
+      name: "startups",
+      type: "relationship",
+      relationTo: "startups",
+      hasMany: true, // user can own multiple
+      admin: { position: "sidebar" },
+    },
   ],
   hooks: {
     afterChange: [generateUserBio],

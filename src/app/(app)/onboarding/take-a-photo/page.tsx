@@ -99,7 +99,7 @@ export default function TakeAPhoto() {
   };
 
   const onSkip = () => {
-    router.push("/onboarding/signup");
+    router.push("/home");
   };
 
   async function onSubmit() {
