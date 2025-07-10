@@ -48,6 +48,26 @@ export const Events: CollectionConfig = {
       relationTo: "organizers",
       required: true,
     },
+    {
+      name: "categories",
+      label: "Categories",
+      type: "select",
+      hasMany: true,
+      options: [
+        { label: "Tech", value: "tech" },
+        { label: "Cultural", value: "cultural" },
+        { label: "Social", value: "social" },
+        { label: "Networking", value: "networking" },
+        { label: "Workshop", value: "workshop" },
+        { label: "Conference", value: "conference" },
+        { label: "Fund-raising", value: "fundraising" },
+        { label: "Well-being", value: "wellbeing" },
+        { label: "Arts", value: "arts" },
+        { label: "Sports", value: "sports" },
+        { label: "Other", value: "other" },
+      ],
+      required: true, // must pick at least one
+    },
 
     /* ticketing */
     { name: "capacity", type: "number", min: 1, required: true },

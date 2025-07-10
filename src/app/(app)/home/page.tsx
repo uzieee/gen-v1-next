@@ -1,10 +1,13 @@
 "use client";
 
+import useApiQuery from "@/app/hooks/use-api-query";
 import { useCurrentUser } from "@/app/hooks/use-current-user";
+import { fetchEvents } from "@/app/services/http/events";
 import EventCard from "@/components/atoms/EventCard";
 import IconButton from "@/components/atoms/IconButton";
 import ProfileCardStack from "@/components/atoms/ProfileStack";
 import SectionHeader from "@/components/atoms/SectionHeader";
+import AvatarPlaceholder from "@/components/molecules/AvatarPlaceholder";
 import BottomNav, { NavItemType } from "@/components/molecules/BottomNav";
 import HomeSkeleton from "@/components/skeletons/HomeSkeleton";
 import { Bell, TicketPercent } from "lucide-react";
@@ -20,38 +23,14 @@ export default function HomeDashboard() {
 
   const { data, isSuccess: isFetchUserSuccess } = useCurrentUser();
 
-  const upcomingEvents = [
-    {
-      id: "1",
-      title: "Kissing Metaverse",
-      location: "110 Queen St",
-      direction: "West",
-      time: "5:00 PM",
-      category: "Physical",
-      image:
-        "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=400&h=300&fit=crop",
+  const { isSuccess: isFetchEventsSuccess, data: eventsData } = useApiQuery({
+    apiHandler: fetchEvents,
+    payload: {
+      page: 1,
+      limit: 10,
     },
-    {
-      id: "2",
-      title: "Art Gallery Opening",
-      location: "Downtown Core",
-      direction: "North",
-      time: "7:00 PM",
-      category: "Cultural",
-      image:
-        "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=400&h=300&fit=crop",
-    },
-    {
-      id: "3",
-      title: "Tech Meetup",
-      location: "Silicon Valley",
-      direction: "East",
-      time: "6:00 PM",
-      category: "Tech",
-      image:
-        "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=400&h=300&fit=crop",
-    },
-  ];
+    queryKey: ["events", "home-page"],
+  });
 
   const communityProfiles = [
     {
@@ -207,7 +186,7 @@ export default function HomeDashboard() {
     };
   }, [data, isFetchUserSuccess, router]);
 
-  if (!isFetchUserSuccess) return <HomeSkeleton />;
+  if (!isFetchUserSuccess || !isFetchEventsSuccess) return <HomeSkeleton />;
 
   return (
     <>
@@ -225,22 +204,38 @@ export default function HomeDashboard() {
                 className="rounded-full bg-primary"
                 onClick={() => {}}
               />
-              <IconButton
-                onClick={() => {
-                  router.push("/profile");
-                }}
-                variant="ghost"
-                className="border-2 border-main rounded-full !p-0"
-                icon={
-                  <Image
-                    src={user?.image || ""}
-                    width={100}
-                    height={100}
-                    alt="Profile"
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                }
-              />
+              {user?.image ? (
+                <IconButton
+                  onClick={() => {
+                    router.push("/profile");
+                  }}
+                  variant="ghost"
+                  className="border-2 border-main rounded-full !p-0"
+                  icon={
+                    <Image
+                      src={user?.image || ""}
+                      width={100}
+                      height={100}
+                      alt="Profile"
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  }
+                />
+              ) : (
+                <IconButton
+                  onClick={() => {
+                    router.push("/profile");
+                  }}
+                  variant="ghost"
+                  className="rounded-full !p-0"
+                  icon={
+                    <AvatarPlaceholder
+                      fullName={user.name}
+                      className="!w-12 !h-12"
+                    />
+                  }
+                />
+              )}
             </div>
           </div>
         </div>
@@ -255,8 +250,9 @@ export default function HomeDashboard() {
             />
           </div>
           <div className="flex items-center overflow-x-scroll space-x-6 px-6 scroll-snap-bouncy scrollbar-hide">
-            {upcomingEvents.map((event, key) => (
+            {(eventsData.events || []).map((event, key) => (
               <EventCard
+                onSelect={() => router.push(`/events/${event.slug}`)}
                 key={key}
                 event={event}
                 isLoading={eventsLoading}

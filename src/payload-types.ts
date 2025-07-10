@@ -293,6 +293,19 @@ export interface Event {
   headerImage?: string | null;
   about?: string | null;
   organizer: string | Organizer;
+  categories: (
+    | 'tech'
+    | 'cultural'
+    | 'social'
+    | 'networking'
+    | 'workshop'
+    | 'conference'
+    | 'fundraising'
+    | 'wellbeing'
+    | 'arts'
+    | 'sports'
+    | 'other'
+  )[];
   capacity: number;
   ticketsSold?: number | null;
   updatedAt: string;
@@ -512,6 +525,7 @@ export interface EventsSelect<T extends boolean = true> {
   headerImage?: T;
   about?: T;
   organizer?: T;
+  categories?: T;
   capacity?: T;
   ticketsSold?: T;
   updatedAt?: T;

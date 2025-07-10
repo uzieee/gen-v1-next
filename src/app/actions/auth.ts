@@ -65,7 +65,7 @@ export async function phoneAuthAction(formData: FormData) {
     await setAuthCookie(user.id);
 
     /* 5  Return concise result */
-    return { authenticated: true };
+    return { authenticated: true, isExistingUser: Boolean(user) };
   } catch (error) {
     console.error("Authentication error:", error);
     return {
