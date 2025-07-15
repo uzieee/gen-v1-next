@@ -246,7 +246,9 @@ export default function HomeDashboard() {
             <SectionHeader
               title="Upcoming Events"
               emoji="🔥"
-              onSeeAll={() => {}}
+              onSeeAll={() => {
+                router.push("/events");
+              }}
             />
           </div>
           <div className="flex items-center overflow-x-scroll space-x-6 px-6 scroll-snap-bouncy scrollbar-hide">

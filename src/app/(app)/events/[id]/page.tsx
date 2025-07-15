@@ -86,12 +86,12 @@ export default function EventDetailsPage() {
             </svg>
           }
           onRight={onAddUser}
-          title={"Event Detail"}
+          title={"Event Details"}
         />
       </div>
       <div className="px-6 flex flex-col gap-6">
         <div>
-          <div className="relative h-80 rounded-4xl overflow-hidden bg-secondary-800">
+          <div className="relative h-80 rounded-4xl overflow-hidden bg-black/15">
             <Image
               src={event?.headerImage || ""}
               alt={event.name}

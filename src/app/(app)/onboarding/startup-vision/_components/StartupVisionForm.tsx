@@ -133,7 +133,7 @@ export default function StartupVision() {
     await saveStartupVisionAction(null, fd);
 
     await updateUserProfile(fd);
-    // router.push("/home"); // next screen
+    router.push("/onboarding/interests-hobbies"); // next screen
   }
 
   const onSkip = () => router.push("/home");

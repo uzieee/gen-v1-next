@@ -8,7 +8,7 @@ import Tag from "@/components/atoms/Tag";
 import Header from "@/components/molecules/Header";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import { cn } from "@/lib/utils";
-import { Attribute } from "@/payload-types";
+import { Attribute, AttributeCategory } from "@/payload-types";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
@@ -18,7 +18,7 @@ export default function Profile() {
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
 
-  const { data, isSuccess: isFetchUserSuccess } = useCurrentUser(1);
+  const { data, isSuccess: isFetchUserSuccess } = useCurrentUser(2);
 
   const userProfile = useMemo(() => {
     const user = data?.user;
@@ -27,7 +27,11 @@ export default function Profile() {
     return {
       id: user.id,
       name: user.fullName ?? "Unknown",
-      flag: "🏳️", // assuming you store flag here
+      flag: (user.attributes as Attribute[])
+        .filter(
+          (el) => (el.category as AttributeCategory)?.slug === "countries"
+        )
+        .reduce((acc, curr) => acc + " " + (curr.image as string), " "), // assuming you store flag here
       images: [
         user.profileImage, // main
         ...(user.galleryImages ?? []).map((g) => g.url), // gallery

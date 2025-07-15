@@ -42,7 +42,7 @@ export default function Verify() {
             data.append("phoneNumber", phoneNumber as string);
 
             const results = await phoneAuthAction(data);
-            console.log({ results });
+
             if (results.isExistingUser) {
               push(`/home`);
             } else {

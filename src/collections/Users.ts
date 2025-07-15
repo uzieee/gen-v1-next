@@ -1,4 +1,5 @@
 import { checkOTP } from "@/lib/otp";
+import { generateAffinity } from "@/payload-hooks/generate-affinity";
 import { generateUserBio } from "@/payload-hooks/generate-user-bio";
 import type { CollectionConfig } from "payload";
 
@@ -158,8 +159,10 @@ export const Users: CollectionConfig = {
       hasMany: true, // user can own multiple
       admin: { position: "sidebar" },
     },
+    { name: "affinitySignature", type: "text", index: true },
+    { name: "affinityVector", type: "json" },
   ],
   hooks: {
-    afterChange: [generateUserBio],
+    afterChange: [generateAffinity, generateUserBio],
   },
 };

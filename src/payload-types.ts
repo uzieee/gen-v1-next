@@ -156,6 +156,16 @@ export interface User {
   bio?: string | null;
   profession?: (string | null) | Profession;
   startups?: (string | Startup)[] | null;
+  affinitySignature?: string | null;
+  affinityVector?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -437,6 +447,8 @@ export interface UsersSelect<T extends boolean = true> {
   bio?: T;
   profession?: T;
   startups?: T;
+  affinitySignature?: T;
+  affinityVector?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

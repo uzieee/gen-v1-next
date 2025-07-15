@@ -79,3 +79,6 @@ export const Events: CollectionConfig = {
     },
   ],
 };
+
+// Each event should have a round table sessions, for each event we have a finite number of physical tables which have to be accounted for
+// each round table has a finite number of seats that also varies depending on the event... now we need to
