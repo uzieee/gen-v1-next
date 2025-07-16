@@ -71,3 +71,19 @@ export function getCountryCodes() {
 const nano = customAlphabet("346789ABCDEFGHJKMNPQRTUVWXY", 8);
 
 export const generateTicketCode = () => `GEN-${nano()}`;
+
+/** Rotate an array by offset */
+export function rotate<T>(arr: T[], offset: number): T[] {
+  const n = arr.length;
+  const m = ((offset % n) + n) % n;
+  return arr.slice(m).concat(arr.slice(0, m));
+}
+
+/** Chunk an array into fixed-size batches */
+export function chunk<T>(arr: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+}

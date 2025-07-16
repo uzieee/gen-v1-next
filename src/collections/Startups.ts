@@ -37,7 +37,7 @@ export const Startups: CollectionConfig = {
       type: "relationship",
       relationTo: "attributes",
       hasMany: true,
-      required: true,
+      //   required: true,
       admin: { description: 'Attribute(s) from "professional-fields"' },
     },
 

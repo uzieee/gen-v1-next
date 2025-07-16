@@ -77,6 +77,36 @@ export const Events: CollectionConfig = {
       defaultValue: 0,
       admin: { readOnly: true },
     },
+    {
+      name: "numberOfSessions",
+      label: "How many sessions?",
+      type: "number",
+      required: true,
+      defaultValue: 2,
+      admin: { description: "Total 30-min sessions for this event" },
+    },
+    {
+      name: "numberOfTables",
+      label: "Tables per session",
+      type: "number",
+      required: true,
+      defaultValue: 4,
+    },
+    {
+      name: "maxUsersPerTable",
+      label: "Max users per table",
+      type: "number",
+      required: true,
+      defaultValue: 5,
+    },
+    {
+      name: "sessionDuration",
+      label: "Session duration (minutes)",
+      type: "number",
+      required: true,
+      defaultValue: 30,
+      admin: { description: "Adjust if you want more/less than 30 minutes" },
+    },
   ],
 };
 

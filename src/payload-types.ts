@@ -77,6 +77,8 @@ export interface Config {
     tickets: Ticket;
     professions: Profession;
     startups: Startup;
+    sessions: Session;
+    'table-assignments': TableAssignment;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -93,6 +95,8 @@ export interface Config {
     tickets: TicketsSelect<false> | TicketsSelect<true>;
     professions: ProfessionsSelect<false> | ProfessionsSelect<true>;
     startups: StartupsSelect<false> | StartupsSelect<true>;
+    sessions: SessionsSelect<false> | SessionsSelect<true>;
+    'table-assignments': TableAssignmentsSelect<false> | TableAssignmentsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -232,7 +236,7 @@ export interface Startup {
   /**
    * Attribute(s) from "professional-fields"
    */
-  industries: (string | Attribute)[];
+  industries?: (string | Attribute)[] | null;
   supportNeeded?:
     | ('funding' | 'mentorship' | 'collaborators' | 'tools' | 'early-users' | 'encouragement' | 'other')[]
     | null;
@@ -318,6 +322,16 @@ export interface Event {
   )[];
   capacity: number;
   ticketsSold?: number | null;
+  /**
+   * Total 30-min sessions for this event
+   */
+  numberOfSessions: number;
+  numberOfTables: number;
+  maxUsersPerTable: number;
+  /**
+   * Adjust if you want more/less than 30 minutes
+   */
+  sessionDuration: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -332,6 +346,53 @@ export interface Ticket {
   seatNumber?: string | null;
   tableNumber?: string | null;
   code?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sessions".
+ */
+export interface Session {
+  id: string;
+  event: string | Event;
+  /**
+   * 1-based index of this session
+   */
+  sessionNumber: number;
+  startTime: string;
+  /**
+   * minutes
+   */
+  duration: number;
+  /**
+   * AI-generated discussion topic
+   */
+  topic?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "table-assignments".
+ */
+export interface TableAssignment {
+  id: string;
+  session: string | Session;
+  /**
+   * 1-based table index within session
+   */
+  tableNumber: number;
+  user: string | User;
+  questions?:
+    | {
+        /**
+         * One AI-generated ice-breaker question
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -381,6 +442,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'startups';
         value: string | Startup;
+      } | null)
+    | ({
+        relationTo: 'sessions';
+        value: string | Session;
+      } | null)
+    | ({
+        relationTo: 'table-assignments';
+        value: string | TableAssignment;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -540,6 +609,10 @@ export interface EventsSelect<T extends boolean = true> {
   categories?: T;
   capacity?: T;
   ticketsSold?: T;
+  numberOfSessions?: T;
+  numberOfTables?: T;
+  maxUsersPerTable?: T;
+  sessionDuration?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -579,6 +652,36 @@ export interface StartupsSelect<T extends boolean = true> {
   description?: T;
   industries?: T;
   supportNeeded?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sessions_select".
+ */
+export interface SessionsSelect<T extends boolean = true> {
+  event?: T;
+  sessionNumber?: T;
+  startTime?: T;
+  duration?: T;
+  topic?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "table-assignments_select".
+ */
+export interface TableAssignmentsSelect<T extends boolean = true> {
+  session?: T;
+  tableNumber?: T;
+  user?: T;
+  questions?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
