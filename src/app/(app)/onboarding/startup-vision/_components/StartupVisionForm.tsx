@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { z } from "zod";
@@ -96,7 +97,9 @@ export default function StartupVision() {
         projectTitle: startup.title,
         stage: startup.stage,
         projectDescription: startup.description,
-        industries: (startup.industries[0] as Attribute).id,
+        industries: startup.industries?.[0]
+          ? (startup.industries[0] as Attribute).id
+          : "",
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         support: (startup.supportNeeded || [])[0] as any,
       });

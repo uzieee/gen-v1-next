@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/events/[key]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getPayload } from "payload";
@@ -11,10 +12,7 @@ const POPULATE = [
   { path: "headerImage" },
 ];
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: { slug: string } }
-) {
+export async function GET(_req: NextRequest, { params }: any) {
   try {
     const key = await params.slug; // id OR slug
 
@@ -26,8 +24,6 @@ export async function GET(
     const isObjectId = /^[a-f\d]{24}$/i.test(key);
 
     const query = isObjectId ? { _id: key } : { slug: key };
-
-    console.log({ key });
 
     const event = await payload.db.collections.events
       .findOne(query)

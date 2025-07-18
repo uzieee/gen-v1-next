@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/users/[userId]/pending-sessions/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getPayload } from "payload";
@@ -5,10 +6,7 @@ import payloadConfig from "@payload-config";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { userId: string } }
-) {
+export async function GET(req: NextRequest, { params }: any) {
   const { userId } = await params;
   if (!userId) {
     return NextResponse.json(

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useCurrentUser } from "@/app/hooks/use-current-user";
@@ -71,7 +72,6 @@ export default function EditProfile() {
     if (profileImage) {
       setValue("profilePicture", profileImage);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileImage]);
 
   return (

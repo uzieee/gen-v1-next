@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/sessions/[sessionId]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getPayload } from "payload";
@@ -5,10 +6,7 @@ import payloadConfig from "@payload-config";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { sessionId: string } }
-) {
+export async function GET(req: NextRequest, { params }: any) {
   const { sessionId } = params;
   const url = new URL(req.url);
   const tn = url.searchParams.get("tableNumber");

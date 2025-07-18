@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { saveUserAttributesAction } from "@/app/actions/users";
 import useApiQuery from "@/app/hooks/use-api-query";

@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+
 import useApiQuery from "@/app/hooks/use-api-query";
 import { fetchAttributes } from "@/app/services/http/attributes";
 import HeaderWithSteps from "@/components/molecules/HeaderWithSteps";
