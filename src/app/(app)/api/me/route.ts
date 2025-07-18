@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import jwt                           from 'jsonwebtoken'
-import 'dotenv/config'
-
-import { getPayload }  from 'payload'
-import payloadConfig   from '@payload-config'   // adjust path
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import "dotenv/config";
+import { getPayload } from "payload";
+import payloadConfig from "@payload-config"; // adjust path
 
 /******************************************************************
  * GET /api/me?depth=2
@@ -17,44 +16,44 @@ import payloadConfig   from '@payload-config'   // adjust path
  ******************************************************************/
 export async function GET(req: NextRequest) {
   /* ── 1 · extract token ─────────────────────────────────────── */
-  let token: string | undefined
+  let token: string | undefined;
 
-  const auth = req.headers.get('authorization') || ''
-  const [, maybeToken] = auth.split(' ')
-  if (auth.startsWith('JWT ') && maybeToken) token = maybeToken
-  if (!token) token = req.cookies.get('payload-token')?.value
+  const auth = req.headers.get("authorization") || "";
+  const [, maybeToken] = auth.split(" ");
+  if (auth.startsWith("JWT ") && maybeToken) token = maybeToken;
+  if (!token) token = req.cookies.get("payload-token")?.value;
 
   if (!token) {
-    return NextResponse.json({ error: 'unauthenticated' }, { status: 401 })
+    return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   }
 
   /* ── 2 · verify ─────────────────────────────────────────────── */
-  let userId: string
+  let userId: string;
   try {
     const decoded = jwt.verify(token, process.env.PAYLOAD_SECRET!) as {
-      id: string
-      collection: string
-    }
-    if (decoded.collection !== 'users') throw new Error('not a user token')
-    userId = decoded.id
+      id: string;
+      collection: string;
+    };
+    if (decoded.collection !== "users") throw new Error("not a user token");
+    userId = decoded.id;
   } catch {
-    return NextResponse.json({ error: 'invalid token' }, { status: 401 })
+    return NextResponse.json({ error: "invalid token" }, { status: 401 });
   }
 
   /* ── 3 · payload init ───────────────────────────────────────── */
   const payload = await getPayload({
-    config  : payloadConfig,
-  })
+    config: payloadConfig,
+  });
 
   /* ── 4 · depth param (default 0) ────────────────────────────── */
-  const depth = Number(req.nextUrl.searchParams.get('depth') ?? '0')
+  const depth = Number(req.nextUrl.searchParams.get("depth") ?? "0");
 
   /* ── 5 · fetch user ─────────────────────────────────────────── */
   const user = await payload.findByID({
-    collection: 'users',
-    id   : userId,
+    collection: "users",
+    id: userId,
     depth: isNaN(depth) ? 0 : depth,
-  })
+  });
 
-  return NextResponse.json({ user }, { status: 200 })
+  return NextResponse.json({ user }, { status: 200 });
 }

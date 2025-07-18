@@ -19,19 +19,21 @@ export const generateUserBio = async ({
   operation,
   req,
 }: any) => {
-  /* -------------------------------------------------- */
-  /* 1 — early-exit guards                              */
-  /* -------------------------------------------------- */
-
-  // must have at least one attribute
+  /* ────────────────────────────── 1  Early-exit guards ───────────────────────────── */
   const attrsArr = (doc.attributes as any[]) ?? [];
-  if (attrsArr.length === 0) return;
+  const professionId = doc.profession;
+  const startupsIds = (doc.startups as string[]) ?? [];
 
-  // skip if bio already set manually
+  // Must have at least one data point (attributes or profession or startup)
+  if (attrsArr.length === 0 && !professionId && startupsIds.length === 0)
+    return;
+
+  // Skip if user manually set bio
   if (doc.bio) return;
 
-  // only run on create OR when attributes changed
+  // Run on create OR if relevant data changed
   const created = operation === "create";
+
   const attributesChanged =
     !created &&
     JSON.stringify(attrsArr.map((a) => a.id).sort()) !==
@@ -39,28 +41,67 @@ export const generateUserBio = async ({
         ((previousDoc?.attributes as any[]) ?? []).map((a) => a.id).sort()
       );
 
-  if (!created && !attributesChanged) return;
+  const professionChanged =
+    !created &&
+    previousDoc?.profession?.toString() !== professionId?.toString();
 
-  /* -------------------------------------------------- */
-  /* 2 — build OpenAI prompt                            */
-  /* -------------------------------------------------- */
+  const startupsChanged =
+    !created &&
+    JSON.stringify(startupsIds.sort()) !==
+      JSON.stringify(((previousDoc?.startups as string[]) ?? []).sort());
 
+  if (!created && !attributesChanged && !professionChanged && !startupsChanged)
+    return;
+
+  /* ────────────────────────────── 2  Fetch related docs if needed ─────────────────── */
+  let profession: any | undefined;
+  if (professionId) {
+    profession = await req.payload.findByID({
+      collection: "professions",
+      id: professionId,
+      depth: 1,
+    });
+  }
+
+  let startups: any[] = [];
+  if (startupsIds.length) {
+    const { docs: s } = await req.payload.find({
+      collection: "startups",
+      where: { id: { in: startupsIds } },
+      depth: 0,
+      limit: 3,
+    });
+    startups = s;
+  }
+
+  /* ────────────────────────────── 3  Build prompt ─────────────────────────────────── */
   const attrs = attrsArr.map((a) => a.label).join(", ");
+  const country = attrsArr
+    .filter((a) => a.category?.slug === "countries")
+    .map((a) => a.label)
+    .join(", ");
+
+  const professionStr = profession
+    ? `${profession.jobTitle} in ${profession.professionalField?.label}`
+    : "";
+
+  const startupsStr = startups
+    .slice(0, 2)
+    .map((s) => `${s.title} (${s.stage})`)
+    .join(", ");
+
   const prompt = `
-  You are GenV1's onboarding assistant. Write a concise,
-  friendly, third-person bio (35–45 words) for the following user.
-  
-  Name: ${doc.fullName ?? "Unnamed"}
-  Gender: ${doc.gender ?? "N/A"}
-  Interests & attributes: ${attrs}
-  
-  Bio:
+    You are GenV1’s friendly onboarding assistant. Craft a warm, engaging third-person bio (35–45 words) that flows naturally—using appropriate pronouns—without listing facts. Weave in their background, profession, any startups they’ve launched, and key interests, painting a vivid picture of who they are.
+    Name: ${doc.fullName ?? "Unnamed"}
+    Countries: ${country || "N/A"}
+    Profession: ${professionStr || "N/A"}
+    Startups: ${startupsStr || "None"}
+    Interests: ${attrs || "N/A"}
+    
+    Bio:
     `.trim();
 
-  /* -------------------------------------------------- */
-  /* 3 — call OpenAI                                    */
-  /* -------------------------------------------------- */
-
+  /* ────────────────────────────── 4  Call OpenAI ─────────────────────────────────── */
   try {
     const res = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -72,9 +113,7 @@ export const generateUserBio = async ({
     const generated = res.choices[0]?.message.content?.trim();
     if (!generated) return;
 
-    /* -------------------------------------------------- */
-    /* 4 — patch user with generated bio                  */
-    /* -------------------------------------------------- */
+    /* ────────────────────────── 5  Patch user doc ────────────────────────────────── */
     await req.payload.update({
       collection: "users",
       id: doc.id,

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { saveUserAttributesAction } from "@/app/actions/users";
 import useApiQuery from "@/app/hooks/use-api-query";
@@ -12,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { Attribute } from "@/payload-types";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 import { Search, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 
 interface Props {
@@ -24,6 +25,9 @@ export default function LanguageCountries({ attributes = [] }: Props) {
   const [selectedAttributes, setSelectedAttributes] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("language");
+
+  const searchParams = useSearchParams();
+  const isQuickEdit = searchParams.get("quick");
 
   useEffect(() => {
     if (attributes.length)
@@ -79,7 +83,9 @@ export default function LanguageCountries({ attributes = [] }: Props) {
   };
 
   const onSkip = () => {
-    router.push("/onboarding/take-a-photo");
+    if (isQuickEdit) {
+      router.replace("/profile");
+    } else router.push("/onboarding/work-profession");
   };
 
   async function onSubmit() {
@@ -87,7 +93,9 @@ export default function LanguageCountries({ attributes = [] }: Props) {
     selectedAttributes.forEach((id) => fd.append("attributeIds", id));
     const res = await saveUserAttributesAction(fd);
     if (res?.error) alert(JSON.stringify(res.error));
-    router.push("/onboarding/take-a-photo");
+    if (isQuickEdit) {
+      router.replace("/profile");
+    } else router.push("/onboarding/work-profession");
   }
 
   const { selectedLanguages, selectedCountries } = useMemo(() => {
@@ -106,11 +114,20 @@ export default function LanguageCountries({ attributes = [] }: Props) {
       : selectedCountries.length > 0;
   }, [selectedLanguages, selectedCountries, activeTab]);
 
+  useEffect(() => {
+    if (searchQuery?.length > 0) {
+      setSearchQuery("");
+    }
+  }, [activeTab]);
+
   return (
-    <>
+    <div className="w-full h-screen overflow-y-scroll flex flex-col">
       <HeaderWithSteps onSkip={onSkip} action="Skip" activeIndicator={3} />
-      <form action={onSubmit} className="flex flex-col gap-14 p-8">
-        <div className="flex flex-col mb-22 gap-7">
+      <form
+        action={onSubmit}
+        className="flex flex-col flex-1 overflow-y-scroll gap-14 px-8"
+      >
+        <div className="flex flex-col flex-1 gap-7 mb-16">
           <div className="flex flex-col gap-3">
             <div className="text-2xl font-bold text-main-600 font-ariom">
               {activeTab == "language"
@@ -151,7 +168,11 @@ export default function LanguageCountries({ attributes = [] }: Props) {
               />
             ))}
           </div>
-          <Tabs defaultValue={activeTab} activationMode="manual">
+          <Tabs
+            className="flex overflow-y-scroll flex-col flex-1"
+            defaultValue={activeTab}
+            activationMode="manual"
+          >
             <TabsList className="flex items-center gap-6 shadow-none">
               <TabsTrigger
                 value="language"
@@ -180,7 +201,7 @@ export default function LanguageCountries({ attributes = [] }: Props) {
             </TabsList>
             <TabsContent
               value="language"
-              className="mt-10 h-[500px] overflow-y-auto"
+              className="mt-10 flex-1 overflow-y-scroll"
             >
               <SelectableList
                 item="language"
@@ -191,7 +212,7 @@ export default function LanguageCountries({ attributes = [] }: Props) {
             </TabsContent>
             <TabsContent
               value="countries"
-              className="mt-10 h-[500px] overflow-y-auto"
+              className="mt-10 flex-1 overflow-y-auto"
             >
               <SelectableList
                 item="country"
@@ -201,12 +222,12 @@ export default function LanguageCountries({ attributes = [] }: Props) {
               />
             </TabsContent>
           </Tabs>
+          <FormSubmitButton
+            className="absolute left-0 right-0 bottom-0 rounded-bl-[0px] rounded-br-[0px] rounded-t-[1rem] h-[4rem]"
+            state={isValid ? "default" : "disabled"}
+          />
         </div>
-        <FormSubmitButton
-          className="absolute left-0 right-0 bottom-0 rounded-bl-[0px] rounded-br-[0px] rounded-t-[1rem] h-[4rem]"
-          state={isValid ? "default" : "disabled"}
-        />
       </form>
-    </>
+    </div>
   );
 }

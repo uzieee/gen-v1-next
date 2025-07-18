@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import { customAlphabet } from "nanoid";
+import { Attribute, Profession, Startup } from "@/payload-types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -71,3 +72,76 @@ export function getCountryCodes() {
 const nano = customAlphabet("346789ABCDEFGHJKMNPQRTUVWXY", 8);
 
 export const generateTicketCode = () => `GEN-${nano()}`;
+
+/** Rotate an array by offset */
+export function rotate<T>(arr: T[], offset: number): T[] {
+  const n = arr.length;
+  const m = ((offset % n) + n) % n;
+  return arr.slice(m).concat(arr.slice(0, m));
+}
+
+/** Chunk an array into fixed-size batches */
+export function chunk<T>(arr: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+}
+
+export function getProfessionSummary({
+  profession,
+  userName,
+}: {
+  profession?: Profession;
+  userName: string;
+}): string {
+  const { jobTitle, jobDescription, professionalField } = profession || {};
+  const field = (professionalField as Attribute)?.label;
+
+  // Use job description if it exists and is not empty
+  const jd =
+    jobDescription && jobDescription.trim().length > 0
+      ? `<br />
+    ${userName}: ${jobDescription}`
+      : "";
+
+  if (jobTitle && field) {
+    return `${userName} is a ${jobTitle} working in ${field}.` + jd;
+  } else if (jobTitle) {
+    return `${userName} works as a ${jobTitle}.` + jd;
+  } else if (field) {
+    return `${userName} works in ${field}.` + jd;
+  } else {
+    return jd.length > 0 ? jd : `${userName} is exploring their career path.`;
+  }
+}
+
+export function getStartupSummary({
+  startup,
+  userName,
+}: {
+  startup: Startup;
+  userName: string;
+}): string {
+  const { title, description, stage, industries } = startup;
+  const industry = (industries as Attribute[])?.[0]?.label;
+
+  // Use description if it exists and is not empty
+  if (description && description.trim().length > 0) {
+    return `${userName} is working on ${title}: ${description}`;
+  }
+
+  // Build summary based on available information
+  if (title && industry && stage) {
+    return `${userName} is ${stage} ${title}, a startup in ${industry}.`;
+  } else if (title && stage) {
+    return `${userName} is ${stage} ${title}.`;
+  } else if (title && industry) {
+    return `${userName} is working on ${title} in ${industry}.`;
+  } else if (title) {
+    return `${userName} is working on ${title}.`;
+  } else {
+    return `${userName} is working on a startup project.`;
+  }
+}

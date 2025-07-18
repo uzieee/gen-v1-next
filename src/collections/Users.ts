@@ -1,4 +1,5 @@
 import { checkOTP } from "@/lib/otp";
+import { generateAffinity } from "@/payload-hooks/generate-affinity";
 import { generateUserBio } from "@/payload-hooks/generate-user-bio";
 import type { CollectionConfig } from "payload";
 
@@ -144,8 +145,24 @@ export const Users: CollectionConfig = {
         rows: 3,
       },
     },
+    {
+      name: "profession",
+      type: "relationship",
+      relationTo: "professions",
+      hasMany: false, // single current profession
+      admin: { position: "sidebar" },
+    },
+    {
+      name: "startups",
+      type: "relationship",
+      relationTo: "startups",
+      hasMany: true, // user can own multiple
+      admin: { position: "sidebar" },
+    },
+    { name: "affinitySignature", type: "text", index: true },
+    { name: "affinityVector", type: "json" },
   ],
   hooks: {
-    afterChange: [generateUserBio],
+    afterChange: [generateAffinity, generateUserBio],
   },
 };

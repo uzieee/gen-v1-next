@@ -75,6 +75,10 @@ export interface Config {
     organizers: Organizer;
     events: Event;
     tickets: Ticket;
+    professions: Profession;
+    startups: Startup;
+    sessions: Session;
+    'table-assignments': TableAssignment;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -89,6 +93,10 @@ export interface Config {
     organizers: OrganizersSelect<false> | OrganizersSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     tickets: TicketsSelect<false> | TicketsSelect<true>;
+    professions: ProfessionsSelect<false> | ProfessionsSelect<true>;
+    startups: StartupsSelect<false> | StartupsSelect<true>;
+    sessions: SessionsSelect<false> | SessionsSelect<true>;
+    'table-assignments': TableAssignmentsSelect<false> | TableAssignmentsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -150,6 +158,18 @@ export interface User {
    * Generated from profile details; editable by admins if needed.
    */
   bio?: string | null;
+  profession?: (string | null) | Profession;
+  startups?: (string | Startup)[] | null;
+  affinitySignature?: string | null;
+  affinityVector?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -184,6 +204,42 @@ export interface AttributeCategory {
   title: string;
   slug: string;
   description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "professions".
+ */
+export interface Profession {
+  id: string;
+  user: string | User;
+  /**
+   * Attribute from "professional-fields" category
+   */
+  professionalField: string | Attribute;
+  jobTitle: string;
+  jobDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "startups".
+ */
+export interface Startup {
+  id: string;
+  user: string | User;
+  title?: string | null;
+  stage: 'established' | 'building' | 'scaling' | 'idea';
+  description?: string | null;
+  /**
+   * Attribute(s) from "professional-fields"
+   */
+  industries?: (string | Attribute)[] | null;
+  supportNeeded?:
+    | ('funding' | 'mentorship' | 'collaborators' | 'tools' | 'early-users' | 'encouragement' | 'other')[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -251,8 +307,31 @@ export interface Event {
   headerImage?: string | null;
   about?: string | null;
   organizer: string | Organizer;
+  categories: (
+    | 'tech'
+    | 'cultural'
+    | 'social'
+    | 'networking'
+    | 'workshop'
+    | 'conference'
+    | 'fundraising'
+    | 'wellbeing'
+    | 'arts'
+    | 'sports'
+    | 'other'
+  )[];
   capacity: number;
   ticketsSold?: number | null;
+  /**
+   * Total 30-min sessions for this event
+   */
+  numberOfSessions: number;
+  numberOfTables: number;
+  maxUsersPerTable: number;
+  /**
+   * Adjust if you want more/less than 30 minutes
+   */
+  sessionDuration: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -267,6 +346,53 @@ export interface Ticket {
   seatNumber?: string | null;
   tableNumber?: string | null;
   code?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sessions".
+ */
+export interface Session {
+  id: string;
+  event: string | Event;
+  /**
+   * 1-based index of this session
+   */
+  sessionNumber: number;
+  startTime: string;
+  /**
+   * minutes
+   */
+  duration: number;
+  /**
+   * AI-generated discussion topic
+   */
+  topic?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "table-assignments".
+ */
+export interface TableAssignment {
+  id: string;
+  session: string | Session;
+  /**
+   * 1-based table index within session
+   */
+  tableNumber: number;
+  user: string | User;
+  questions?:
+    | {
+        /**
+         * One AI-generated ice-breaker question
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -308,6 +434,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tickets';
         value: string | Ticket;
+      } | null)
+    | ({
+        relationTo: 'professions';
+        value: string | Profession;
+      } | null)
+    | ({
+        relationTo: 'startups';
+        value: string | Startup;
+      } | null)
+    | ({
+        relationTo: 'sessions';
+        value: string | Session;
+      } | null)
+    | ({
+        relationTo: 'table-assignments';
+        value: string | TableAssignment;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -372,6 +514,10 @@ export interface UsersSelect<T extends boolean = true> {
         id?: T;
       };
   bio?: T;
+  profession?: T;
+  startups?: T;
+  affinitySignature?: T;
+  affinityVector?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -460,8 +606,13 @@ export interface EventsSelect<T extends boolean = true> {
   headerImage?: T;
   about?: T;
   organizer?: T;
+  categories?: T;
   capacity?: T;
   ticketsSold?: T;
+  numberOfSessions?: T;
+  numberOfTables?: T;
+  maxUsersPerTable?: T;
+  sessionDuration?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -475,6 +626,62 @@ export interface TicketsSelect<T extends boolean = true> {
   seatNumber?: T;
   tableNumber?: T;
   code?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "professions_select".
+ */
+export interface ProfessionsSelect<T extends boolean = true> {
+  user?: T;
+  professionalField?: T;
+  jobTitle?: T;
+  jobDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "startups_select".
+ */
+export interface StartupsSelect<T extends boolean = true> {
+  user?: T;
+  title?: T;
+  stage?: T;
+  description?: T;
+  industries?: T;
+  supportNeeded?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sessions_select".
+ */
+export interface SessionsSelect<T extends boolean = true> {
+  event?: T;
+  sessionNumber?: T;
+  startTime?: T;
+  duration?: T;
+  topic?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "table-assignments_select".
+ */
+export interface TableAssignmentsSelect<T extends boolean = true> {
+  session?: T;
+  tableNumber?: T;
+  user?: T;
+  questions?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

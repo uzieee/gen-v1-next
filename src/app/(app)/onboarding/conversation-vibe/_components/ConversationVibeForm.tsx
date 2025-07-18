@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { saveUserAttributesAction } from "@/app/actions/users";
@@ -76,7 +75,7 @@ export default function ConversationVibeForm({ attributes }: Props) {
 
   async function onSubmit() {
     if (!selectedVibe) {
-      router.push("/onboarding/language-country");
+      router.push("/onboarding/take-a-photo");
       return;
     }
     const fd = new FormData();
@@ -84,11 +83,11 @@ export default function ConversationVibeForm({ attributes }: Props) {
     fd.append("mode", "append");
     const res = await saveUserAttributesAction(fd);
     if (res?.error) alert(JSON.stringify(res.error));
-    router.push("/onboarding/language-country");
+    router.push("/onboarding/take-a-photo");
   }
 
   const onSkip = () => {
-    router.push("/onboarding/language-country");
+    router.push("/onboarding/take-a-photo");
   };
 
   if (!isSuccess) return <ConversationVibeSkeleton />;

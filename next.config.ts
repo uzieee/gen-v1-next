@@ -5,14 +5,11 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     serverActions: {
-      bodySizeLimit: '4mb',
+      bodySizeLimit: "12mb",
     },
   },
   images: {
-    domains: [
-      "localhost",
-      "res.cloudinary.com",
-    ],
+    domains: ["localhost", "res.cloudinary.com"],
   },
 };
 

@@ -3,11 +3,6 @@ import { JWT_SECRET } from "@/lib/jwt-secret";
 import { cookies } from "next/headers";
 
 export async function setAuthCookie(userId: string) {
-  console.log(
-    "sign secret",
-    JWT_SECRET.length,
-    Buffer.from(JWT_SECRET).toString("hex")
-  );
   const token = jwt.sign({ id: userId, collection: "users" }, JWT_SECRET, {
     expiresIn: "30d",
   });

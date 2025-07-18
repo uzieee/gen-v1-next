@@ -6,11 +6,14 @@ import PhotoSlot from "@/components/atoms/PhotoSlot";
 import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
 import HeaderWithSteps from "@/components/molecules/HeaderWithSteps";
 import TakePhotoSkeleton from "@/components/skeletons/TakePhotoSkeleton";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function TakeAPhoto() {
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const isQuickEdit = searchParams.get("quick");
 
   const { data, isSuccess: isFetchUserSuccess } = useCurrentUser();
 
@@ -52,7 +55,7 @@ export default function TakeAPhoto() {
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
+  const MAX_FILE_SIZE = 4 * 1024 * 1024; // 2MB in bytes
 
   const handlePhotoUpload = (photoKey: string) => {
     // Clear previous error for this photo
@@ -73,7 +76,7 @@ export default function TakeAPhoto() {
         if (file.size > MAX_FILE_SIZE) {
           setErrors((prev) => ({
             ...prev,
-            [photoKey]: "Image size must be less than 2MB",
+            [photoKey]: "Image size must be less than 4MB",
           }));
           return;
         }
@@ -99,7 +102,7 @@ export default function TakeAPhoto() {
   };
 
   const onSkip = () => {
-    router.push("/onboarding/signup");
+    router.push("/home");
   };
 
   async function onSubmit() {
@@ -118,6 +121,8 @@ export default function TakeAPhoto() {
     const res = await updateUserImagesAction(fd);
     if (res?.error) {
       alert(JSON.stringify(res.error));
+    } else if (isQuickEdit) {
+      router.push("/profile");
     } else {
       router.push("/home");
     }

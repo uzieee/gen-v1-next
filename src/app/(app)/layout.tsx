@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import QueryClientProvider from "@/components/QueryClientProvider";
 import "./globals.css";
 import PageTransition from "@/components/motion/PageTransition";
+import { Suspense } from "react";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -89,7 +90,9 @@ export default function RootLayout({
     >
       <body className="antialiased h-screen sm:flex sm:items-center sm:max-w-md mx-auto">
         <QueryClientProvider>
-          <PageTransition>{children}</PageTransition>
+          <Suspense fallback={null}>
+            <PageTransition>{children}</PageTransition>
+          </Suspense>
         </QueryClientProvider>
       </body>
     </html>

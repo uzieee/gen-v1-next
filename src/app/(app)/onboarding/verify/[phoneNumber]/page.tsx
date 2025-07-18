@@ -42,8 +42,12 @@ export default function Verify() {
             data.append("phoneNumber", phoneNumber as string);
 
             const results = await phoneAuthAction(data);
-            console.log({ results });
-            push(`/onboarding/account-setup`);
+
+            if (results.isExistingUser) {
+              push(`/home`);
+            } else {
+              push(`/onboarding/account-setup`);
+            }
           } catch (error) {
             console.log(error);
             return;

@@ -8,12 +8,15 @@ import Header from "@/components/molecules/Header";
 import TextField from "@/components/molecules/TextField";
 import { accountSetupSchema, IAccountSetupDetails } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 
 export default function AccountSetup() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isQuickEdit = searchParams.get("quick");
+
   const {
     formState: { isValid, errors },
     control,
@@ -27,7 +30,7 @@ export default function AccountSetup() {
   });
 
   const onBack = () => {
-    router.replace("/onboarding/signin");
+    router.replace(isQuickEdit ? "/profile" : "/onboarding/signin");
   };
 
   return (
@@ -47,7 +50,7 @@ export default function AccountSetup() {
 
             await updateUserProfile(data);
 
-            router.push(`/onboarding/interests-hobbies`);
+            router.push(`/onboarding/language-country`);
           } catch (error) {
             console.log(error);
             return;
@@ -66,8 +69,12 @@ export default function AccountSetup() {
           </div>
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-1">
-              <div className="text-lg font-medium text-main-300">Full Names</div>
-              <div className="text-xs font-ariom text-secondary-800">Spelled exactly as you want it to appear</div>
+              <div className="text-lg font-medium text-main-300">
+                Full Names
+              </div>
+              <div className="text-xs font-ariom text-secondary-800">
+                Spelled exactly as you want it to appear
+              </div>
             </div>
             <TextField
               {...register("fullNames")}
@@ -108,10 +115,26 @@ export default function AccountSetup() {
                   options={[
                     { value: "female", label: "Female", id: "female" },
                     { value: "male", label: "Male", id: "male" },
-                    { value: "non-binary", label: "Non-binary", id: "non-binary" },
-                    { value: 'two-spirit', label: 'Two-Spirit', id: 'two-spirit' },
-                    { value: 'prefer-to-self-describe', label: 'Prefer to self-describe', id: 'prefer-to-self-describe' },
-                    { value: 'prefer-not-to-say', label: 'Prefer not to say', id: 'prefer-not-to-say' },
+                    {
+                      value: "non-binary",
+                      label: "Non-binary",
+                      id: "non-binary",
+                    },
+                    {
+                      value: "two-spirit",
+                      label: "Two-Spirit",
+                      id: "two-spirit",
+                    },
+                    {
+                      value: "prefer-to-self-describe",
+                      label: "Prefer to self-describe",
+                      id: "prefer-to-self-describe",
+                    },
+                    {
+                      value: "prefer-not-to-say",
+                      label: "Prefer not to say",
+                      id: "prefer-not-to-say",
+                    },
                   ]}
                   error={errors.gender?.message}
                   {...field}
@@ -135,7 +158,9 @@ export default function AccountSetup() {
                   />
                 )}
               />
-              <div className="text-xs font-ariom text-secondary-800">Date of birth — for onboarding only. Not shown on your profile.</div>
+              <div className="text-xs font-ariom text-secondary-800">
+                Date of birth — for onboarding only. Not shown on your profile.
+              </div>
             </div>
           </div>
         </div>

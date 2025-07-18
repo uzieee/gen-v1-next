@@ -24,7 +24,7 @@ export default function HomeSkeleton() {
   );
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
+    <div className="min-h-screen bg-background text-white flex flex-col">
       {/* header */}
       <div className="px-6 pt-12 flex justify-between items-center">
         <div>

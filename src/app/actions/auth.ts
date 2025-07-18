@@ -25,6 +25,7 @@ export async function phoneAuthAction(formData: FormData) {
     }
 
     /* 2 Upsert user in Payload */
+    console.log({ phone });
     const payload = await getPayload({ config });
     const { docs } = await payload.find({
       collection: "users",
@@ -65,7 +66,10 @@ export async function phoneAuthAction(formData: FormData) {
     await setAuthCookie(user.id);
 
     /* 5  Return concise result */
-    return { authenticated: true };
+    return {
+      authenticated: true,
+      isExistingUser: !!docs[0],
+    };
   } catch (error) {
     console.error("Authentication error:", error);
     return {

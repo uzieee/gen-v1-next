@@ -1,14 +1,18 @@
 "use client";
 import { useCurrentUser } from "@/app/hooks/use-current-user";
-import CustomButton from "@/components/atoms/CustomButton";
 import IconButton from "@/components/atoms/IconButton";
 import InfoCard from "@/components/atoms/InfoCard";
 import ProgressIndicator from "@/components/atoms/ProgressIndicator";
 import Tag from "@/components/atoms/Tag";
 import Header from "@/components/molecules/Header";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
-import { cn } from "@/lib/utils";
-import { Attribute } from "@/payload-types";
+import { getProfessionSummary, getStartupSummary } from "@/lib/utils";
+import {
+  Attribute,
+  AttributeCategory,
+  Profession,
+  Startup,
+} from "@/payload-types";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
@@ -16,9 +20,8 @@ import { useSwipeable } from "react-swipeable";
 export default function Profile() {
   const router = useRouter();
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
 
-  const { data, isSuccess: isFetchUserSuccess } = useCurrentUser(1);
+  const { data, isSuccess: isFetchUserSuccess } = useCurrentUser(2);
 
   const userProfile = useMemo(() => {
     const user = data?.user;
@@ -27,12 +30,28 @@ export default function Profile() {
     return {
       id: user.id,
       name: user.fullName ?? "Unknown",
-      flag: "🏳️", // assuming you store flag here
+      flag: ((user.attributes as Attribute[]) || [])
+        .filter(
+          (el) => (el.category as AttributeCategory)?.slug === "countries"
+        )
+        .reduce((acc, curr) => acc + " " + (curr.image as string), " "), // assuming you store flag here
       images: [
         user.profileImage, // main
         ...(user.galleryImages ?? []).map((g) => g.url), // gallery
       ].filter(Boolean), // drop empties
       bio: user.bio ?? "",
+      work: user.profession
+        ? getProfessionSummary({
+            profession: user.profession as Profession,
+            userName: (user.fullName || "").split(" ")[0],
+          })
+        : "N/A",
+      startup: user.startups
+        ? getStartupSummary({
+            startup: user.startups[0] as Startup,
+            userName: (user.fullName || "").split(" ")[0],
+          })
+        : "N/A",
       topics: ((user.attributes as Attribute[]) ?? []).map((a) => a.label), // labels only
     };
   }, [isFetchUserSuccess, data]);
@@ -41,21 +60,15 @@ export default function Profile() {
     router.back();
   };
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-  };
-
   const goToNextProfile = () => {
     if (currentProfileIndex < (userProfile?.images || []).length - 1) {
       setCurrentProfileIndex((prev) => prev + 1);
-      setIsLiked(false);
     }
   };
 
   const goToPreviousProfile = () => {
     if (currentProfileIndex > 0) {
       setCurrentProfileIndex((prev) => prev - 1);
-      setIsLiked(false);
     }
   };
 
@@ -83,7 +96,7 @@ export default function Profile() {
           />
           <Header
             onBack={handleBack}
-            onRight={() => router.push("/edit-profile")}
+            onRight={() => router.push("/onboarding/account-setup?quick=true")}
             rightIcon={
               <svg
                 width="32"
@@ -106,7 +119,7 @@ export default function Profile() {
           <div className="absolute bottom-0 flex items-end justify-between px-4 pb-3.5 w-full">
             <div className="flex flex-col gap-2.5">
               <div className="text-2xl font-medium text-main font-hellix">
-                {userProfile?.name || ""} {userProfile?.flag || "🇷🇼"}
+                {userProfile?.name || ""} {userProfile?.flag || "🇨🇦"}
               </div>
               <div className="flex gap-1">
                 <IconButton
@@ -171,56 +184,21 @@ export default function Profile() {
                 />
               </div>
             </div>
-            <div
-              onClick={handleLike}
-              className={cn(
-                "cursor-pointer w-14 h-14 rounded-full border",
-                "flex items-center justify-center",
-                "transition-colors duration-200",
-                isLiked
-                  ? "text-badge-red border-badge-red bg-main-400 hover:bg-main-400/90"
-                  : "text-main border-main bg-main-400/60 hover:bg-main-400/70"
-              )}
-            >
-              {isLiked ? (
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7.56 3.84998C4.90771 3.84998 2.75 6.01068 2.75 8.68998C2.75 11.9405 4.25068 14.5449 6.13923 16.4799C8.03683 18.4241 10.2799 19.6419 11.6223 20.1002L11.6296 20.1027C11.6944 20.1256 11.8286 20.15 12 20.15C12.1714 20.15 12.3056 20.1256 12.3704 20.1027L12.3777 20.1002C13.7201 19.6419 15.9632 18.4241 17.8608 16.4799C19.7493 14.5449 21.25 11.9405 21.25 8.68998C21.25 6.01068 19.0923 3.84998 16.44 3.84998C14.8778 3.84998 13.477 4.60909 12.6021 5.78714C12.4606 5.97766 12.2373 6.08998 12 6.08998C11.7627 6.08998 11.5394 5.97766 11.3979 5.78714C10.5225 4.60847 9.13147 3.84998 7.56 3.84998Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M7.56 3.84998C4.90771 3.84998 2.75 6.01068 2.75 8.68998C2.75 11.9405 4.25068 14.5449 6.13923 16.4799C8.03683 18.4241 10.2799 19.6419 11.6223 20.1002L11.6296 20.1027L11.6296 20.1027C11.6944 20.1256 11.8286 20.15 12 20.15C12.1714 20.15 12.3056 20.1256 12.3704 20.1027L12.3777 20.1002L12.3777 20.1002C13.7201 19.6419 15.9632 18.4241 17.8608 16.4799C19.7493 14.5449 21.25 11.9405 21.25 8.68998C21.25 6.01068 19.0923 3.84998 16.44 3.84998C14.8778 3.84998 13.477 4.60909 12.6021 5.78714C12.4606 5.97766 12.2373 6.08998 12 6.08998C11.7627 6.08998 11.5394 5.97766 11.3979 5.78714C10.5225 4.60847 9.13147 3.84998 7.56 3.84998ZM1.25 8.68998C1.25 5.18927 4.07229 2.34998 7.56 2.34998C9.29674 2.34998 10.8646 3.05596 12.0003 4.19469C13.1385 3.05561 14.7122 2.34998 16.44 2.34998C19.9277 2.34998 22.75 5.18927 22.75 8.68998C22.75 12.4395 21.0107 15.4001 18.9342 17.5276C16.8683 19.6443 14.4235 20.9861 12.8657 21.5186C12.5914 21.6147 12.2773 21.65 12 21.65C11.7227 21.65 11.4086 21.6147 11.1343 21.5186C9.57655 20.9861 7.13169 19.6443 5.06577 17.5276C2.98932 15.4001 1.25 12.4395 1.25 8.68998Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              )}
-            </div>
           </div>
         </div>
         <div className="pt-6 px-5 flex flex-col gap-3">
-          <InfoCard title="About me ai Gen" className="flex flex-col gap-3">
+          <InfoCard title="About me (ai Gen)" className="flex flex-col gap-3">
             <div className="text-main/50 font-chivo text-sm font-light">
               {userProfile?.bio}
             </div>
           </InfoCard>
-          <InfoCard title="Lets talk about" className="flex flex-col gap-3">
+          <InfoCard
+            onEdit={() =>
+              router.push("/onboarding/language-country?quick=true")
+            }
+            title="Lets talk about"
+            className="flex flex-col gap-3"
+          >
             <div className="flex flex-wrap gap-2">
               {userProfile?.topics?.map((topic) => (
                 <Tag
@@ -231,15 +209,31 @@ export default function Profile() {
               ))}
             </div>
           </InfoCard>
-          <InfoCard title="Work"></InfoCard>
+          <InfoCard
+            onEdit={() => router.push("/onboarding/work-profession?quick=true")}
+            title="Work"
+          >
+            <div
+              dangerouslySetInnerHTML={{ __html: userProfile?.work || "N/A" }}
+              className="text-main/50 font-chivo text-sm font-light"
+            ></div>
+          </InfoCard>
+          <InfoCard
+            onEdit={() => router.push("/onboarding/startup-vision?quick=true")}
+            title="Startup(s)"
+          >
+            <div
+              dangerouslySetInnerHTML={{
+                __html: userProfile?.startup || "N/A",
+              }}
+              className="text-main/50 font-chivo text-sm font-light"
+            ></div>
+          </InfoCard>
+          <br />
+          <br />
+          <br />
         </div>
       </div>
-      <CustomButton
-        onClick={() => {}}
-        className="w-full rounded-b-none rounded-2xl bottom-0 fixed"
-      >
-        Conversation starter
-      </CustomButton>
     </>
   );
 }
