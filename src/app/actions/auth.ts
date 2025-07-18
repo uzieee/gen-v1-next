@@ -25,6 +25,7 @@ export async function phoneAuthAction(formData: FormData) {
     }
 
     /* 2 Upsert user in Payload */
+    console.log({ phone });
     const payload = await getPayload({ config });
     const { docs } = await payload.find({
       collection: "users",

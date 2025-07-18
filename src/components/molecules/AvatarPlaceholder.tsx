@@ -1,10 +1,12 @@
 interface AvatarPlaceholderProps {
   fullName: string;
   className?: string;
+  noRing?: boolean;
 }
 
 const AvatarPlaceholder: React.FC<AvatarPlaceholderProps> = ({
   fullName,
+  noRing = false,
   className = "",
 }) => {
   // Extract initials
@@ -23,33 +25,39 @@ const AvatarPlaceholder: React.FC<AvatarPlaceholderProps> = ({
       className={className}
     >
       {/* Outer neon ring */}
-      <circle
-        cx="100"
-        cy="100"
-        r="96"
-        stroke="#E3EA24"
-        strokeWidth="8"
-        fill="none"
-      />
+      {!noRing && (
+        <circle
+          cx="100"
+          cy="100"
+          r="96"
+          stroke="#E3EA24"
+          strokeWidth="8"
+          fill="none"
+        />
+      )}
 
       {/* Dark grey background */}
-      <circle cx="100" cy="100" r="88" fill="#1A1A1A" />
+      {!noRing && <circle cx="100" cy="100" r="88" fill="#1A1A1A" />}
 
       {/* Neon glow filter */}
-      <defs>
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow
-            dx="0"
-            dy="0"
-            stdDeviation="6"
-            floodColor="#E3EA24"
-            floodOpacity="0.6"
-          />
-        </filter>
-      </defs>
+      {!noRing && (
+        <defs>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow
+              dx="0"
+              dy="0"
+              stdDeviation="6"
+              floodColor="#E3EA24"
+              floodOpacity="0.6"
+            />
+          </filter>
+        </defs>
+      )}
 
       {/* Inner circle with glow */}
-      <circle cx="100" cy="100" r="88" fill="#1A1A1A" filter="url(#glow)" />
+      {!noRing && (
+        <circle cx="100" cy="100" r="88" fill="#1A1A1A" filter="url(#glow)" />
+      )}
 
       {/* User initials */}
       <text

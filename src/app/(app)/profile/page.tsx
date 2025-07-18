@@ -27,7 +27,7 @@ export default function Profile() {
     return {
       id: user.id,
       name: user.fullName ?? "Unknown",
-      flag: (user.attributes as Attribute[])
+      flag: ((user.attributes as Attribute[]) || [])
         .filter(
           (el) => (el.category as AttributeCategory)?.slug === "countries"
         )

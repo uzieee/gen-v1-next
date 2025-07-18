@@ -6,13 +6,18 @@ import { useRouter } from "next/navigation";
 
 interface Props {
   onStartOver: () => void;
+  tableNumber: string;
   iceBreakers: {
     question: string;
     userIndex: number;
   }[];
 }
 
-export default function CompletedSession({ onStartOver, iceBreakers }: Props) {
+export default function CompletedSession({
+  onStartOver,
+  iceBreakers,
+  tableNumber,
+}: Props) {
   const router = useRouter();
 
   const onBack = () => {
@@ -30,7 +35,7 @@ export default function CompletedSession({ onStartOver, iceBreakers }: Props) {
           title={"Round Table"}
         />
         <div className="w-full flex flex-col items-center">
-          <p className="text-sm text-zinc-400">Table #4</p>
+          <p className="text-sm text-zinc-400">Table #{tableNumber || ""}</p>
         </div>
       </div>
 

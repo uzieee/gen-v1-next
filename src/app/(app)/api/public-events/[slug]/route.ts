@@ -13,10 +13,10 @@ const POPULATE = [
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { key: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
-    const key = params.key; // id OR slug
+    const key = await params.slug; // id OR slug
 
     const payload = await getPayload({
       config: payloadConfig,
@@ -26,6 +26,8 @@ export async function GET(
     const isObjectId = /^[a-f\d]{24}$/i.test(key);
 
     const query = isObjectId ? { _id: key } : { slug: key };
+
+    console.log({ key });
 
     const event = await payload.db.collections.events
       .findOne(query)

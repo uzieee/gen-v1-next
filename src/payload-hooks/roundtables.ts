@@ -11,9 +11,23 @@ export const GPT_MODELS = {
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 /** Generate a single discussion topic for an event/session */
-export async function genTopic(eventName: string, sessionNum: number) {
+export async function genTopic(
+  eventName: string,
+  sessionNum: number,
+  about?: string
+) {
   const prompt = `
-Generate a concise, engaging topic for session ${sessionNum} of an event called "${eventName}".`;
+You are an expert discussion facilitator tasked with creating thought-provoking topics for roundtable discussions. Generate a concise, engaging topic for a roundtable discussion session at an event called "${eventName}" ${about ? ", context about the event: " + about : ""}. 
+
+The topic should:
+- Spark meaningful dialogue and diverse perspectives
+- Be accessible yet intellectually stimulating
+- Connect to current trends or timeless human experiences
+- Encourage personal stories and professional insights
+- Be specific enough to focus discussion but broad enough for varied interpretations
+- Avoid overly controversial or polarizing subjects
+
+Create a topic that makes participants eager to share their thoughts and learn from others.`;
   const res = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
     messages: [{ role: "user", content: prompt }],
@@ -47,7 +61,7 @@ export async function genQuestions(
 
   // Create batch prompt for all users
   const prompt = `
-You are an AI facilitator. Generate two friendly, personalized ice-breaker questions for each user to discuss the topic "${topic}".
+You are an expert conversation facilitator and networking specialist. Your goal is to create engaging, thought-provoking ice-breaker questions that spark meaningful discussions around "${topic}". Consider each participant's unique background and craft questions that encourage them to share personal insights while making connections with others. The questions should be warm, inviting, and designed to help participants feel comfortable while leading to deeper conversations.
 
 Users:
 ${userProfiles

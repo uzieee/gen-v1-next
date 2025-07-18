@@ -1,10 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Header from "@/components/molecules/Header";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import CompletedSession from "./_components/CompletedSession";
+import useApiQuery from "@/app/hooks/use-api-query";
+import { fetchSessionTable } from "@/app/services/http/sessions";
+import AvatarPlaceholder from "@/components/molecules/AvatarPlaceholder";
+import Image from "next/image";
 
 interface PanEvent {
   deltaX: number;
@@ -16,10 +20,49 @@ interface PanEvent {
 
 export default function RoundTable() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const params = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [swipeStatus, setSwipeStatus] = useState("");
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[] | null>([]);
+
+  const { data: sessionData, isSuccess: isSessionDataFetchSuccess } =
+    useApiQuery({
+      apiHandler: fetchSessionTable,
+      payload: {
+        sessionId: params.id as string,
+        tableNumber: Number(searchParams.get("table") || 0),
+      },
+      queryKey: ["round-table", params.id],
+      enabled: !!searchParams.get("table"),
+    });
+
+  const { users, iceBreakers } = useMemo(() => {
+    if (!sessionData) {
+      return {
+        users: [] as { name: string; avatar?: string }[],
+        iceBreakers: [] as { question: string; userIndex: number }[],
+      };
+    }
+
+    // 1. Build the users array
+    const users = sessionData.attendees.map((att) => ({
+      name: att.user.fullName || "",
+      avatar: att.user.profileImage, // adjust to your actual avatar field
+    }));
+
+    // 2. Build the iceBreakers array
+    const iceBreakers = sessionData.attendees.flatMap((att, idx) =>
+      att.questions.map((q) => ({
+        question: q.text,
+        userIndex: idx,
+      }))
+    );
+    return { users, iceBreakers };
+  }, [sessionData]);
+
+  console.log({ iceBreakers, users });
 
   const onBack = () => {
     router.back();
@@ -100,8 +143,8 @@ export default function RoundTable() {
   };
 
   useEffect(() => {
-    initCards();
-  }, []);
+    if (iceBreakers.length > 0) initCards();
+  }, [iceBreakers]);
 
   useEffect(() => {
     const handleTouch = (cardElement: HTMLDivElement) => {
@@ -196,9 +239,14 @@ export default function RoundTable() {
   const currentQuestion = iceBreakers[currentIndex];
   const activeUserIndex = currentQuestion ? currentQuestion.userIndex : 0;
 
+  if (!isSessionDataFetchSuccess) {
+    return <div className="text-white">Loading</div>;
+  }
+
   if (isCompleted)
     return (
       <CompletedSession
+        tableNumber={String(sessionData.tableNumber || "")}
         onStartOver={() => {
           setCurrentIndex(0);
           initCards();
@@ -217,7 +265,9 @@ export default function RoundTable() {
           title={"Round Table"}
         />
         <div className="w-full flex flex-col items-center">
-          <p className="text-sm text-zinc-400">Table #4</p>
+          <p className="text-sm text-zinc-400">
+            Table #{sessionData.tableNumber || ""}
+          </p>
         </div>
       </div>
       {/* Cards Container */}
@@ -261,7 +311,8 @@ export default function RoundTable() {
                           {users[iceBreaker.userIndex].avatar}
                         </span>
                         <span>
-                          Question for {users[iceBreaker.userIndex].name}
+                          Question for{" "}
+                          {users[iceBreaker.userIndex].name.split(" ")[0]}
                         </span>
                       </div>
                     </div>
@@ -309,7 +360,21 @@ export default function RoundTable() {
                   }`}
                 >
                   <div className="w-14 h-14 bg-zinc-800 rounded-full flex items-center justify-center">
-                    {user.avatar}
+                    {user.avatar ? (
+                      <Image
+                        src={user.avatar}
+                        width={100}
+                        height={100}
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <AvatarPlaceholder
+                        fullName={user.name}
+                        noRing
+                        className="!border-none !w-16 !h-16"
+                      />
+                    )}
                   </div>
                   {isActive && (
                     <div className="absolute -inset-1 rounded-full bg-primary opacity-20 animate-pulse" />
@@ -319,9 +384,9 @@ export default function RoundTable() {
                   <p
                     className={`text-xs font-medium ${isActive ? "text-primary" : "text-white"}`}
                   >
-                    {user.name}
+                    {user.name.split(" ")[0]}
                   </p>
-                  <p className="text-xs">{user.flag}</p>
+                  {/* <p className="text-xs">{user.flag}</p> */}
                 </div>
               </div>
             );
@@ -331,49 +396,6 @@ export default function RoundTable() {
     </>
   );
 }
-
-const users = [
-  { name: "Joe", avatar: "👨‍💼", flag: "🇺🇸" },
-  { name: "Amy", avatar: "👩‍🎨", flag: "🇬🇧" },
-  { name: "Ben", avatar: "👨‍🚀", flag: "🇨🇦" },
-  { name: "Zoe", avatar: "👩‍💻", flag: "🇦🇺" },
-  { name: "Mia", avatar: "👩‍🔬", flag: "🇫🇷" },
-];
-
-const iceBreakers = [
-  {
-    question: "If you could teleport anywhere, where would you go?",
-    userIndex: 0,
-  },
-  {
-    question: "What's the most interesting thing you've learned this week?",
-    userIndex: 1,
-  },
-  {
-    question:
-      "If you could have dinner with any historical figure, who would it be?",
-    userIndex: 2,
-  },
-  {
-    question: "What's a skill you'd love to master in 24 hours?",
-    userIndex: 3,
-  },
-  {
-    question:
-      "If you could live in any fictional world, which would you choose?",
-    userIndex: 4,
-  },
-  {
-    question: "What's the best piece of advice you've ever received?",
-    userIndex: 0,
-  },
-  {
-    question:
-      "If you could switch lives with someone for a day, who would it be?",
-    userIndex: 1,
-  },
-  { question: "What's something that always makes you smile?", userIndex: 2 },
-];
 
 const home_icon_svg = (
   <svg

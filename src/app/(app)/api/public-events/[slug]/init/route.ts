@@ -37,6 +37,7 @@ export async function POST(
     date: eventStart,
     sessionDuration,
     name: eventName,
+    about: aboutEvent,
   } = event;
 
   // 2. clear existing sessions & assignments
@@ -99,7 +100,7 @@ export async function POST(
     });
 
     // 4.b — generate topic
-    const topic = await genTopic(eventName, i);
+    const topic = await genTopic(eventName, i, aboutEvent as string);
     await payload.update({
       collection: "sessions",
       id: session.id,

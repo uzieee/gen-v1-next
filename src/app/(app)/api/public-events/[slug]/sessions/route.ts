@@ -55,5 +55,5 @@ export async function GET(
     limit: 1000,
   });
 
-  return NextResponse.json({ assignments });
+  return NextResponse.json(assignments);
 }
