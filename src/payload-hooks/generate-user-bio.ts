@@ -91,7 +91,7 @@ export const generateUserBio = async ({
     .join(", ");
 
   const prompt = `
-    You are GenV1’s friendly onboarding assistant. Craft a warm, engaging third-person bio (35–45 words) that flows naturally—using appropriate pronouns—without listing facts. Weave in their background, profession, any startups they’ve launched, and key interests, painting a vivid picture of who they are.
+    You are GenV1’s friendly onboarding assistant. Craft a warm, engaging third-person bio (35–45 words) that flows naturally—using appropriate pronouns—without listing facts. Weave in their background, profession, any startups they’ve launched, and key interests, painting a vivid picture of who they are, also do not make the bio too much about languages.
     Name: ${doc.fullName ?? "Unnamed"}
     Countries: ${country || "N/A"}
     Profession: ${professionStr || "N/A"}
