@@ -2,7 +2,7 @@
 "use client";
 
 import { z } from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import HeaderWithSteps from "@/components/molecules/HeaderWithSteps";
@@ -44,6 +44,9 @@ export default function ProfessionalField() {
     mode: "onChange",
   });
 
+  const searchParams = useSearchParams();
+  const isQuickEdit = searchParams.get("quick");
+
   const { data, isSuccess: isFetchUserSuccess } = useCurrentUser(2);
 
   useEffect(() => {
@@ -72,7 +75,9 @@ export default function ProfessionalField() {
   }, [attributesByCategory]);
 
   const onSkip = () => {
-    router.push("/onboarding/interests-hobbies");
+    if (isQuickEdit) {
+      router.replace("/profile");
+    } else router.push("/onboarding/interests-hobbies");
   };
 
   async function onSubmit() {
@@ -82,11 +87,16 @@ export default function ProfessionalField() {
     fd.append("jobTitle", data.jobTitle);
     if (data.jobDescription) fd.append("jobDescription", data.jobDescription);
     await saveProfessionAction(null, fd);
-    router.push(
-      data.startup
-        ? "/onboarding/startup-vision"
-        : "/onboarding/interests-hobbies"
-    );
+    if (isQuickEdit) {
+      router.replace(
+        data.startup ? "/onboarding/startup-vision?quick=true" : "/profile"
+      );
+    } else
+      router.push(
+        data.startup
+          ? "/onboarding/startup-vision"
+          : "/onboarding/interests-hobbies"
+      );
   }
 
   return (

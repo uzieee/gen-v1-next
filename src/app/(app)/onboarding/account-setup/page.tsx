@@ -8,12 +8,15 @@ import Header from "@/components/molecules/Header";
 import TextField from "@/components/molecules/TextField";
 import { accountSetupSchema, IAccountSetupDetails } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 
 export default function AccountSetup() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isQuickEdit = searchParams.get("quick");
+
   const {
     formState: { isValid, errors },
     control,
@@ -27,7 +30,7 @@ export default function AccountSetup() {
   });
 
   const onBack = () => {
-    router.replace("/onboarding/signin");
+    router.replace(isQuickEdit ? "/profile" : "/onboarding/signin");
   };
 
   return (

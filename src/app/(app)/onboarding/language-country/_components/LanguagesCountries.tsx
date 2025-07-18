@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { Attribute } from "@/payload-types";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 import { Search, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 
 interface Props {
@@ -25,6 +25,9 @@ export default function LanguageCountries({ attributes = [] }: Props) {
   const [selectedAttributes, setSelectedAttributes] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("language");
+
+  const searchParams = useSearchParams();
+  const isQuickEdit = searchParams.get("quick");
 
   useEffect(() => {
     if (attributes.length)
@@ -80,7 +83,9 @@ export default function LanguageCountries({ attributes = [] }: Props) {
   };
 
   const onSkip = () => {
-    router.push("/onboarding/work-profession");
+    if (isQuickEdit) {
+      router.replace("/profile");
+    } else router.push("/onboarding/work-profession");
   };
 
   async function onSubmit() {
@@ -88,7 +93,9 @@ export default function LanguageCountries({ attributes = [] }: Props) {
     selectedAttributes.forEach((id) => fd.append("attributeIds", id));
     const res = await saveUserAttributesAction(fd);
     if (res?.error) alert(JSON.stringify(res.error));
-    router.push("/onboarding/work-profession");
+    if (isQuickEdit) {
+      router.replace("/profile");
+    } else router.push("/onboarding/work-profession");
   }
 
   const { selectedLanguages, selectedCountries } = useMemo(() => {

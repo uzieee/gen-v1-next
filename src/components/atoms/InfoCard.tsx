@@ -1,18 +1,66 @@
-import { cn } from '@/lib/utils';
-import React from 'react'
+import { cn } from "@/lib/utils";
+import React from "react";
+import IconButton from "./IconButton";
 
 interface InfoCardProps {
   title: string;
+  onEdit?: () => void;
   children?: React.ReactNode;
   className?: string;
 }
 
-export default function InfoCard({ title, children, className = "" }: InfoCardProps) {
+export default function InfoCard({
+  title,
+  onEdit,
+  children,
+  className = "",
+}: InfoCardProps) {
   return (
-    <div className={
-        cn('bg-background-100 rounded-2xl p-3.5 font-chivo', className)}>
+    <div
+      className={cn(
+        "bg-background-100 rounded-2xl p-3.5 font-chivo relative",
+        className
+      )}
+    >
+      <div className="w-full flex justify-between items-center">
         <div className="text-main text-base font-medium">{title}</div>
-        {children}
+        {!!onEdit && (
+          <IconButton
+            className="absolute top-[4px] right-[4px] opacity-60"
+            icon={
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10.3444 0.958172C11.1222 0.858708 11.9092 1.17678 12.7088 1.92915L12.7097 1.93002C13.512 2.68875 13.8772 3.45841 13.8224 4.24233C13.7695 4.99983 13.3304 5.64097 12.8296 6.17001M12.8296 6.17001L7.35899 11.9605C7.20477 12.1284 6.99711 12.2706 6.80024 12.3759C6.60085 12.4825 6.3702 12.5738 6.15368 12.6122L6.15035 12.6128L4.00445 12.9794C3.48407 13.0691 2.98507 12.939 2.6296 12.6019C2.27463 12.2653 2.11778 11.7744 2.17589 11.2514L2.17606 11.2499L2.42379 9.08054C2.45256 8.86474 2.53271 8.63122 2.62718 8.42864C2.72131 8.22679 2.84975 8.01276 3.00174 7.85096L3.00271 7.84993L8.47605 2.05659C8.97707 1.52734 9.59276 1.05429 10.3444 0.958172M9.2026 2.7437C9.20251 2.74379 9.20268 2.74362 9.2026 2.7437L3.73058 8.53564C3.73047 8.53576 3.7307 8.53552 3.73058 8.53564C3.67594 8.59395 3.60087 8.70678 3.53347 8.85129C3.4673 8.99319 3.42755 9.12446 3.41564 9.20884L3.16977 11.3618C3.16974 11.3621 3.16972 11.3623 3.16969 11.3625C3.14135 11.6192 3.22111 11.7847 3.31772 11.8763C3.41392 11.9676 3.58158 12.0375 3.83454 11.9939L3.83531 11.9938L5.98005 11.6274C6.06356 11.6123 6.19224 11.567 6.32875 11.494C6.46713 11.42 6.57124 11.3402 6.62335 11.2831L6.62932 11.2765L12.1027 5.48326C12.5485 5.01236 12.7962 4.58326 12.8249 4.1726C12.8517 3.78829 12.6937 3.29146 12.0232 2.6571C11.3563 2.02977 10.8533 1.90123 10.4712 1.95009C10.063 2.0023 9.64814 2.27312 9.2026 2.7437Z"
+                  fill="currentColor"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M7.84888 2.87261C8.12173 2.8301 8.37738 3.01683 8.41989 3.28968C8.67131 4.90342 9.98099 6.1385 11.6093 6.3025C11.884 6.33017 12.0843 6.57534 12.0567 6.85009C12.029 7.12484 11.7838 7.32514 11.5091 7.29746C9.43071 7.08813 7.75373 5.50987 7.43181 3.44362C7.3893 3.17077 7.57603 2.91512 7.84888 2.87261Z"
+                  fill="currentColor"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M1.5 14.6666C1.5 14.3905 1.72386 14.1666 2 14.1666H14C14.2761 14.1666 14.5 14.3905 14.5 14.6666C14.5 14.9428 14.2761 15.1666 14 15.1666H2C1.72386 15.1666 1.5 14.9428 1.5 14.6666Z"
+                  fill="currentColor"
+                />
+              </svg>
+            }
+            onClick={onEdit}
+            variant="ghost"
+          />
+        )}
+      </div>
+      {children}
     </div>
-  )
+  );
 }

@@ -142,7 +142,7 @@ function splitList(str?: string): string[] {
         data: {
           fullName,
           email: rec.email?.trim().toLowerCase(),
-          phoneNumber: rec.phone_number,
+          phoneNumber: "+" + (rec.phone_number || "").trim(),
           dateOfBirth: dob,
           gender: rec[keys.gender]?.trim(),
           isPhoneNumberVerified: true,

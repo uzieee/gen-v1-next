@@ -10,6 +10,7 @@ import useApiQuery from "@/app/hooks/use-api-query";
 import { fetchSessionTable } from "@/app/services/http/sessions";
 import AvatarPlaceholder from "@/components/molecules/AvatarPlaceholder";
 import Image from "next/image";
+import { useCurrentUser } from "@/app/hooks/use-current-user";
 
 interface PanEvent {
   deltaX: number;
@@ -27,6 +28,7 @@ export default function RoundTable() {
   const [swipeStatus, setSwipeStatus] = useState("");
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[] | null>([]);
+  const { data: userData } = useCurrentUser();
 
   const { data: sessionData, isSuccess: isSessionDataFetchSuccess } =
     useApiQuery({
@@ -54,16 +56,15 @@ export default function RoundTable() {
     }));
 
     // 2. Build the iceBreakers array
-    const iceBreakers = sessionData.attendees.flatMap((att, idx) =>
-      att.questions.map((q) => ({
-        question: q.text,
-        userIndex: idx,
-      }))
+    const currentAttendee = sessionData.attendees.findLast(
+      (el) => el.user.id === userData?.user?.id
     );
+    const iceBreakers = (currentAttendee?.questions || []).map((q) => ({
+      question: q.text,
+      userIndex: 0,
+    }));
     return { users, iceBreakers };
-  }, [sessionData]);
-
-  console.log({ iceBreakers, users });
+  }, [sessionData, userData]);
 
   const onBack = () => {
     router.back();
@@ -237,8 +238,8 @@ export default function RoundTable() {
   const remainingCards = iceBreakers.length - currentIndex;
   const isCompleted = currentIndex >= iceBreakers.length;
 
-  const currentQuestion = iceBreakers[currentIndex];
-  const activeUserIndex = currentQuestion ? currentQuestion.userIndex : 0;
+  // const currentQuestion = iceBreakers[currentIndex];
+  // const activeUserIndex = currentQuestion ? currentQuestion.userIndex : 0;
 
   if (!isSessionDataFetchSuccess) {
     return <div className="text-white">Loading</div>;
@@ -303,7 +304,7 @@ export default function RoundTable() {
                 <div className="h-full flex items-center justify-center text-center">
                   <div>
                     {/* Show which user the question is for */}
-                    <div className="mb-6">
+                    {/* <div className="mb-6">
                       <div
                         className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium"
                         style={{ backgroundColor: "#D1E50C", color: "#000000" }}
@@ -316,12 +317,12 @@ export default function RoundTable() {
                           {users[iceBreaker.userIndex].name.split(" ")[0]}
                         </span>
                       </div>
-                    </div>
+                    </div> */}
                     <h3 className="text-2xl font-semibold mb-8 leading-relaxed text-white">
                       {iceBreaker.question}
                     </h3>
                     <p className="text-white text-base opacity-70">
-                      Swipe left to skip, right to answer.
+                      Swipe to reveal the next question.
                     </p>
                   </div>
                 </div>
@@ -347,18 +348,16 @@ export default function RoundTable() {
       <div className="pb-4">
         <div className="flex space-x-4 overflow-x-auto py-2 scrollbar-hide px-6 ">
           {users.map((user, index) => {
-            const isActive = !isCompleted && index === activeUserIndex;
+            // const isActive = !isCompleted && index === activeUserIndex;
             return (
               <div
                 key={index}
                 className="flex flex-col items-center flex-shrink-0"
               >
                 <div
-                  className={`relative w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ${
-                    isActive
-                      ? "ring-4 ring-primary shadow-lg shadow-primary/50"
-                      : "ring-2 ring-zinc-700"
-                  }`}
+                  className={
+                    "relative w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ring-2 ring-zinc-700"
+                  }
                 >
                   <div className="w-14 h-14 bg-zinc-800 rounded-full flex items-center justify-center">
                     {user.avatar ? (
@@ -377,14 +376,12 @@ export default function RoundTable() {
                       />
                     )}
                   </div>
-                  {isActive && (
+                  {/* {isActive && (
                     <div className="absolute -inset-1 rounded-full bg-primary opacity-20 animate-pulse" />
-                  )}
+                  )} */}
                 </div>
                 <div className="mt-2 text-center">
-                  <p
-                    className={`text-xs font-medium ${isActive ? "text-primary" : "text-white"}`}
-                  >
+                  <p className={`text-xs font-medium text-white`}>
                     {user.name.split(" ")[0]}
                   </p>
                   {/* <p className="text-xs">{user.flag}</p> */}

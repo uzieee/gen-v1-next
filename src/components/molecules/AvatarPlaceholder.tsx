@@ -2,12 +2,14 @@ interface AvatarPlaceholderProps {
   fullName: string;
   className?: string;
   noRing?: boolean;
+  ringColor?: string;
 }
 
 const AvatarPlaceholder: React.FC<AvatarPlaceholderProps> = ({
   fullName,
   noRing = false,
   className = "",
+  ringColor = "#E3EA24",
 }) => {
   // Extract initials
   const initials =
@@ -25,16 +27,16 @@ const AvatarPlaceholder: React.FC<AvatarPlaceholderProps> = ({
       className={className}
     >
       {/* Outer neon ring */}
-      {!noRing && (
-        <circle
-          cx="100"
-          cy="100"
-          r="96"
-          stroke="#E3EA24"
-          strokeWidth="8"
-          fill="none"
-        />
-      )}
+      {/* {!noRing && ( */}
+      <circle
+        cx="100"
+        cy="100"
+        r="96"
+        stroke={ringColor}
+        strokeWidth="8"
+        fill="none"
+      />
+      {/* )} */}
 
       {/* Dark grey background */}
       {!noRing && <circle cx="100" cy="100" r="88" fill="#1A1A1A" />}
@@ -47,7 +49,7 @@ const AvatarPlaceholder: React.FC<AvatarPlaceholderProps> = ({
               dx="0"
               dy="0"
               stdDeviation="6"
-              floodColor="#E3EA24"
+              floodColor={ringColor}
               floodOpacity="0.6"
             />
           </filter>

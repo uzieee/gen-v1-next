@@ -4,7 +4,7 @@ import useApiQuery from "@/app/hooks/use-api-query";
 import { fetchAttributes } from "@/app/services/http/attributes";
 import HeaderWithSteps from "@/components/molecules/HeaderWithSteps";
 import TagGroup from "@/components/molecules/TagGroup";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { CldImage } from "next-cloudinary";
 import { saveUserAttributesAction } from "@/app/actions/users";
@@ -21,6 +21,9 @@ export default function InterestsHobbies({ attributes }: Props) {
   const [selectedAttributes, setSelectedAttributes] = useState<string[]>([]);
   const [showAllInterests, setShowAllInterests] = useState(false);
   const [showAllSports, setShowAllSports] = useState(false);
+
+  const searchParams = useSearchParams();
+  const isQuickEdit = searchParams.get("quick");
 
   useEffect(() => {
     setSelectedAttributes(attributes.map((attr) => attr.id));
@@ -84,7 +87,9 @@ export default function InterestsHobbies({ attributes }: Props) {
   };
 
   const onSkip = () => {
-    router.push("/onboarding/conversation-vibe");
+    if (isQuickEdit) {
+      router.replace("/profile");
+    } else router.push("/onboarding/conversation-vibe");
   };
 
   async function onSubmit() {
@@ -92,7 +97,9 @@ export default function InterestsHobbies({ attributes }: Props) {
     selectedAttributes.forEach((id) => fd.append("attributeIds", id));
     const res = await saveUserAttributesAction(fd);
     if (res?.error) alert(JSON.stringify(res.error));
-    router.push("/onboarding/conversation-vibe");
+    if (isQuickEdit) {
+      router.replace("/profile");
+    } else router.push("/onboarding/conversation-vibe");
   }
 
   if (!attributesByCategory) return <InterestsSkeleton />;

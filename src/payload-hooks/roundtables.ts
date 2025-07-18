@@ -61,8 +61,7 @@ export async function genQuestions(
 
   // Create batch prompt for all users
   const prompt = `
-You are an expert conversation facilitator and networking specialist. Your goal is to create engaging, thought-provoking ice-breaker questions that spark meaningful discussions around "${topic}". Consider each participant's unique background and craft questions that encourage them to share personal insights while making connections with others. The questions should be warm, inviting, and designed to help participants feel comfortable while leading to deeper conversations.
-
+You are an expert conversation facilitator and networking specialist. Your goal is to create engaging, thought-provoking ice-breaker questions that will spark meaningful group discussions around "${topic}". Generate universal questions that any participant can answer, encouraging them to share personal insights and experiences. The questions should be warm, inviting, and designed to help participants connect with each other while leading to deeper conversations. Focus on questions that draw out diverse perspectives and create opportunities for participants to find common ground.
 Users:
 ${userProfiles
   .map(
@@ -75,7 +74,7 @@ ${index + 1}. User: ${user.name}
   )
   .join("")}
 
-Return a JSON object where each key is the user's ID and the value is an array of exactly 2 ice-breaker question strings.
+Return a JSON object where each key is the user's ID and the value is an array of exactly 8 ice-breaker question strings.
 
 Example format:
 {

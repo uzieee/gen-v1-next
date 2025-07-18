@@ -25,8 +25,6 @@ export default function NotificationsList() {
     enabled: !!data?.user?.id,
   });
 
-  console.log({ sessions });
-
   return (
     <>
       <Header
@@ -45,7 +43,7 @@ export default function NotificationsList() {
               body: session.topic || "",
               onAccept: () =>
                 router.push(
-                  `/round-table/${session.id}?table=${session.tableNumber}`
+                  `/round-table/${session.id}/welcome?table=${session.tableNumber}`
                 ),
               onDecline: () => router.push("/home"),
             }}

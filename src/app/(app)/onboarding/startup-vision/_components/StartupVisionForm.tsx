@@ -2,7 +2,7 @@
 "use client";
 
 import { z } from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";
@@ -75,6 +75,9 @@ const supportOptions = [
 export default function StartupVision() {
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const isQuickEdit = searchParams.get("quick");
+
   /* react-hook-form */
   const {
     formState: { isValid, errors },
@@ -136,10 +139,16 @@ export default function StartupVision() {
     await saveStartupVisionAction(null, fd);
 
     await updateUserProfile(fd);
-    router.push("/onboarding/interests-hobbies"); // next screen
+    if (isQuickEdit) {
+      router.replace("/profile");
+    } else router.push("/onboarding/interests-hobbies"); // next screen
   }
 
-  const onSkip = () => router.push("/home");
+  const onSkip = () => {
+    if (isQuickEdit) {
+      router.replace("/profile");
+    } else router.push("/interests-hobbies");
+  };
 
   return (
     <>

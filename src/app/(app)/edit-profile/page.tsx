@@ -98,7 +98,9 @@ export default function EditProfile() {
                 )}
               </div>
               <IconButton
-                onClick={handleImageUpload}
+                onClick={() =>
+                  router.push("/onboarding/take-a-photo?quick=true")
+                }
                 className="absolute bottom-0 right-0 w-8 h-8 bg-secondary hover:bg-secondary-600 text-main-300 transition-colors"
                 icon={
                   <svg
