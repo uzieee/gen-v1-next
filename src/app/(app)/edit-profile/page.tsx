@@ -44,25 +44,6 @@ export default function EditProfile() {
     criteriaMode: "all",
   });
 
-  const handleImageUpload = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = (e: Event) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setProfileImage(
-            (e.target as FileReader).result as unknown as string | null
-          );
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    input.click();
-  };
-
   const onSubmit: SubmitHandler<IProfileDetails> = (data) => {
     console.log("Selected profile:", data);
     router.back();
