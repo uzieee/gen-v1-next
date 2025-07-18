@@ -8,11 +8,13 @@ import { setAuthCookie } from "@/lib/set-auth-cookie";
 
 export async function phoneAuthAction(formData: FormData) {
   try {
-    const phone = formData.get("phoneNumber")?.toString();
+    let phone = formData.get("phoneNumber")?.toString().split("%2B")[1];
     const code = formData.get("otp")?.toString();
     if (!phone || !code) {
       throw new Error("Missing inputs");
     }
+
+    phone = "+" + phone;
 
     /* 1 Verify OTP with Twilio */
     // const ok =
@@ -24,8 +26,6 @@ export async function phoneAuthAction(formData: FormData) {
       throw new Error("Invalid code");
     }
 
-    /* 2 Upsert user in Payload */
-    console.log({ phone });
     const payload = await getPayload({ config });
     const { docs } = await payload.find({
       collection: "users",

@@ -37,7 +37,7 @@ function splitList(str?: string): string[] {
 }
 
 (async () => {
-  const file = fs.readFileSync("./scripts/users-gen.csv", "utf8");
+  const file = fs.readFileSync("./scripts/gen-final.csv", "utf8");
   const records = parse(file, {
     columns: true,
     skip_empty_lines: true,
