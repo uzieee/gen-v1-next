@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // app/api/matches/route.ts
 // import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";

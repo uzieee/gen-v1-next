@@ -136,6 +136,23 @@ export const Users: CollectionConfig = {
       fields: [{ name: "url", type: "text", required: true }],
     },
     {
+      name: "status",
+      label: "Account Status",
+      type: "select",
+      options: [
+        { label: "Active", value: "active" },
+        { label: "Disabled", value: "disabled" },
+        { label: "Flagged", value: "flagged" },
+      ],
+      defaultValue: "active",
+      // required: true,
+      index: true,
+      admin: {
+        position: "sidebar",
+        description: "Toggle to disable or flag a user account",
+      },
+    },
+    {
       name: "bio",
       label: "Auto bio",
       type: "textarea",
