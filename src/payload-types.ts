@@ -155,6 +155,10 @@ export interface User {
       }[]
     | null;
   /**
+   * Toggle to disable or flag a user account
+   */
+  status?: ('active' | 'disabled' | 'flagged') | null;
+  /**
    * Generated from profile details; editable by admins if needed.
    */
   bio?: string | null;
@@ -513,6 +517,7 @@ export interface UsersSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  status?: T;
   bio?: T;
   profession?: T;
   startups?: T;

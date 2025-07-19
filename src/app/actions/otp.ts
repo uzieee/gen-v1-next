@@ -1,6 +1,6 @@
 "use server";
 
-// import { sendOTP, checkOTP } from "@/lib/otp";
+import { sendOTP, checkOTP } from "@/lib/otp";
 
 export async function sendOTPAction(formData: FormData) {
   const phoneNumber = formData.get("phoneNumber")?.toString();
@@ -8,8 +8,8 @@ export async function sendOTPAction(formData: FormData) {
 
   // only run this in production
   // if (process.env.NODE_ENV === "production") {
-  //   const success = await sendOTP(phoneNumber);
-  //   if (!success) throw new Error("Failed to send OTP");
+  const success = await sendOTP(phoneNumber);
+  if (!success) throw new Error("Failed to send OTP");
   // }
 }
 
@@ -20,9 +20,9 @@ export async function verifyOTPAction(formData: FormData) {
 
   // only run this in production
   // if (process.env.NODE_ENV === "production") {
-  //   const verified = await checkOTP(phoneNumber, otp);
-  //   if (!verified) throw new Error("OTP verification failed");
+  const verified = await checkOTP(phoneNumber, otp);
+  if (!verified) throw new Error("OTP verification failed");
   // }
 
-  // return { verified: true };
+  return { verified: true };
 }

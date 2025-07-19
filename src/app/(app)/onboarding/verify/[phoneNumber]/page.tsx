@@ -5,15 +5,20 @@ import Header from "@/components/molecules/Header";
 import { IVerifyDetails, verifySchema } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { phoneAuthAction } from "@/app/actions/auth";
 import { ResendCodeButton } from "./_components/ResendCodeButton";
 import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
+import Modal from "@/components/atoms/Modal";
 
 export default function Verify() {
   const { push } = useRouter();
   const { phoneNumber } = useParams();
+  const [errorModal, setErroModal] = useState<{
+    message?: string;
+    isOpen: boolean;
+  }>({ isOpen: false });
   const {
     formState: { errors, isValid },
     control,
@@ -43,13 +48,18 @@ export default function Verify() {
 
             const results = await phoneAuthAction(data);
 
-            if (results.isExistingUser) {
+            console.log({ results });
+
+            if (results?.error) {
+              setErroModal({ message: results.error, isOpen: true });
+            } else if (results.isExistingUser) {
               push(`/home`);
             } else {
               push(`/onboarding/account-setup`);
             }
           } catch (error) {
             console.log(error);
+            setErroModal({ isOpen: true });
             return;
           }
         }}
@@ -82,6 +92,18 @@ export default function Verify() {
           />
         </div>
       </form>
+      <Modal
+        isOpen={errorModal.isOpen}
+        onClose={() => setErroModal({ ...errorModal, isOpen: false })}
+        title="An error occured"
+        message={
+          errorModal?.message || "It's not you it's us, Something went wrong"
+        }
+        onCancel={() => setErroModal({ ...errorModal, isOpen: false })}
+        onAction={() => setErroModal({ ...errorModal, isOpen: false })}
+        cancel="Cancel"
+        action="Try again"
+      />
     </>
   );
 }

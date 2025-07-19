@@ -1,6 +1,6 @@
 "use server";
 
-// import { checkOTP } from "@/lib/otp";
+import { checkOTP } from "@/lib/otp";
 import crypto from "crypto";
 import { getPayload } from "payload";
 import config from "@payload-config";
@@ -21,7 +21,8 @@ export async function phoneAuthAction(formData: FormData) {
     //   process.env.NODE_ENV === "production"
     //     ? await checkOTP(phone, code)
     //     : true;
-    const ok = true;
+    // const ok = true;
+    const ok = await checkOTP(phone, code);
     if (!ok) {
       throw new Error("Invalid code");
     }

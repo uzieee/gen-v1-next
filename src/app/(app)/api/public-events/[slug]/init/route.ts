@@ -72,6 +72,9 @@ export async function POST(
       role: {
         equals: "member",
       },
+      status: {
+        not_equals: "disabled",
+      },
     },
     depth: 2,
   });
@@ -117,8 +120,6 @@ export async function POST(
 
     // Generate questions for all users in this session in one batch
     const allQuestions = await genQuestions(sessionUsers, topic);
-
-    console.log({ allQuestions });
 
     for (let t = 0; t < numberOfTables; t++) {
       const group = groups[t] ?? [];
