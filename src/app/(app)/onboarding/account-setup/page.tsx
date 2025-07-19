@@ -1,15 +1,17 @@
 "use client";
 
 import { updateUserProfile } from "@/app/actions/users";
+import { useCurrentUser } from "@/app/hooks/use-current-user";
 import { DatePicker } from "@/components/atoms/DatePicker";
 import RadioField from "@/components/atoms/RadioField";
 import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
 import Header from "@/components/molecules/Header";
+import HeaderWithSteps from "@/components/molecules/HeaderWithSteps";
 import TextField from "@/components/molecules/TextField";
 import { accountSetupSchema, IAccountSetupDetails } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 export default function AccountSetup() {
@@ -17,11 +19,14 @@ export default function AccountSetup() {
   const searchParams = useSearchParams();
   const isQuickEdit = searchParams.get("quick");
 
+  const { data: userData } = useCurrentUser();
+
   const {
     formState: { isValid, errors },
     control,
     watch,
     register,
+    reset,
   } = useForm<IAccountSetupDetails>({
     resolver: zodResolver(accountSetupSchema),
     mode: "onChange",
@@ -29,13 +34,33 @@ export default function AccountSetup() {
     criteriaMode: "all",
   });
 
+  useEffect(() => {
+    if (userData) {
+      reset({
+        fullNames: userData.user?.fullName || "",
+        gender: userData.user?.gender || "",
+        age: userData.user?.dateOfBirth
+          ? new Date(userData.user?.dateOfBirth)
+          : new Date(),
+      });
+    }
+  }, [userData]);
+
   const onBack = () => {
     router.replace(isQuickEdit ? "/profile" : "/onboarding/signin");
   };
 
+  const onSkip = () => {
+    router.push("/onboarding/language-country");
+  };
+
   return (
     <>
-      <Header onBack={onBack} title={"Setup Account"} />
+      {isQuickEdit ? (
+        <HeaderWithSteps onSkip={onSkip} action="Skip" activeIndicator={2} />
+      ) : (
+        <Header onBack={onBack} title={"Setup Account"} />
+      )}
       <form
         action={async () => {
           try {
