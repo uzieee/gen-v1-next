@@ -15,3 +15,9 @@ export async function fetchUser({ userId }: { userId: string }): Promise<User> {
 
   return res.json() as Promise<User>;
 }
+
+export async function fetchMatches() {
+  const res = await fetch("/api/me/matches", { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to load matches");
+  return (await res.json()) as { matches: { user: User; score: number }[] };
+}
