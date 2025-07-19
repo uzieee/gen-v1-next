@@ -16,12 +16,14 @@ export default function SectionHeader({
       <div className="text-base font-bold">
         {title} {emoji}
       </div>
-      <div
-        onClick={onSeeAll}
-        className="text-xs font-medium transition-colors cursor-pointer transition-transform active:scale-95"
-      >
-        See All
-      </div>
+      {onSeeAll && (
+        <div
+          onClick={onSeeAll}
+          className="text-xs font-medium transition-all cursor-pointer active:scale-95"
+        >
+          See All
+        </div>
+      )}
     </div>
   );
 }

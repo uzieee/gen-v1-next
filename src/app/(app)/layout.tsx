@@ -88,6 +88,10 @@ export default function RootLayout({
       lang="en"
       className={`bg-black/90 ${ariom.variable} ${hellix.variable} ${syne.variable} ${inter.variable} ${chivo.variable}`}
     >
+      <head>
+        {/* Additional head elements */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body className="antialiased h-screen sm:flex sm:items-center sm:max-w-md mx-auto">
         <QueryClientProvider>
           <Suspense fallback={null}>

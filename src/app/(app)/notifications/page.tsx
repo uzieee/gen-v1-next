@@ -5,7 +5,9 @@ import { useCurrentUser } from "@/app/hooks/use-current-user";
 import { fetchPendingSessions } from "@/app/services/http/sessions";
 import NotificationListItem from "@/components/atoms/NotificationListItem";
 import Header from "@/components/molecules/Header";
+import NotificationsSkeleton from "@/components/skeletons/NotificationsSkeleton";
 import dayjs from "dayjs";
+import { Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function NotificationsList() {
@@ -16,7 +18,7 @@ export default function NotificationsList() {
     router.back();
   };
 
-  const { data: sessions } = useApiQuery({
+  const { data: sessions, isSuccess: isSessionFetchSuccess } = useApiQuery({
     apiHandler: fetchPendingSessions,
     payload: {
       userId: `${data?.user?.id || ""}`,
@@ -24,6 +26,14 @@ export default function NotificationsList() {
     queryKey: ["sessions", data?.user?.id],
     enabled: !!data?.user?.id,
   });
+
+  if (!isSessionFetchSuccess) {
+    return (
+      <div className="p-6">
+        <NotificationsSkeleton />;
+      </div>
+    );
+  }
 
   return (
     <>
@@ -34,21 +44,36 @@ export default function NotificationsList() {
         title={"Notifications"}
       />
       <div className="flex flex-col gap-4">
-        {(sessions || []).map((session) => (
-          <NotificationListItem
-            key={session.id}
-            notification={{
-              timestamp: dayjs(session.startTime).format("HH:mm"),
-              title: `Round table #${session.sessionNumber}`,
-              body: session.topic || "",
-              onAccept: () =>
-                router.push(
-                  `/round-table/${session.id}/welcome?table=${session.tableNumber}`
-                ),
-              onDecline: () => router.push("/home"),
-            }}
-          />
-        ))}
+        {(sessions || []).length === 0 ? (
+          <div
+            className="flex flex-col items-center justify-center py-12
+          px-6"
+          >
+            <Bell color="#99a1af" size={48} className="mb-4" />
+            <h3 className="text-gray-600 text-lg font-medium font-ariom mb-2">
+              No Notifications
+            </h3>
+            <p className="text-gray-400 text-center font-chivo">
+              You don{"'"}t have any pending notifications at the moment
+            </p>
+          </div>
+        ) : (
+          (sessions || []).map((session) => (
+            <NotificationListItem
+              key={session.id}
+              notification={{
+                timestamp: dayjs(session.startTime).format("HH:mm"),
+                title: `Round table #${session.sessionNumber}`,
+                body: session.topic || "",
+                onAccept: () =>
+                  router.push(
+                    `/round-table/${session.id}/welcome?table=${session.tableNumber}`
+                  ),
+                onDecline: () => router.push("/home"),
+              }}
+            />
+          ))
+        )}
       </div>
     </>
   );

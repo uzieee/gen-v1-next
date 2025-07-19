@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import useApiQuery from "@/app/hooks/use-api-query";
@@ -14,6 +15,8 @@ import { Bell, TicketPercent } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
+import { fetchMatches } from "@/app/services/http/users";
+import { useFormattedMatches } from "@/app/hooks/use-formated-matches";
 
 // Main Component
 export default function HomeDashboard() {
@@ -22,6 +25,19 @@ export default function HomeDashboard() {
   const router = useRouter();
 
   const { data, isSuccess: isFetchUserSuccess } = useCurrentUser();
+
+  const { data: matchesData } = useApiQuery({
+    apiHandler: fetchMatches,
+    payload: {
+      page: 1,
+      limit: 10,
+    },
+    queryKey: ["matches", "home-page"],
+  });
+
+  const communityProfiles = useFormattedMatches(
+    matchesData?.matches || ([] as any[])
+  );
 
   const { isSuccess: isFetchEventsSuccess, data: eventsData } = useApiQuery({
     apiHandler: fetchEvents,
@@ -56,11 +72,15 @@ export default function HomeDashboard() {
               <h1 className="text-main text-2xl font-bold">Welcome Back</h1>
             </div>
             <div className="flex items-center gap-2">
-              <IconButton
-                icon={<Bell className="w-3.5 h-3" />}
-                className="rounded-full bg-primary"
-                onClick={() => router.push("/notifications")}
-              />
+              <div className="relative">
+                <IconButton
+                  icon={<Bell className="w-3.5 h-3" />}
+                  className="rounded-full bg-primary"
+                  onClick={() => router.push("/notifications")}
+                />
+                <div className="absolute bottom-1 right-1 min-w-3 min-h-3 bg-red-600 rounded-full border-2 border-white"></div>
+              </div>
+
               {user?.image ? (
                 <IconButton
                   onClick={() => {
@@ -101,11 +121,19 @@ export default function HomeDashboard() {
         <div className="flex flex-col gap-6 mb-7">
           <div className="w-full px-6">
             <SectionHeader
-              title="Upcoming Events"
-              emoji="🔥"
-              onSeeAll={() => {
-                router.push("/events");
-              }}
+              title={
+                (eventsData.events || []).length === 0
+                  ? "No Upcoming Events"
+                  : "Upcoming Events"
+              }
+              emoji={(eventsData.events || []).length === 0 ? "" : "🔥"}
+              onSeeAll={
+                (eventsData.events || []).length === 0
+                  ? undefined
+                  : () => {
+                      router.push("/events");
+                    }
+              }
             />
           </div>
           <div className="flex items-center overflow-x-scroll space-x-6 px-6 scroll-snap-bouncy scrollbar-hide">
@@ -118,12 +146,20 @@ export default function HomeDashboard() {
                 className={key == 0 ? "pl-6" : ""}
               />
             ))}
+            {(eventsData.events || []).length === 0 && (
+              <div
+                style={{
+                  backgroundImage: "url(/images/gen-placeholder-min.png)",
+                }}
+                className="w-full h-56 rounded-3xl bg-cover bg-center bg-no-repeat"
+              />
+            )}
           </div>
         </div>
 
         {/* Community Section */}
         <div className="flex flex-col gap-16 mb-24 px-6">
-          <SectionHeader title="Community" emoji="😊" onSeeAll={() => {}} />
+          <SectionHeader title="Community" emoji="😊" />
           <ProfileCardStack profiles={communityProfiles} />
         </div>
       </div>
@@ -140,42 +176,6 @@ export default function HomeDashboard() {
     </>
   );
 }
-
-const communityProfiles = [
-  {
-    id: "1",
-    name: "Alexis",
-    flag: "🇩🇴",
-    status: "Recommended",
-    icon: "⚡",
-    image: "/images/hip-hop-dancer-studio.jpg",
-  },
-  {
-    id: "2",
-    name: "Marcus",
-    flag: "🇺🇸",
-    status: "Online",
-    icon: "⚡",
-    image: "/images/futuristic-digital-portrait.jpg",
-  },
-  {
-    id: "3",
-    name: "Sofia",
-    flag: "🇪🇸",
-    status: "Recommended",
-    icon: "⚡",
-    image: "/images/ethereal-marine-anemone.jpg",
-  },
-  {
-    id: "4",
-    name: "Emma",
-    flag: "🇫🇷",
-    status: "Offline",
-    icon: "⚡",
-    image:
-      "/images/advanced-technological-robot-interacting-with-money-finance.jpg",
-  },
-];
 
 const tabs: NavItemType[] = [
   {
