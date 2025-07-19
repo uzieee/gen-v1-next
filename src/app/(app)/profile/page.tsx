@@ -52,7 +52,13 @@ export default function Profile() {
             userName: (user.fullName || "").split(" ")[0],
           })
         : "N/A",
-      topics: ((user.attributes as Attribute[]) ?? []).map((a) => a.label), // labels only
+      topics: Array.from(
+        new Set(
+          ((user.attributes as Attribute[]) ?? []).map((a) =>
+            (a.label || "").toLowerCase()
+          )
+        )
+      ), // unique labels only
     };
   }, [isFetchUserSuccess, data]);
 
@@ -187,9 +193,14 @@ export default function Profile() {
           </div>
         </div>
         <div className="pt-6 px-5 flex flex-col gap-3">
-          <InfoCard title="About me (ai Gen)" className="flex flex-col gap-3">
-            <div className="text-main/50 font-chivo text-sm font-light">
-              {userProfile?.bio}
+          <InfoCard title="About me" className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
+              <div className="text-main/50 font-chivo text-sm font-light">
+                {userProfile?.bio}
+              </div>
+              <div className="text-main/30 font-chivo text-xs font-light italic mt-2">
+                AI generated bio
+              </div>
             </div>
           </InfoCard>
           <InfoCard
@@ -204,7 +215,7 @@ export default function Profile() {
                 <Tag
                   key={topic}
                   label={topic}
-                  className="border-none bg-main/30 shadow-md font-hellix hover:bg-main/30"
+                  className="border-none bg-main/30 shadow-md font-hellix hover:bg-main/30 capitalize"
                 />
               ))}
             </div>
