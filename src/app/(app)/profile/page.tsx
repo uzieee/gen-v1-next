@@ -63,7 +63,7 @@ export default function Profile() {
   }, [isFetchUserSuccess, data]);
 
   const handleBack = () => {
-    router.back();
+    router.replace("/home");
   };
 
   const goToNextProfile = () => {

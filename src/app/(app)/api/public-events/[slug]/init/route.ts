@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPayload } from "payload";
 import payloadConfig from "@payload-config";
-import { rotate, chunk } from "@/lib/utils";
+import { rotate, distributeUsersToTables } from "@/lib/utils";
 import { genQuestions, genTopic } from "@/payload-hooks/roundtables";
 
 export const dynamic = "force-dynamic";
@@ -40,6 +40,13 @@ export async function POST(
     about: aboutEvent,
   } = event;
 
+  console.log("Event Configuration:", {
+    numberOfSessions,
+    numberOfTables,
+    maxUsersPerTable,
+    eventName,
+  });
+
   // 2. clear existing sessions & assignments
   const { docs: oldSessions } = await payload.find({
     collection: "sessions",
@@ -60,12 +67,6 @@ export async function POST(
   }
 
   // 3. get all ticket holders
-  // const { docs: tickets } = await payload.find({
-  //   collection: "tickets",
-  //   where: { event: { equals: event.id } },
-  //   depth: 1,
-  //   limit: 1000,
-  // });
   const { docs: users } = await payload.find({
     collection: "users",
     where: {
@@ -76,17 +77,29 @@ export async function POST(
         not_equals: "disabled",
       },
     },
+    limit: 100,
     depth: 2,
   });
 
   if (!users.length) {
     return NextResponse.json({ error: "No ticket holders" }, { status: 400 });
   }
+
   const userCount = users.length;
+  console.log(`Found ${userCount} active users`);
+
+  // Validate configuration
+  if (userCount > numberOfTables * maxUsersPerTable) {
+    console.warn(
+      `Warning: ${userCount} users exceed total table capacity (${numberOfTables * maxUsersPerTable})`
+    );
+  }
 
   // 4. create sessions + assignments
   const createdSessions: any[] = [];
   for (let i = 1; i <= numberOfSessions; i++) {
+    console.log(`Creating session ${i}/${numberOfSessions}...`);
+
     // compute start time
     const start = new Date(eventStart);
     start.setMinutes(start.getMinutes() + (i - 1) * sessionDuration);
@@ -110,20 +123,32 @@ export async function POST(
       data: { topic },
     });
 
-    // 4.c — assign users to tables
+    console.log(`Session ${i} topic: ${topic}`);
+
+    // 4.c — assign users to tables (FIXED VERSION)
     const offset = Math.floor(((i - 1) * userCount) / numberOfTables);
     const rotated = rotate(users, offset);
-    const groups = chunk(rotated, maxUsersPerTable);
 
-    // Get all users for this session (flatten all groups)
-    const sessionUsers = groups.flat();
+    // Distribute users evenly across all tables
+    const tableAssignments = distributeUsersToTables(
+      rotated,
+      numberOfTables,
+      maxUsersPerTable
+    );
+
+    // Get all users for this session (flatten all table assignments)
+    const sessionUsers = tableAssignments.flat();
 
     // Generate questions for all users in this session in one batch
     const allQuestions = await genQuestions(sessionUsers, topic);
 
+    // Create table assignments in database
     for (let t = 0; t < numberOfTables; t++) {
-      const group = groups[t] ?? [];
-      for (const user of group) {
+      const tableUsers = tableAssignments[t];
+
+      console.log(`Session ${i}, Table ${t + 1}: ${tableUsers.length} users`);
+
+      for (const user of tableUsers) {
         // Get the pre-generated questions for this user
         const userQuestions = allQuestions[user.id] || [
           `What's your perspective on ${topic}?`,
@@ -145,8 +170,16 @@ export async function POST(
     createdSessions.push(session);
   }
 
+  console.log(`Successfully created ${createdSessions.length} sessions`);
+
   return NextResponse.json({
     ok: true,
     sessionsCreated: createdSessions.length,
+    userCount,
+    configuration: {
+      numberOfSessions,
+      numberOfTables,
+      maxUsersPerTable,
+    },
   });
 }
