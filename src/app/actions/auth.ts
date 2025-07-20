@@ -17,12 +17,12 @@ export async function phoneAuthAction(formData: FormData) {
     phone = "+" + phone;
 
     /* 1 Verify OTP with Twilio */
-    // const ok =
-    //   process.env.NODE_ENV === "production"
-    //     ? await checkOTP(phone, code)
-    //     : true;
+    const ok =
+      process.env.NODE_ENV === "production"
+        ? await checkOTP(phone, code)
+        : true;
     // const ok = true;
-    const ok = await checkOTP(phone, code);
+    // const ok = await checkOTP(phone, code);
     if (!ok) {
       throw new Error("Invalid code");
     }
