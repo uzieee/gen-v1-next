@@ -55,7 +55,7 @@ export default function TakeAPhoto() {
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const MAX_FILE_SIZE = 4 * 1024 * 1024; // 2MB in bytes
+  const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB in bytes
 
   const handlePhotoUpload = (photoKey: string) => {
     // Clear previous error for this photo
@@ -76,7 +76,7 @@ export default function TakeAPhoto() {
         if (file.size > MAX_FILE_SIZE) {
           setErrors((prev) => ({
             ...prev,
-            [photoKey]: "Image size must be less than 4MB",
+            [photoKey]: "Image size must be less than 7MB",
           }));
           return;
         }
