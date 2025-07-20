@@ -220,7 +220,7 @@ export default function StartupVision() {
 
           {/* Industries combobox */}
           <div className="flex flex-col gap-3">
-            <p className="text-lg font-medium text-main-300">Industries</p>
+            <p className="text-lg font-medium text-main-300">Industry</p>
             <Controller
               name="industries"
               control={control}
