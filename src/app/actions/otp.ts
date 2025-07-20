@@ -7,10 +7,10 @@ export async function sendOTPAction(formData: FormData) {
   if (!phoneNumber) throw new Error("Phone number required");
 
   // only run this in production
-  // if (process.env.NODE_ENV === "production") {
-  const success = await sendOTP(phoneNumber);
-  if (!success) throw new Error("Failed to send OTP");
-  // }
+  if (process.env.NODE_ENV === "production") {
+    const success = await sendOTP(phoneNumber);
+    if (!success) throw new Error("Failed to send OTP");
+  }
 }
 
 export async function verifyOTPAction(formData: FormData) {
@@ -19,10 +19,12 @@ export async function verifyOTPAction(formData: FormData) {
   if (!phoneNumber || !otp) throw new Error("Missing inputs");
 
   // only run this in production
-  // if (process.env.NODE_ENV === "production") {
-  const verified = await checkOTP(phoneNumber, otp);
-  if (!verified) throw new Error("OTP verification failed");
-  // }
+  if (process.env.NODE_ENV === "production") {
+    const verified = await checkOTP(phoneNumber, otp);
+    if (!verified) throw new Error("OTP verification failed");
+  }
 
   return { verified: true };
 }
+
+// 14378337450
