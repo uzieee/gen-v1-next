@@ -145,3 +145,52 @@ export function getStartupSummary({
     return `${userName} is working on a startup project.`;
   }
 }
+
+// Helper function to distribute users across tables
+export function distributeUsersToTables<T>(
+  users: T[],
+  numberOfTables: number,
+  maxUsersPerTable: number
+): T[][] {
+  // Initialize empty arrays for each table
+  const tables: T[][] = Array.from({ length: numberOfTables }, () => []);
+
+  // Calculate base distribution
+  const baseUsersPerTable = Math.floor(users.length / numberOfTables);
+  const remainder = users.length % numberOfTables;
+
+  let userIndex = 0;
+
+  for (let tableIndex = 0; tableIndex < numberOfTables; tableIndex++) {
+    // Some tables get one extra user if there's a remainder
+    let usersForThisTable =
+      baseUsersPerTable + (tableIndex < remainder ? 1 : 0);
+
+    // Don't exceed maxUsersPerTable
+    usersForThisTable = Math.min(usersForThisTable, maxUsersPerTable);
+
+    // Assign users to this table
+    for (let u = 0; u < usersForThisTable && userIndex < users.length; u++) {
+      tables[tableIndex].push(users[userIndex]);
+      userIndex++;
+    }
+  }
+
+  // Handle any remaining users (in case some tables hit maxUsersPerTable limit)
+  while (userIndex < users.length) {
+    // Find table with space
+    const tableWithSpace = tables.find(
+      (table) => table.length < maxUsersPerTable
+    );
+    if (tableWithSpace) {
+      tableWithSpace.push(users[userIndex]);
+      userIndex++;
+    } else {
+      // All tables are full - this shouldn't happen with proper configuration
+      console.warn(`Cannot assign user ${userIndex + 1}: all tables are full`);
+      break;
+    }
+  }
+
+  return tables;
+}

@@ -32,8 +32,6 @@ export default function Profile() {
     queryKey: ["users", params?.id],
   });
 
-  console.log({ data });
-
   const userProfile = useMemo(() => {
     const user = data;
     if (!isFetchUserSuccess || !user) return null;
@@ -68,7 +66,7 @@ export default function Profile() {
   }, [isFetchUserSuccess, data]);
 
   const handleBack = () => {
-    router.back();
+    router.replace("/home");
   };
 
   const handleLike = () => {
