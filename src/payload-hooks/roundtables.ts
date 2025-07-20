@@ -15,26 +15,225 @@ export async function genTopic(
   eventName: string,
   sessionNum: number,
   about?: string
-) {
-  const prompt = `
-You are an expert discussion facilitator tasked with creating thought-provoking topics for roundtable discussions. Generate a concise, engaging topic for a roundtable discussion session at an event called "${eventName}" ${about ? ", context about the event: " + about : ""}. 
+): Promise<string> {
+  const prompt = `Generate ONE thought-provoking discussion statement for a roundtable at "${eventName}".
 
-The topic should:
-- Spark meaningful dialogue and diverse perspectives
-- Be accessible yet intellectually stimulating
-- Connect to current trends or timeless human experiences
-- Encourage personal stories and professional insights
-- Be specific enough to focus discussion but broad enough for varied interpretations
-- Avoid overly controversial or polarizing subjects
+${about ? `Event context: ${about}` : ""}
 
-Create a topic that makes participants eager to share their thoughts and learn from others.`;
-  const res = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.7,
-    max_tokens: 30,
-  });
-  return res.choices[0].message.content?.trim() ?? "";
+Create a statement that:
+- Is a clear opinion, provocative question, or debatable statement
+- Sparks diverse perspectives and meaningful dialogue
+- Connects to professional experiences or current trends
+- Encourages participants to share personal insights
+- Is specific enough to focus discussion but allows varied interpretations
+
+Examples of good discussion statements:
+- "Remote work has fundamentally changed what it means to be a team"
+- "The best leaders are made, not born"
+- "Failure is more valuable than success for personal growth"
+- "AI will create more jobs than it eliminates"
+
+Return ONLY the discussion statement, no quotes or extra text.`;
+
+  try {
+    const res = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.8,
+      max_tokens: 80, // Increased for full sentences
+    });
+
+    const topic = res.choices[0].message.content?.trim();
+
+    if (!topic) {
+      throw new Error("Empty response from OpenAI");
+    }
+
+    // Clean up the response (remove quotes, ensure proper punctuation)
+    const cleanedTopic = topic
+      .replace(/^["']|["']$/g, "") // Remove wrapping quotes
+      .trim();
+
+    // Add period if missing and not a question
+    const finalTopic =
+      cleanedTopic.endsWith("?") ||
+      cleanedTopic.endsWith(".") ||
+      cleanedTopic.endsWith("!")
+        ? cleanedTopic
+        : cleanedTopic + ".";
+
+    return finalTopic;
+  } catch (error) {
+    console.error("Failed to generate topic via OpenAI:", error);
+    return generateFallbackTopic(eventName, sessionNum, about);
+  }
+}
+
+function generateFallbackTopic(
+  eventName: string,
+  sessionNum: number,
+  about?: string
+): string {
+  const eventKeywords = extractEventKeywords(eventName, about);
+
+  const universalStatements = [
+    "The most important skill for future success is adaptability, not expertise.",
+    "Authenticity is more valuable than perfection in building trust.",
+    "The best ideas come from diverse perspectives, not individual brilliance.",
+    "Failure teaches us more than success ever could.",
+    "Technology should serve human connection, not replace it.",
+    "Work-life balance is a myth – integration is the real goal.",
+    "The biggest career risks come from not taking any risks at all.",
+    "Mentorship is a two-way street where both parties learn equally.",
+    "Innovation happens when you combine old wisdom with new possibilities.",
+    "Your network's diversity matters more than its size.",
+  ];
+
+  const techStatements = [
+    "AI will augment human creativity rather than replace it.",
+    "The future belongs to those who can bridge technical and human skills.",
+    "Data without context is just noise.",
+    "The most successful tech companies prioritize user experience over features.",
+  ];
+
+  const businessStatements = [
+    "Customer feedback is more valuable than market research.",
+    "Small companies move faster, but big companies move mountains.",
+    "The best business strategies are simple enough to explain in one sentence.",
+    "Purpose-driven companies outperform profit-driven ones in the long run.",
+  ];
+
+  const leadershipStatements = [
+    "Great leaders create more leaders, not more followers.",
+    "Vulnerability is a leadership strength, not a weakness.",
+    "The best decisions are made with 80% of the information, not 100%.",
+    "Leading by example is more powerful than leading by authority.",
+  ];
+
+  const startupStatements = [
+    "Most successful entrepreneurs are problem-solvers first, business people second.",
+    "The best time to start a company is when you're not ready.",
+    "Startup culture should scale with the company, not stay static.",
+    "Passion without market validation is just an expensive hobby.",
+  ];
+
+  // Select statement pool based on event context
+  let statements = universalStatements;
+
+  if (eventKeywords.tech) {
+    statements = [...techStatements, ...universalStatements];
+  } else if (eventKeywords.startup) {
+    statements = [...startupStatements, ...universalStatements];
+  } else if (eventKeywords.leadership) {
+    statements = [...leadershipStatements, ...universalStatements];
+  } else if (eventKeywords.business) {
+    statements = [...businessStatements, ...universalStatements];
+  }
+
+  // Use sessionNum to add some variation but not context-specific logic
+  const statementIndex = (sessionNum - 1) % statements.length;
+  return statements[statementIndex];
+}
+
+function extractEventKeywords(
+  eventName: string,
+  about?: string
+): {
+  tech: boolean;
+  business: boolean;
+  leadership: boolean;
+  startup: boolean;
+} {
+  const text = `${eventName} ${about || ""}`.toLowerCase();
+
+  return {
+    tech: /tech|software|digital|innovation|ai|data|engineering|development/.test(
+      text
+    ),
+    business: /business|commerce|sales|marketing|strategy|corporate/.test(text),
+    leadership: /leader|management|executive|ceo|director|manager/.test(text),
+    startup: /startup|entrepreneur|venture|founder|founding/.test(text),
+  };
+}
+
+// Alternative function for generating multiple discussion statements
+export async function genMultipleTopics(
+  eventName: string,
+  sessionCount: number,
+  about?: string
+): Promise<string[]> {
+  if (sessionCount === 1) {
+    return [await genTopic(eventName, 1, about)];
+  }
+
+  const prompt = `Generate ${sessionCount} distinct thought-provoking discussion statements for roundtables at "${eventName}".
+
+${about ? `Event context: ${about}` : ""}
+
+Each statement should:
+- Be a clear opinion, provocative question, or debatable claim
+- Spark diverse perspectives and meaningful dialogue
+- Be complete sentences or questions
+- Encourage participants to share experiences and insights
+- Connect to professional or personal growth themes
+
+Examples:
+- "The best innovations come from constraints, not unlimited resources."
+- "Is work-life balance achievable, or should we aim for work-life integration?"
+- "Emotional intelligence matters more than technical skills for career success."
+
+Return ONLY a JSON array of ${sessionCount} statement strings:
+["Statement 1", "Statement 2", "Statement 3", ...]`;
+
+  try {
+    const res = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.8,
+      max_tokens: 80 * sessionCount + 100,
+    });
+
+    const content = res.choices[0].message.content?.trim();
+    if (!content) {
+      throw new Error("Empty response");
+    }
+
+    let topics: string[];
+    try {
+      topics = JSON.parse(content);
+    } catch (parseError) {
+      // Try to extract JSON array if wrapped in other text
+      const jsonMatch = content.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        topics = JSON.parse(jsonMatch[0]);
+      } else {
+        throw parseError;
+      }
+    }
+
+    if (!Array.isArray(topics) || topics.length !== sessionCount) {
+      throw new Error("Invalid topic count in response");
+    }
+
+    // Clean up topics and ensure proper punctuation
+    return topics.map((topic) => {
+      const cleaned = topic.replace(/^["']|["']$/g, "").trim();
+      return cleaned.endsWith("?") ||
+        cleaned.endsWith(".") ||
+        cleaned.endsWith("!")
+        ? cleaned
+        : cleaned + ".";
+    });
+  } catch (error) {
+    console.error("Failed to generate multiple topics:", error);
+
+    // Generate fallback topics individually
+    const fallbackTopics: string[] = [];
+    for (let i = 1; i <= sessionCount; i++) {
+      fallbackTopics.push(generateFallbackTopic(eventName, 1, about));
+    }
+    return fallbackTopics;
+  }
 }
 
 /** Generate 2 personalized ice-breaker questions */

@@ -105,7 +105,7 @@ export default function RoundTableWelcome() {
                   width={100}
                   height={100}
                   alt="Profile"
-                  className="w-full h-full object-cover rounded-full"
+                  className="!min-w-16 !min-h-16 !max-w-16 !max-h-16 object-cover  rounded-full"
                 />
               ) : (
                 <AvatarPlaceholder
