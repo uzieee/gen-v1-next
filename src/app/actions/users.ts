@@ -22,6 +22,7 @@ const profileSchema = z.object({
   role: z.enum(["admin", "member"]).optional(),
   email: z.string().email().optional(),
   isEmailVerified: z.coerce.boolean().optional(),
+  bio: z.string().max(500).optional(),
 });
 
 export async function updateUserProfile(formData: FormData) {

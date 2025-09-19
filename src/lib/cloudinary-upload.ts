@@ -15,14 +15,39 @@ function fileToStream(file: File): Readable {
 }
 
 export async function uploadToCloudinary(file: File): Promise<string> {
+  // Check if Cloudinary is configured
+  if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 
+      !process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || 
+      !process.env.CLOUDINARY_API_SECRET) {
+    throw new Error("Cloudinary not configured. Please check your environment variables.");
+  }
+
   return await new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: "users" }, // optional folder
+      { 
+        folder: "users",
+        resource_type: "auto", // Automatically detect image/video
+        quality: "auto", // Auto-optimize quality
+        fetch_format: "auto", // Auto-optimize format
+      },
       (err, result) => {
-        if (err || !result) return reject(err);
-        resolve(result.secure_url); // we store only the URL
+        if (err) {
+          console.error("Cloudinary upload error:", err);
+          return reject(new Error(`Failed to upload image: ${err.message}`));
+        }
+        if (!result) {
+          return reject(new Error("No result from Cloudinary upload"));
+        }
+        console.log(`✅ Image uploaded successfully: ${result.secure_url}`);
+        resolve(result.secure_url);
       }
     );
-    fileToStream(file).pipe(stream);
+    
+    try {
+      fileToStream(file).pipe(stream);
+    } catch (error) {
+      console.error("Error creating file stream:", error);
+      reject(new Error("Failed to process file for upload"));
+    }
   });
 }

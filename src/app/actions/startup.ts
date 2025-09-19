@@ -60,10 +60,20 @@ export async function saveStartupVisionAction(
   });
 
   /* push id to user.startups (array) */
+  // First get the current user to see existing startups
+  const currentUser = await payload.findByID({
+    collection: "users",
+    id: userId,
+    depth: 0,
+  });
+  
+  const existingStartups = (currentUser.startups as string[]) ?? [];
+  const updatedStartups = [...existingStartups, startup.id];
+  
   await payload.update({
     collection: "users",
     id: userId,
-    data: { startups: [startup.id] },
+    data: { startups: updatedStartups },
   });
 
   return { ok: true, startupId: startup.id };

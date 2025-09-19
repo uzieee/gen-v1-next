@@ -21,8 +21,16 @@ export const generateUserBio = async ({
 }: any) => {
   /* ────────────────────────────── 1  Early-exit guards ───────────────────────────── */
   const attrsArr = (doc.attributes as any[]) ?? [];
-  const professionId = doc.profession;
-  const startupsIds = (doc.startups as string[]) ?? [];
+  
+  // Handle profession - could be string (ID) or object
+  const professionData = doc.profession;
+  const professionId = typeof professionData === 'string' ? professionData : professionData?.id;
+  
+  // Handle startups - could be array of strings (IDs) or objects
+  const startupsData = (doc.startups as any[]) ?? [];
+  const startupsIds = startupsData.map((startup) => 
+    typeof startup === 'string' ? startup : startup.id
+  ).filter(Boolean);
 
   // Must have at least one data point (attributes or profession or startup)
   if (attrsArr.length === 0 && !professionId && startupsIds.length === 0)
@@ -41,14 +49,24 @@ export const generateUserBio = async ({
         ((previousDoc?.attributes as any[]) ?? []).map((a) => a.id).sort()
       );
 
+  // Handle previous profession data
+  const previousProfessionData = previousDoc?.profession;
+  const previousProfessionId = typeof previousProfessionData === 'string' ? previousProfessionData : previousProfessionData?.id;
+
   const professionChanged =
     !created &&
-    previousDoc?.profession?.toString() !== professionId?.toString();
+    previousProfessionId?.toString() !== professionId?.toString();
+
+  // Handle previous startups data
+  const previousStartupsData = (previousDoc?.startups as any[]) ?? [];
+  const previousStartupsIds = previousStartupsData.map((startup) => 
+    typeof startup === 'string' ? startup : startup.id
+  ).filter(Boolean);
 
   const startupsChanged =
     !created &&
     JSON.stringify(startupsIds.sort()) !==
-      JSON.stringify(((previousDoc?.startups as string[]) ?? []).sort());
+      JSON.stringify(previousStartupsIds.sort());
 
   if (!created && !attributesChanged && !professionChanged && !startupsChanged)
     return;
@@ -56,22 +74,38 @@ export const generateUserBio = async ({
   /* ────────────────────────────── 2  Fetch related docs if needed ─────────────────── */
   let profession: any | undefined;
   if (professionId) {
-    profession = await req.payload.findByID({
-      collection: "professions",
-      id: professionId,
-      depth: 1,
-    });
+    try {
+      profession = await req.payload.findByID({
+        collection: "professions",
+        id: professionId,
+        depth: 1,
+      });
+    } catch (error) {
+      console.error("[generateUserBio] Error fetching profession:", error);
+      // If professionId is not a valid ObjectId, skip profession data
+      if (error instanceof Error && error.message.includes('ObjectId')) {
+        profession = undefined;
+      } else {
+        throw error;
+      }
+    }
   }
 
   let startups: any[] = [];
   if (startupsIds.length) {
-    const { docs: s } = await req.payload.find({
-      collection: "startups",
-      where: { id: { in: startupsIds } },
-      depth: 0,
-      limit: 3,
-    });
-    startups = s;
+    try {
+      const { docs: s } = await req.payload.find({
+        collection: "startups",
+        where: { id: { in: startupsIds } },
+        depth: 0,
+        limit: 3,
+      });
+      startups = s;
+    } catch (error) {
+      console.error("[generateUserBio] Error fetching startups:", error);
+      // If there's an error fetching startups, continue without them
+      startups = [];
+    }
   }
 
   /* ────────────────────────────── 3  Build prompt ─────────────────────────────────── */
@@ -103,6 +137,12 @@ export const generateUserBio = async ({
 
   /* ────────────────────────────── 4  Call OpenAI ─────────────────────────────────── */
   try {
+    // Skip OpenAI in development if no API key is provided
+    if (process.env.NODE_ENV === "development" && !process.env.OPENAI_API_KEY) {
+      console.log("[generateUserBio] Skipping OpenAI in development mode");
+      return;
+    }
+
     const res = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
@@ -123,5 +163,9 @@ export const generateUserBio = async ({
     });
   } catch (err) {
     console.error("[generateUserBio]", err);
+    // In development, don't fail the entire operation if OpenAI fails
+    if (process.env.NODE_ENV === "development") {
+      console.log("[generateUserBio] Continuing without bio generation in development");
+    }
   }
 };

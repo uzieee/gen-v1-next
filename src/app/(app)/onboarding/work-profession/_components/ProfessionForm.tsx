@@ -12,7 +12,7 @@ import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
 import { Attribute, Profession } from "@/payload-types";
 import useApiQuery from "@/app/hooks/use-api-query";
 import { fetchAttributes } from "@/app/services/http/attributes";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import RadioField from "@/components/atoms/RadioField";
 import TextArea from "@/components/molecules/TextArea";
 import { saveProfessionAction } from "@/app/actions/profession";
@@ -32,6 +32,7 @@ export type IProfessional = z.infer<typeof professionalSchema>;
 
 export default function ProfessionalField() {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   const {
     formState: { isValid, errors },
@@ -48,6 +49,10 @@ export default function ProfessionalField() {
   const isQuickEdit = searchParams.get("quick");
 
   const { data, isSuccess: isFetchUserSuccess } = useCurrentUser(2);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const { profession } = (data?.user || {}) as { profession: Profession };
@@ -97,6 +102,27 @@ export default function ProfessionalField() {
           ? "/onboarding/startup-vision"
           : "/onboarding/interests-hobbies"
       );
+  }
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!isMounted) {
+    return (
+      <>
+        <HeaderWithSteps
+          onSkip={onSkip}
+          action="Save & Skip"
+          activeIndicator={1}
+        />
+        <div className="flex flex-col gap-6 p-6">
+          <div className="text-2xl font-bold text-main-600 font-ariom">
+            What do you do for work (or want to do)?
+          </div>
+          <div className="text-secondary-800 font-ariom">
+            Loading...
+          </div>
+        </div>
+      </>
+    );
   }
 
   return (
