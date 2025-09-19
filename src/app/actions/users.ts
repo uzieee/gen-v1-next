@@ -23,6 +23,9 @@ const profileSchema = z.object({
   email: z.string().email().optional(),
   isEmailVerified: z.coerce.boolean().optional(),
   bio: z.string().max(500).optional(),
+  instagramHandle: z.string().max(50).optional(),
+  website: z.string().url().optional().or(z.literal("")),
+  publicEmail: z.string().email().optional().or(z.literal("")),
 });
 
 export async function updateUserProfile(formData: FormData) {
@@ -46,9 +49,33 @@ export async function updateUserProfile(formData: FormData) {
       throw new Error("Invalid token");
     }
 
-    const raw = Object.fromEntries(formData) as Record<string, unknown>;
+    // Extract data from FormData using get() method
+    const raw: Record<string, unknown> = {};
+    
+    // Get each field individually
+    const fullName = formData.get("fullName")?.toString();
+    const gender = formData.get("gender")?.toString();
+    const dateOfBirth = formData.get("dateOfBirth")?.toString();
+    const role = formData.get("role")?.toString();
+    const email = formData.get("email")?.toString();
+    const isEmailVerified = formData.get("isEmailVerified")?.toString();
+    const bio = formData.get("bio")?.toString();
+    const instagramHandle = formData.get("instagramHandle")?.toString();
+    const website = formData.get("website")?.toString();
+    const publicEmail = formData.get("publicEmail")?.toString();
+    
+    if (fullName) raw.fullName = fullName;
+    if (gender) raw.gender = gender;
+    if (dateOfBirth) raw.dateOfBirth = dateOfBirth;
+    if (role) raw.role = role;
+    if (email) raw.email = email;
+    if (isEmailVerified) raw.isEmailVerified = isEmailVerified === "true";
+    if (bio) raw.bio = bio;
+    if (instagramHandle) raw.instagramHandle = instagramHandle;
+    if (website) raw.website = website;
+    if (publicEmail) raw.publicEmail = publicEmail;
+    
     let data;
-
     try {
       data = profileSchema.parse(raw);
     } catch (err) {
@@ -142,4 +169,62 @@ export async function listUserAttributesAction(categorySlug?: string) {
   }
 
   return { attributes: attrs }; // array of full objects
+}
+
+/* ---------- Social Links Actions ---------- */
+const socialLinksSchema = z.object({
+  instagramHandle: z.string().max(50).optional(),
+  website: z.string().url().optional().or(z.literal("")),
+  publicEmail: z.string().email().optional().or(z.literal("")),
+});
+
+export async function updateSocialLinksAction(formData: FormData) {
+  try {
+    const payload = await getPayload({ config });
+
+    const token = await readAuthToken();
+    if (!token) throw new Error("Unauthenticated");
+
+    let userId: string;
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+      userId = decoded.id;
+    } catch (error) {
+      throw new Error("Invalid token");
+    }
+
+    // Extract data from FormData using get() method
+    const raw: Record<string, unknown> = {};
+    
+    // Get each field individually
+    const instagramHandle = formData.get("instagramHandle")?.toString();
+    const website = formData.get("website")?.toString();
+    const publicEmail = formData.get("publicEmail")?.toString();
+    
+    if (instagramHandle) raw.instagramHandle = instagramHandle;
+    if (website) raw.website = website;
+    if (publicEmail) raw.publicEmail = publicEmail;
+    
+    let data;
+    try {
+      data = socialLinksSchema.parse(raw);
+    } catch (err) {
+      throw new Error(`Validation failed: ${JSON.stringify(err)}`);
+    }
+
+    const updated = await payload.update({
+      collection: "users",
+      id: userId,
+      data,
+    });
+
+    await setAuthCookie(updated.id);
+
+    return { success: true, user: updated };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { error: error.message };
+    }
+    return { error: "An unexpected error occurred" };
+  }
 }

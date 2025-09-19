@@ -23,6 +23,7 @@ export function getCountryCodes() {
     { code: "62", country: "Indonesia", flag: "🇮🇩" },
     { code: "63", country: "Philippines", flag: "🇵🇭" },
     { code: "91", country: "India", flag: "🇮🇳" },
+    { code: "92", country: "Pakistan", flag: "🇵🇰" },
     { code: "61", country: "Australia", flag: "🇦🇺" },
     { code: "49", country: "Germany", flag: "🇩🇪" },
     { code: "33", country: "France", flag: "🇫🇷" },

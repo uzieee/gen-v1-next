@@ -178,6 +178,30 @@ export const Users: CollectionConfig = {
     },
     { name: "affinitySignature", type: "text", index: true },
     { name: "affinityVector", type: "json" },
+    {
+      name: "instagramHandle",
+      label: "Instagram Handle",
+      type: "text",
+      admin: {
+        description: "Instagram username without @ symbol",
+      },
+    },
+    {
+      name: "website",
+      label: "Website URL",
+      type: "text",
+      admin: {
+        description: "Personal or professional website URL",
+      },
+    },
+    {
+      name: "publicEmail",
+      label: "Public Email",
+      type: "email",
+      admin: {
+        description: "Email address to display publicly on profile",
+      },
+    },
   ],
   hooks: {
     afterChange: [generateAffinity, generateUserBio],

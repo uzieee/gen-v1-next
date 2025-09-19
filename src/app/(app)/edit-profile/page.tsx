@@ -293,6 +293,40 @@ export default function EditProfile() {
             </div>
           </div>
 
+          {/* Social Links Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-main-600 font-ariom">Social Links</h3>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-main-300">Instagram Handle</label>
+              <TextField
+                name="instagramHandle"
+                placeholder="Enter your Instagram username (without @)"
+                defaultValue={user.instagramHandle || ""}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-main-300">Website</label>
+              <TextField
+                name="website"
+                type="url"
+                placeholder="https://yourwebsite.com"
+                defaultValue={user.website || ""}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-main-300">Public Email</label>
+              <TextField
+                name="publicEmail"
+                type="email"
+                placeholder="your.email@example.com"
+                defaultValue={user.publicEmail || ""}
+              />
+            </div>
+          </div>
+
           {/* Error Display */}
           {errors.general && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">

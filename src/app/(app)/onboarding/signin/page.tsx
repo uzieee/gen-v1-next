@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { sendOTPAction } from "@/app/actions/otp";
+import { signinAction } from "@/app/actions/otp";
 import { FormSubmitButton } from "@/components/molecules/FormSubmitButton";
 
 export default function Signin() {
@@ -35,23 +35,13 @@ export default function Signin() {
     <>
       <Header onBack={onBack} title={"Sign In"} />
       <form
-        action={async () => {
-          try {
-            const phoneNumber = watch("phoneNumber");
-            const countryCode = watch("countryCode");
-
-            const data = new FormData();
-            data.append("phoneNumber", `${countryCode}${phoneNumber}`);
-
-            await sendOTPAction(data);
-            router.push(`/onboarding/verify/${countryCode}${phoneNumber}`);
-          } catch (error) {
-            console.log(error);
-            return;
-          }
-        }}
+        action={signinAction}
         className="flex flex-col gap-14 p-6"
       >
+        {/* Hidden inputs for form data */}
+        <input type="hidden" name="phoneNumber" value={watch("phoneNumber") || ""} />
+        <input type="hidden" name="countryCode" value={watch("countryCode") || ""} />
+        
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-1">
             <div className="text-xl font-ariom font-bold text-main-600">

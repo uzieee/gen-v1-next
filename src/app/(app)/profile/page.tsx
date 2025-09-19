@@ -16,10 +16,15 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
+import SocialLinkModal from "@/components/molecules/SocialLinkModal";
 
 export default function Profile() {
   const router = useRouter();
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
+  const [socialModal, setSocialModal] = useState<{
+    isOpen: boolean;
+    type: "instagram" | "website" | "email";
+  }>({ isOpen: false, type: "instagram" });
 
   const { data, isSuccess: isFetchUserSuccess } = useCurrentUser(2);
 
@@ -59,6 +64,9 @@ export default function Profile() {
           )
         )
       ), // unique labels only
+      instagramHandle: user.instagramHandle || "",
+      website: user.website || "",
+      publicEmail: user.publicEmail || "",
     };
   }, [isFetchUserSuccess, data]);
 
@@ -83,6 +91,36 @@ export default function Profile() {
     onSwipedRight: goToPreviousProfile,
     trackMouse: true,
   });
+
+  const handleShareProfile = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${userProfile?.name}'s Profile`,
+          text: `Check out ${userProfile?.name}'s profile on GEN`,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.log("Share cancelled or failed");
+      }
+    } else {
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Profile link copied to clipboard!");
+      } catch (error) {
+        console.log("Failed to copy to clipboard");
+      }
+    }
+  };
+
+  const openSocialModal = (type: "instagram" | "website" | "email") => {
+    setSocialModal({ isOpen: true, type });
+  };
+
+  const closeSocialModal = () => {
+    setSocialModal({ isOpen: false, type: "instagram" });
+  };
 
   if (!isFetchUserSuccess) return <ProfileSkeleton />;
 
@@ -134,62 +172,65 @@ export default function Profile() {
                 {userProfile?.name || ""} {userProfile?.flag || "🇨🇦"}
               </div>
               <div className="flex gap-1">
+                {/* Instagram Button */}
                 <IconButton
                   size="sm"
                   variant="ghost"
-                  className="bg-main/10 w-8 h-8 rounded-full hover:bg-main/10"
+                  className="bg-main/10 w-8 h-8 rounded-full hover:bg-main/20"
+                  onClick={() => openSocialModal("instagram")}
                   icon={
                     <svg
-                      width="21"
-                      height="21"
-                      viewBox="0 0 21 21"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M20.5 10.525C20.5 5.00502 16.02 0.525024 10.5 0.525024C4.98 0.525024 0.5 5.00502 0.5 10.525C0.5 15.365 3.94 19.395 8.5 20.325V13.525H6.5V10.525H8.5V8.02502C8.5 6.09502 10.07 4.52502 12 4.52502H14.5V7.52502H12.5C11.95 7.52502 11.5 7.97502 11.5 8.52502V10.525H14.5V13.525H11.5V20.475C16.55 19.975 20.5 15.715 20.5 10.525Z"
+                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
                         fill="#F4F4F6"
                       />
                     </svg>
                   }
                 />
+                {/* Website Button */}
                 <IconButton
                   size="sm"
                   variant="ghost"
-                  className="bg-main/10 w-8 h-8 rounded-full hover:bg-main/10"
+                  className="bg-main/10 w-8 h-8 rounded-full hover:bg-main/20"
+                  onClick={() => openSocialModal("website")}
                   icon={
                     <svg
-                      width="14"
-                      height="17"
-                      viewBox="0 0 14 17"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M9.92268 4.36847C9.52405 4.36847 9.14948 4.43037 8.79897 4.55416C8.44845 4.67107 8.1323 4.79142 7.85052 4.91522C7.56873 5.03901 7.32131 5.1009 7.10825 5.1009C6.88832 5.1009 6.64089 5.04245 6.36598 4.92553C6.09794 4.80862 5.80928 4.69514 5.5 4.58511C5.19072 4.46819 4.86082 4.40974 4.51031 4.40974C3.85052 4.40974 3.21134 4.59198 2.59278 4.95648C1.9811 5.3141 1.47938 5.84709 1.08763 6.55545C0.695876 7.25693 0.5 8.12691 0.5 9.16538C0.5 10.1351 0.661512 11.0979 0.984536 12.0538C1.31443 13.0029 1.70962 13.8075 2.1701 14.4678C2.56873 15.0248 2.95704 15.5028 3.33505 15.9017C3.71306 16.3006 4.15292 16.5 4.65464 16.5C4.98454 16.5 5.26976 16.445 5.51031 16.3349C5.75773 16.2249 6.01546 16.1149 6.2835 16.0048C6.55842 15.8948 6.89863 15.8398 7.30412 15.8398C7.72337 15.8398 8.0567 15.8948 8.30412 16.0048C8.55155 16.108 8.7921 16.2146 9.02577 16.3246C9.25945 16.4278 9.55842 16.4794 9.92268 16.4794C10.4656 16.4794 10.9296 16.273 11.3144 15.8604C11.7062 15.4478 12.0704 14.9973 12.4072 14.509C12.7921 13.9451 13.067 13.4327 13.232 12.972C13.4038 12.5112 13.4931 12.267 13.5 12.2395C13.4863 12.2326 13.3694 12.1707 13.1495 12.0538C12.9364 11.9369 12.689 11.7547 12.4072 11.5071C12.1323 11.2526 11.8883 10.9191 11.6753 10.5064C11.4691 10.0938 11.366 9.59177 11.366 9.00032C11.366 8.48453 11.4485 8.04094 11.6134 7.66957C11.7783 7.29132 11.9708 6.98184 12.1907 6.74113C12.4107 6.49355 12.61 6.30787 12.7887 6.18407C12.9674 6.05341 13.067 5.97776 13.0876 5.95712C12.7302 5.44133 12.3316 5.07339 11.8918 4.85332C11.4588 4.62637 11.0601 4.48882 10.6959 4.44068C10.3316 4.39254 10.0739 4.36847 9.92268 4.36847ZM9.35567 3.05835C9.60309 2.75575 9.80584 2.41188 9.96392 2.02676C10.122 1.63475 10.201 1.23243 10.201 0.819794C10.201 0.696003 10.1907 0.589405 10.1701 0.5C9.77148 0.513755 9.35223 0.634107 8.91237 0.861057C8.47251 1.08801 8.10825 1.37341 7.81959 1.71728C7.59278 1.97174 7.39003 2.29497 7.21134 2.68698C7.03265 3.0721 6.9433 3.47099 6.9433 3.88362C6.9433 3.94552 6.94674 4.00398 6.95361 4.05899C6.96048 4.11401 6.96735 4.15184 6.97423 4.17247C7.04295 4.18622 7.11512 4.1931 7.19072 4.1931C7.55498 4.1931 7.93986 4.0865 8.34536 3.87331C8.75086 3.65323 9.08763 3.38158 9.35567 3.05835Z"
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
                         fill="#F4F4F6"
                       />
                     </svg>
                   }
                 />
+                {/* Share Button */}
                 <IconButton
                   size="sm"
                   variant="ghost"
-                  className="bg-main/10 w-8 h-8 rounded-full hover:bg-main/10"
+                  className="bg-main/10 w-8 h-8 rounded-full hover:bg-main/20"
+                  onClick={handleShareProfile}
                   icon={
                     <svg
-                      width="15"
-                      height="13"
-                      viewBox="0 0 15 13"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M1.04013 12.0283C0.184296 9.47739 1.89596 3.52417 7.88846 3.52417V1.82382C7.88121 1.67014 7.92031 1.51769 8.00119 1.38431C8.08207 1.25093 8.20137 1.14216 8.34513 1.07072C8.48888 0.999289 8.65114 0.968152 8.8129 0.980961C8.97465 0.993769 9.12921 1.04999 9.25846 1.14305L13.8243 4.54454C13.9313 4.62657 14.0176 4.73024 14.0769 4.84796C14.1362 4.96568 14.167 5.09448 14.167 5.22492C14.167 5.35537 14.1362 5.48416 14.0769 5.60188C14.0176 5.7196 13.9313 5.82327 13.8243 5.9053L9.25846 9.3068C9.12926 9.3998 8.97479 9.45601 8.81312 9.46884C8.65144 9.48168 8.48925 9.45061 8.34553 9.37927C8.2018 9.30794 8.08249 9.19928 8.00155 9.06603C7.9206 8.93277 7.88138 8.78043 7.88846 8.62681V6.92567C1.89596 7.77624 1.04013 12.0283 1.04013 12.0283Z"
-                        stroke="white"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"
+                        fill="#F4F4F6"
                       />
                     </svg>
                   }
@@ -251,6 +292,22 @@ export default function Profile() {
           <br />
         </div>
       </div>
+
+      {/* Social Link Modal */}
+      <SocialLinkModal
+        isOpen={socialModal.isOpen}
+        onClose={closeSocialModal}
+        type={socialModal.type}
+        currentValue={
+          socialModal.type === "instagram" ? userProfile?.instagramHandle || "" :
+          socialModal.type === "website" ? userProfile?.website || "" :
+          userProfile?.publicEmail || ""
+        }
+        onSuccess={() => {
+          // Refresh user data after successful update
+          window.location.reload();
+        }}
+      />
     </>
   );
 }
