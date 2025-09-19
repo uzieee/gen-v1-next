@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import SocialLinkModal from "@/components/molecules/SocialLinkModal";
+import LikedProfilesCard from "@/components/atoms/LikedProfilesCard";
 
 export default function Profile() {
   const router = useRouter();
@@ -64,9 +65,10 @@ export default function Profile() {
           )
         )
       ), // unique labels only
-      instagramHandle: user.instagramHandle || "",
-      website: user.website || "",
-      publicEmail: user.publicEmail || "",
+             instagramHandle: user.instagramHandle || "",
+             website: user.website || "",
+             publicEmail: user.publicEmail || "",
+             likedProfiles: (user.likedProfiles as User[]) || [],
     };
   }, [isFetchUserSuccess, data]);
 
@@ -287,6 +289,16 @@ export default function Profile() {
               className="text-main/50 font-chivo text-sm font-light"
             ></div>
           </InfoCard>
+          
+          {/* Liked Profiles Section */}
+          <LikedProfilesCard 
+            likedProfiles={userProfile?.likedProfiles || []}
+            onProfileClick={(profileId) => {
+              // Navigate to the profile or show profile details
+              console.log("Navigate to profile:", profileId);
+            }}
+          />
+          
           <br />
           <br />
           <br />

@@ -202,6 +202,17 @@ export const Users: CollectionConfig = {
         description: "Email address to display publicly on profile",
       },
     },
+    {
+      name: "likedProfiles",
+      label: "Liked Profiles",
+      type: "relationship",
+      relationTo: "users",
+      hasMany: true,
+      admin: {
+        description: "Profiles that this user has liked",
+        position: "sidebar",
+      },
+    },
   ],
   hooks: {
     afterChange: [generateAffinity, generateUserBio],
