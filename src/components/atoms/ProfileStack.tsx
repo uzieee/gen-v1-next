@@ -11,7 +11,7 @@ interface ProfileCardProps {
 
 const ProfileCard = ({ profile, onLike, isLiked, isLoading }: ProfileCardProps) => {
   return (
-    <div className="w-80 h-80 rounded-3xl overflow-hidden relative group flex-shrink-0">
+    <div className="w-full max-w-sm h-64 rounded-3xl overflow-hidden relative group flex-shrink-0">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -52,17 +52,17 @@ const ProfileCard = ({ profile, onLike, isLiked, isLoading }: ProfileCardProps) 
       </button>
 
       {/* Content */}
-      <div className="absolute inset-0 p-6 flex flex-col justify-between">
+      <div className="absolute inset-0 p-4 flex flex-col justify-between">
         <div className="text-main">
-          <div className="flex items-center gap-3 mb-3">
-            <h2 className="text-4xl font-bold">{profile.name}</h2>
-            <span className="text-2xl">{profile.flag}</span>
+          <div className="flex items-center gap-2 mb-2">
+            <h2 className="text-2xl font-bold">{profile.name}</h2>
+            <span className="text-lg">{profile.flag}</span>
           </div>
 
           {profile.status && (
-            <div className="flex items-center gap-2 bg-main/20 backdrop-blur-sm rounded-full px-3 py-1.5 w-fit">
-              <span>{profile.icon}</span>
-              <span className="text-main text-sm font-medium">
+            <div className="flex items-center gap-2 bg-main/20 backdrop-blur-sm rounded-full px-2 py-1 w-fit">
+              <span className="text-sm">{profile.icon}</span>
+              <span className="text-main text-xs font-medium">
                 {profile.status}
               </span>
             </div>
@@ -110,7 +110,7 @@ const ProfileCardStack = ({ profiles }: { profiles: FormattedMatch[] }) => {
   };
 
   return (
-    <div className="flex items-center overflow-x-scroll space-x-6 scroll-snap-bouncy scrollbar-hide">
+    <div className="flex flex-col items-center space-y-6 max-h-96 overflow-y-auto scrollbar-hide">
       {profiles.map((profile, index) => (
         <ProfileCard
           key={profile.id}

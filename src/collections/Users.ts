@@ -213,6 +213,53 @@ export const Users: CollectionConfig = {
         position: "sidebar",
       },
     },
+    {
+      name: "emailNotifications",
+      label: "Email Notifications",
+      type: "group",
+      fields: [
+        {
+          name: "profileLikes",
+          label: "Profile Likes",
+          type: "checkbox",
+          defaultValue: true,
+          admin: {
+            description: "Receive email notifications when someone likes your profile",
+          },
+        },
+        {
+          name: "eventReminders",
+          label: "Event Reminders",
+          type: "checkbox",
+          defaultValue: true,
+          admin: {
+            description: "Receive email reminders for upcoming events",
+          },
+        },
+        {
+          name: "roundTableInvites",
+          label: "Round Table Invites",
+          type: "checkbox",
+          defaultValue: true,
+          admin: {
+            description: "Receive email notifications for round table invitations",
+          },
+        },
+        {
+          name: "newsletter",
+          label: "Newsletter",
+          type: "checkbox",
+          defaultValue: false,
+          admin: {
+            description: "Receive our newsletter with updates and tips",
+          },
+        },
+      ],
+      admin: {
+        position: "sidebar",
+        description: "Manage email notification preferences",
+      },
+    },
   ],
   hooks: {
     afterChange: [generateAffinity, generateUserBio],

@@ -84,6 +84,16 @@ export default function Signin() {
           loadingText="Sending..."
           state={isValid ? "default" : "disabled"}
         />
+        
+        <div className="text-center mt-6">
+          <button
+            type="button"
+            onClick={() => router.push("/reset-password")}
+            className="text-primary text-sm font-ariom hover:underline"
+          >
+            Forgot your password?
+          </button>
+        </div>
       </form>
     </>
   );

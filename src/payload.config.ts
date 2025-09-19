@@ -18,6 +18,8 @@ import { Professions } from "./collections/Professions";
 import { Startups } from "./collections/Startups";
 import { TableAssignments } from "./collections/TableAssignments";
 import { Sessions } from "./collections/Sessions";
+import { Notifications } from "./collections/Notifications";
+import { PasswordResetTokens } from "./collections/PasswordResetTokens";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -42,6 +44,8 @@ export default buildConfig({
     Startups,
     Sessions,
     TableAssignments,
+    Notifications,
+    PasswordResetTokens,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

@@ -3,21 +3,25 @@
 import useApiQuery from "@/app/hooks/use-api-query";
 import { useCurrentUser } from "@/app/hooks/use-current-user";
 import { fetchPendingSessions } from "@/app/services/http/sessions";
+import { fetchNotifications, markNotificationAsRead, Notification } from "@/app/services/http/notifications";
 import NotificationListItem from "@/components/atoms/NotificationListItem";
 import Header from "@/components/molecules/Header";
 import NotificationsSkeleton from "@/components/skeletons/NotificationsSkeleton";
 import dayjs from "dayjs";
-import { Bell } from "lucide-react";
+import { Bell, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function NotificationsList() {
   const { data } = useCurrentUser();
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<"all" | "likes">("all");
 
   const onBack = () => {
     router.back();
   };
 
+  // Fetch round table sessions
   const { data: sessions, isSuccess: isSessionFetchSuccess } = useApiQuery({
     apiHandler: fetchPendingSessions,
     payload: {
@@ -27,13 +31,58 @@ export default function NotificationsList() {
     enabled: !!data?.user?.id,
   });
 
-  if (!isSessionFetchSuccess) {
+  // Fetch notifications
+  const { data: notificationsData, isSuccess: isNotificationsFetchSuccess, refetch: refetchNotifications } = useApiQuery({
+    apiHandler: fetchNotifications,
+    payload: {
+      page: 1,
+      limit: 50,
+      unreadOnly: false,
+    },
+    queryKey: ["notifications", data?.user?.id],
+    enabled: !!data?.user?.id,
+  });
+
+  const handleNotificationClick = async (notification: Notification) => {
+    // Mark as read if not already read
+    if (!notification.isRead) {
+      try {
+        await markNotificationAsRead(notification.id, true);
+        refetchNotifications();
+      } catch (error) {
+        console.error("Failed to mark notification as read:", error);
+      }
+    }
+
+    // Navigate to action URL if available
+    if (notification.actionUrl) {
+      router.push(notification.actionUrl);
+    }
+  };
+
+  if (!isSessionFetchSuccess || !isNotificationsFetchSuccess) {
     return (
       <div className="p-6">
-        <NotificationsSkeleton />;
+        <NotificationsSkeleton />
       </div>
     );
   }
+
+  const notifications = notificationsData?.notifications || [];
+  const likeNotifications = notifications.filter(n => n.type === "profile_like");
+  const allNotifications = [...(sessions || []).map(session => ({
+    id: session.id,
+    type: "round_table_invite" as const,
+    title: `Round table #${session.sessionNumber}`,
+    message: session.topic || "",
+    isRead: false,
+    actionUrl: `/round-table/${session.id}/welcome?table=${session.tableNumber}`,
+    createdAt: session.startTime,
+    updatedAt: session.startTime,
+  })), ...notifications];
+
+  const hasNotifications = allNotifications.length > 0;
+  const hasLikeNotifications = likeNotifications.length > 0;
 
   return (
     <>
@@ -43,35 +92,107 @@ export default function NotificationsList() {
         onRight={() => router.replace("/home")}
         title={"Notifications"}
       />
-      <div className="flex flex-col gap-4">
-        {(sessions || []).length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center py-12
-          px-6"
+      
+      {/* Tab Navigation */}
+      <div className="px-6 py-4">
+        <div className="flex gap-2 bg-main/10 rounded-2xl p-1">
+          <button
+            onClick={() => setActiveTab("all")}
+            className={`flex-1 py-2 px-4 rounded-xl font-ariom font-medium transition-colors ${
+              activeTab === "all"
+                ? "bg-primary text-main-600"
+                : "text-main-600/70 hover:text-main-600"
+            }`}
           >
+            All ({allNotifications.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("likes")}
+            className={`flex-1 py-2 px-4 rounded-xl font-ariom font-medium transition-colors ${
+              activeTab === "likes"
+                ? "bg-primary text-main-600"
+                : "text-main-600/70 hover:text-main-600"
+            }`}
+          >
+            Likes ({likeNotifications.length})
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4 px-6">
+        {!hasNotifications ? (
+          <div className="flex flex-col items-center justify-center py-12">
             <Bell color="#99a1af" size={48} className="mb-4" />
             <h3 className="text-gray-600 text-lg font-medium font-ariom mb-2">
               No Notifications
             </h3>
             <p className="text-gray-400 text-center font-chivo">
-              You don{"'"}t have any pending notifications at the moment
+              You don{"'"}t have any notifications at the moment
             </p>
           </div>
-        ) : (
-          (sessions || []).map((session) => (
+        ) : activeTab === "all" ? (
+          allNotifications.map((notification) => (
             <NotificationListItem
-              key={session.id}
+              key={notification.id}
               notification={{
-                timestamp: dayjs(session.startTime).format("HH:mm"),
-                title: `Round table #${session.sessionNumber}`,
-                body: session.topic || "",
-                onAccept: () =>
-                  router.push(
-                    `/round-table/${session.id}/welcome?table=${session.tableNumber}`
-                  ),
+                timestamp: dayjs(notification.createdAt).format("HH:mm"),
+                title: notification.title,
+                body: notification.message,
+                isRead: notification.isRead,
+                onAccept: () => {
+                  if (notification.actionUrl) {
+                    router.push(notification.actionUrl);
+                  }
+                },
                 onDecline: () => router.push("/home"),
               }}
             />
+          ))
+        ) : (
+          likeNotifications.map((notification) => (
+            <div
+              key={notification.id}
+              onClick={() => handleNotificationClick(notification)}
+              className={`bg-background border border-main-600 rounded-2xl p-4 cursor-pointer transition-colors ${
+                !notification.isRead ? "bg-primary/5 border-primary/30" : ""
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-red-100 rounded-full">
+                  <Heart className="w-5 h-5 text-red-500" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="font-ariom font-bold text-main-600">
+                      {notification.title}
+                    </h3>
+                    <span className="text-xs text-main-600/50 font-chivo">
+                      {dayjs(notification.createdAt).format("HH:mm")}
+                    </span>
+                  </div>
+                  <p className="text-main-600/70 font-chivo text-sm">
+                    {notification.message}
+                  </p>
+                  {notification.fromUser && (
+                    <div className="flex items-center gap-2 mt-2">
+                      {notification.fromUser.profileImage && (
+                        <img
+                          src={notification.fromUser.profileImage}
+                          alt={notification.fromUser.fullName || "User"}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      )}
+                      <span className="text-xs text-main-600/60 font-chivo">
+                        from {notification.fromUser.fullName || "Someone"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {!notification.isRead && (
+                  <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-2" />
+                )}
+              </div>
+            </div>
           ))
         )}
       </div>

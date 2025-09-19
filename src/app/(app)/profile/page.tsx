@@ -299,6 +299,23 @@ export default function Profile() {
             }}
           />
           
+          {/* Email Preferences Section */}
+          <InfoCard
+            onEdit={() => router.push("/email-preferences")}
+            title="Email Preferences"
+            className="flex flex-col gap-3"
+          >
+            <div className="text-main/50 font-chivo text-sm font-light">
+              Manage your email notification preferences
+            </div>
+            <button
+              onClick={() => router.push("/email-preferences")}
+              className="text-primary text-sm font-ariom hover:underline text-left"
+            >
+              Update email settings →
+            </button>
+          </InfoCard>
+          
           <br />
           <br />
           <br />

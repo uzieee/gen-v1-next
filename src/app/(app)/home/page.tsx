@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { fetchMatches } from "@/app/services/http/users";
 import { useFormattedMatches } from "@/app/hooks/use-formated-matches";
+import { fetchNotifications } from "@/app/services/http/notifications";
 
 // Main Component
 export default function HomeDashboard() {
@@ -51,6 +52,20 @@ export default function HomeDashboard() {
     },
     queryKey: ["events", "home-page"],
   });
+
+  // Fetch unread notifications count
+  const { data: notificationsData } = useApiQuery({
+    apiHandler: fetchNotifications,
+    payload: {
+      page: 1,
+      limit: 1,
+      unreadOnly: true,
+    },
+    queryKey: ["notifications-count", data?.user?.id],
+    enabled: !!data?.user?.id,
+  });
+
+  const unreadCount = notificationsData?.totalDocs || 0;
 
   const user = useMemo(() => {
     if (router && !data?.user && isFetchUserSuccess) {
@@ -88,7 +103,13 @@ export default function HomeDashboard() {
                   className="rounded-full bg-primary"
                   onClick={() => router.push("/notifications")}
                 />
-                <div className="absolute bottom-1 right-1 min-w-3 min-h-3 bg-red-600 rounded-full border-2 border-white"></div>
+                {unreadCount > 0 && (
+                  <div className="absolute -top-1 -right-1 min-w-5 min-h-5 bg-red-600 rounded-full border-2 border-white flex items-center justify-center">
+                    <span className="text-xs font-bold text-white">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {user?.image ? (
