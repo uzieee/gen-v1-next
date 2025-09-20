@@ -13,6 +13,7 @@ export interface FormattedMatch {
   status: string;
   icon: string;
   image: string | null;
+  iceBreaker?: string;
 }
 
 export function useFormattedMatches(matches: Match[]): FormattedMatch[] {
@@ -45,6 +46,7 @@ export function useFormattedMatches(matches: Match[]): FormattedMatch[] {
         status,
         icon,
         image,
+        iceBreaker: user.iceBreakers?.currentIceBreaker,
       };
     });
   }, [matches]);

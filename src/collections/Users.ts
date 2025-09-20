@@ -1,6 +1,7 @@
 import { checkOTP } from "@/lib/otp";
 import { generateAffinity } from "@/payload-hooks/generate-affinity";
 import { generateUserBio } from "@/payload-hooks/generate-user-bio";
+import { generateIceBreakerHook } from "@/payload-hooks/generate-ice-breaker";
 import type { CollectionConfig } from "payload";
 
 /* simple label component */
@@ -211,6 +212,87 @@ export const Users: CollectionConfig = {
       admin: {
         description: "Profiles that this user has liked",
         position: "sidebar",
+      },
+    },
+    {
+      name: "iceBreakers",
+      label: "Ice Breakers",
+      type: "group",
+      fields: [
+        {
+          name: "currentIceBreaker",
+          label: "Current Ice Breaker",
+          type: "text",
+          hooks: {
+            beforeChange: [generateIceBreakerHook],
+          },
+          admin: {
+            description: "Current ice breaker question/prompt for this user",
+          },
+        },
+        {
+          name: "iceBreakerHistory",
+          label: "Ice Breaker History",
+          type: "array",
+          fields: [
+            {
+              name: "question",
+              type: "text",
+              required: true,
+            },
+            {
+              name: "generatedAt",
+              type: "date",
+              required: true,
+            },
+            {
+              name: "likes",
+              type: "number",
+              defaultValue: 0,
+            },
+          ],
+          admin: {
+            description: "History of ice breakers generated for this user",
+          },
+        },
+        {
+          name: "iceBreakerPreferences",
+          label: "Ice Breaker Preferences",
+          type: "group",
+          fields: [
+            {
+              name: "style",
+              label: "Style",
+              type: "select",
+              options: [
+                { label: "Professional", value: "professional" },
+                { label: "Casual", value: "casual" },
+                { label: "Creative", value: "creative" },
+                { label: "Funny", value: "funny" },
+                { label: "Thought-provoking", value: "thought-provoking" },
+              ],
+              defaultValue: "professional",
+            },
+            {
+              name: "topics",
+              label: "Preferred Topics",
+              type: "array",
+              fields: [
+                {
+                  name: "topic",
+                  type: "text",
+                },
+              ],
+              admin: {
+                description: "Topics the user is interested in discussing",
+              },
+            },
+          ],
+        },
+      ],
+      admin: {
+        position: "sidebar",
+        description: "Ice breaker questions and preferences for networking",
       },
     },
     {

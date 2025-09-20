@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { OpenAI } from "openai";
+import { bioRateLimiter, shouldSkipOpenAICall } from "@/lib/rate-limiter";
 
 export const GPT_MODELS = {
   gpt4Mini: "gpt-4o-mini",
@@ -143,6 +144,12 @@ export const generateUserBio = async ({
       return;
     }
 
+    // Check rate limit before making API call
+    if (shouldSkipOpenAICall(bioRateLimiter)) {
+      console.log("[generateUserBio] Rate limit hit, skipping bio generation");
+      return;
+    }
+
     const res = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
@@ -161,8 +168,17 @@ export const generateUserBio = async ({
       overrideAccess: true,
       depth: 0,
     });
-  } catch (err) {
+
+    console.log(`[generateUserBio] Bio generated for user ${doc.id}`);
+  } catch (err: any) {
     console.error("[generateUserBio]", err);
+    
+    // Check if it's a quota/rate limit error
+    if (err?.status === 429 || err?.code === 'insufficient_quota' || err?.code === 'rate_limit_exceeded') {
+      console.log("[generateUserBio] OpenAI quota/rate limit hit, skipping bio generation");
+      return;
+    }
+    
     // In development, don't fail the entire operation if OpenAI fails
     if (process.env.NODE_ENV === "development") {
       console.log("[generateUserBio] Continuing without bio generation in development");

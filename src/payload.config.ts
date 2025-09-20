@@ -20,6 +20,7 @@ import { TableAssignments } from "./collections/TableAssignments";
 import { Sessions } from "./collections/Sessions";
 import { Notifications } from "./collections/Notifications";
 import { PasswordResetTokens } from "./collections/PasswordResetTokens";
+import { Roundtables } from "./collections/Roundtables";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -46,6 +47,7 @@ export default buildConfig({
     TableAssignments,
     Notifications,
     PasswordResetTokens,
+    Roundtables,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
