@@ -4,14 +4,15 @@ import config from "@payload-config";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const payload = await getPayload({ config });
     
+    const resolvedParams = await params;
     const roundtable = await payload.findByID({
       collection: "roundtables",
-      id: params.id,
+      id: resolvedParams.id,
       depth: 2,
     });
 
@@ -27,7 +28,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const payload = await getPayload({ config });
@@ -46,9 +47,10 @@ export async function PUT(
       }
     }
 
+    const resolvedParams = await params;
     const roundtable = await payload.update({
       collection: "roundtables",
-      id: params.id,
+      id: resolvedParams.id,
       data: {
         name: data.name,
         event: data.event,
@@ -77,14 +79,15 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const payload = await getPayload({ config });
     
+    const resolvedParams = await params;
     await payload.delete({
       collection: "roundtables",
-      id: params.id,
+      id: resolvedParams.id,
     });
 
     return NextResponse.json({ success: true });
