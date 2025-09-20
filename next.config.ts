@@ -10,7 +10,19 @@ const nextConfig: NextConfig = {
   },
   images: {
     domains: ["localhost", "res.cloudinary.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
+  // Optimize for Vercel deployment
+  output: "standalone",
+  poweredByHeader: false,
+  compress: true,
 };
 
 export default withPayload(nextConfig);
