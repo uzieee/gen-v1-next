@@ -30,7 +30,7 @@ export async function refreshIceBreakerAction(profileId: string) {
 
     const preferences = {
       style: user.iceBreakers?.iceBreakerPreferences?.style || "professional",
-      topics: user.iceBreakers?.iceBreakerPreferences?.topics?.map((t: any) => t.topic) || [],
+        topics: user.iceBreakers?.iceBreakerPreferences?.topics?.map((t: { topic: string }) => t.topic) || [],
     };
 
     // Generate new ice breaker
@@ -134,7 +134,7 @@ export async function likeIceBreakerAction(profileId: string, iceBreaker: string
 
     // Find the ice breaker in history and increment likes
     const history = user.iceBreakers?.iceBreakerHistory || [];
-    const updatedHistory = history.map((item: any) => {
+    const updatedHistory = history.map((item: { question: string; likes: number }) => {
       if (item.question === iceBreaker) {
         return {
           ...item,

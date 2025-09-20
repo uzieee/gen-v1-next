@@ -1,7 +1,7 @@
 import { FieldHook } from "payload";
 import { generateIceBreaker as generateIceBreakerService } from "@/lib/ice-breaker-generator";
 
-export const generateIceBreakerHook: FieldHook = async ({ data, req, operation }) => {
+export const generateIceBreakerHook: FieldHook = async ({ data, operation }) => {
   // Only generate ice breaker for new users or when bio/profession changes
   if (operation === "create" || (operation === "update" && data)) {
     try {
@@ -20,7 +20,7 @@ export const generateIceBreakerHook: FieldHook = async ({ data, req, operation }
 
       const preferences = {
         style: data?.iceBreakers?.iceBreakerPreferences?.style || "professional",
-        topics: data?.iceBreakers?.iceBreakerPreferences?.topics?.map((t: any) => t.topic) || [],
+        topics: data?.iceBreakers?.iceBreakerPreferences?.topics?.map((t: { topic: string }) => t.topic) || [],
       };
 
       const iceBreaker = await generateIceBreakerService(userProfile, preferences);

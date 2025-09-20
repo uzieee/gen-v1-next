@@ -8,9 +8,9 @@ const openai = new OpenAI({
 export interface UserProfile {
   fullName?: string;
   bio?: string;
-  profession?: any;
-  startups?: any[];
-  attributes?: any[];
+  profession?: string | { jobTitle?: string; professionalField?: string };
+  startups?: Array<{ name?: string; description?: string }>;
+  attributes?: Array<{ name?: string; value?: string }>;
 }
 
 export interface IceBreakerPreferences {
@@ -120,7 +120,7 @@ function buildIceBreakerPrompt(userProfile: UserProfile, preferences: IceBreaker
 }
 
 function getPersonalizedFallbackIceBreaker(userProfile: UserProfile, style: string): string {
-  const { fullName, bio, profession, startups, attributes } = userProfile;
+  const { profession, startups, attributes } = userProfile;
   
   // Create personalized ice breakers based on user data
   const personalizedFallbacks = {
@@ -206,14 +206,4 @@ function getPersonalizedFallbackIceBreaker(userProfile: UserProfile, style: stri
   return styleFallbacks[randomIndex];
 }
 
-function getFallbackIceBreaker(style: string): string {
-  const fallbacks = {
-    professional: "What's the most exciting project you're working on right now?",
-    casual: "What's something you're really passionate about outside of work?",
-    creative: "If you could solve any problem in the world, what would it be?",
-    funny: "What's the most interesting thing that happened to you this week?",
-    "thought-provoking": "What's a belief you held strongly that you've changed your mind about?"
-  };
-
-  return fallbacks[style as keyof typeof fallbacks] || fallbacks.professional;
-}
+// Removed unused function
